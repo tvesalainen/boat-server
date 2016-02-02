@@ -16,13 +16,6 @@
  */
 package org.vesalainen.boat.server;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import org.vesalainen.html.jquery.mobile.JQueryMobileBeanServlet;
 
 /**
@@ -31,34 +24,10 @@ import org.vesalainen.html.jquery.mobile.JQueryMobileBeanServlet;
  */
 public abstract class BaseServlet extends JQueryMobileBeanServlet<Context>
 {
-    protected ThreadLocal<HttpSession> localSession = new ThreadLocal<>();
-
-    @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
-    {
-        localSession.set(req.getSession(true));
-        super.service(req, resp);
-        localSession.set(null);
-    }
-    
     @Override
     protected Context createData()
     {
-        HttpSession session = localSession.get();
-        if (session != null)
-        {
-            Context ctx = (Context) session.getAttribute(Context.class.getName());
-            if (ctx == null)
-            {
-                ctx = new Context();
-                session.setAttribute(Context.class.getName(), ctx);
-            }
-            return ctx;
-        }
-        else
-        {
-            return new Context();
-        }
+        return new Context();
     }
 
 }

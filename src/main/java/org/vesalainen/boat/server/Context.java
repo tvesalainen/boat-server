@@ -16,6 +16,9 @@
  */
 package org.vesalainen.boat.server;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.vesalainen.web.InputType;
 import org.vesalainen.web.SingleSelector;
 
 /**
@@ -29,6 +32,19 @@ public class Context
             "longitude"
     );
 
+    private List<String> meters = new ArrayList<>();
+
+    @InputType(itemType=String.class)
+    public List<String> getMeters()
+    {
+        return meters;
+    }
+
+    public void setMeters(List<String> meters)
+    {
+        this.meters = meters;
+    }
+    
     public SingleSelector<String> getNewMeter()
     {
         return newMeter;

@@ -28,7 +28,9 @@ public class BoatServer extends EmbeddedServer
     public BoatServer(int port)
     {
         super(port);
+        addServlet(ContentServlet.class, ContentServlet.Action);
         addServlet(AddMeterServlet.class, AddMeterServlet.Action);
+        addServlet(UnitsServlet.class, UnitsServlet.Action);
     }
     
 }

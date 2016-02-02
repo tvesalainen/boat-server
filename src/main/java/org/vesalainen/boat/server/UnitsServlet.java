@@ -17,32 +17,19 @@
 package org.vesalainen.boat.server;
 
 import org.vesalainen.html.Document;
-import org.vesalainen.html.Element;
-import org.vesalainen.html.Link;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.web.servlet.bean.DynamicQuery;
 
 /**
  *
  * @author tkv
  */
-public class AddMeterServlet extends BaseServlet
+public class UnitsServlet extends BaseServlet
 {
-    public static final String Action = "/add";
+    public static final String Action = "/units";
 
     @Override
     protected Document createDocument()
     {
-        JQueryMobileDocument doc = new JQueryMobileDocument(getLabel("addPage"));
-        JQueryMobileDocument.Page main = doc.getPage("addPage");
-        Element form = main.addElement("form")
-                .setAttr("method", "post");
-        DynamicQuery query = new DynamicQuery(threadLocalData, doc.getCharset(), allFields);
-        Link href = new Link("action", UnitsServlet.Action, query);
-        form.setAttr(href);
-        addInputs(form, "newMeter");
-        addRestAsHiddenInputs(form);
-        return doc;
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
