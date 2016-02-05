@@ -20,6 +20,8 @@ import org.vesalainen.html.Document;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.Link;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
+import org.vesalainen.html.jquery.mobile.JQueryMobileDocument.JQueryMobilePage;
+import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
 import org.vesalainen.web.servlet.bean.DynamicQuery;
 
 /**
@@ -31,19 +33,23 @@ public class ContentServlet extends BaseServlet
     public static final String Action = "/con";
 
     @Override
-    protected Document createDocument()
+    protected JQueryMobileDocument createDocument()
     {
-        JQueryMobileDocument doc = new JQueryMobileDocument(getLabel("BoatServer"));
-        JQueryMobileDocument.Page meterPage = doc.getPage("meterPage");
-        
-        Element header = meterPage.getHeader();
-        Element addButton = header.addElement("a")
-                .addClasses("ui-btn", "ui-btn-right", "ui-icon-home", "ui-btn-icon-left")
-                .addText(getLabel("addMeter"));
-        DynamicQuery query = new DynamicQuery(threadLocalData, doc.getCharset(), allFields);
-        Link href = new Link("href", AddMeterServlet.Action, query);
-        addButton.setAttr(href);
+        JQueryMobileDocument doc = new JQueryMobileDocument(threadLocalData);
+        createAddPage(doc);
         return doc;
     }
     
+    private void createAddPage(JQueryMobileDocument doc)
+    {
+        JQueryMobilePage page = createPage(doc, "addPage");
+        JQueryMobileForm form = page.addForm(Action);
+        form.addInputs("pageType", "addPage");
+        form.addRestAsHiddenInputs();
+    }
+    private JQueryMobilePage createPage(JQueryMobileDocument doc, String id)
+    {
+        JQueryMobilePage page = doc.getPage("addPage");
+        return page;
+    }
 }

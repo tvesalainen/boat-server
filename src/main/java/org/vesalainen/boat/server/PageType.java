@@ -16,20 +16,11 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.html.Document;
-
 /**
  *
  * @author tkv
  */
-public class UnitsServlet extends BaseServlet
+public enum PageType
 {
-    public static final String Action = "/units";
-
-    @Override
-    protected Document createDocument()
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+    Page12;
 }

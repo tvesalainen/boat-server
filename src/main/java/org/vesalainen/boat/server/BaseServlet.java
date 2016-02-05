@@ -16,13 +16,13 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.html.jquery.mobile.JQueryMobileBeanServlet;
+import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
 
 /**
  *
  * @author tkv
  */
-public abstract class BaseServlet extends JQueryMobileBeanServlet<Context>
+public abstract class BaseServlet extends JQueryMobileServlet<Context>
 {
     @Override
     protected Context createData()

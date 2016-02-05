@@ -27,33 +27,29 @@ import org.vesalainen.web.SingleSelector;
  */
 public class Context
 {
-    private SingleSelector<String> newMeter = new SingleSelector<>(
-            "latitude",
-            "longitude"
-    );
+    private String addPage;
+    private PageType pageType;
 
-    private List<String> meters = new ArrayList<>();
-
-    @InputType(itemType=String.class)
-    public List<String> getMeters()
+    public PageType getPageType()
     {
-        return meters;
+        return pageType;
     }
 
-    public void setMeters(List<String> meters)
+    public void setPageType(PageType pageType)
     {
-        this.meters = meters;
+        this.pageType = pageType;
     }
+
     
-    public SingleSelector<String> getNewMeter()
+    @InputType("submit")
+    public String getAddPage()
     {
-        return newMeter;
+        return addPage;
     }
 
-    public void setNewMeter(SingleSelector<String> newMeter)
+    public void setAddPage(String addPage)
     {
-        this.newMeter = newMeter;
+        this.addPage = addPage;
     }
-    
-    
+
 }
