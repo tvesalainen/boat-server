@@ -16,26 +16,29 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.html.Document;
+import java.util.HashMap;
+import java.util.Map;
+import org.vesalainen.boat.server.pages.MeterPage;
+import org.vesalainen.boat.server.pages.Page12;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.Link;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument.JQueryMobilePage;
+import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
-import org.vesalainen.web.servlet.bean.DynamicQuery;
+import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
 
 /**
  *
  * @author tkv
  */
-public class ContentServlet extends BaseServlet
+public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
 {
     public static final String Action = "/con";
 
     @Override
-    protected JQueryMobileDocument createDocument()
+    protected ContentDocument createDocument()
     {
-        JQueryMobileDocument doc = new JQueryMobileDocument(threadLocalData);
+        ContentDocument doc = new ContentDocument(threadLocalData);
+        doc.getBody().addContent(new DynamicPages(doc, threadLocalData));
         createAddPage(doc);
         return doc;
     }
@@ -43,6 +46,12 @@ public class ContentServlet extends BaseServlet
     private void createAddPage(JQueryMobileDocument doc)
     {
         JQueryMobilePage page = createPage(doc, "addPage");
+        Element header = page.getHeader();
+        header.addElement("a")
+                .setAttr("href", new LastMeterPage(threadLocalData))
+                .addClasses("ui-btn", "ui-icon-home", "ui-btn-icon-left")
+                .addText(doc.getLabel("lastMeterPage"));
+        header.addText(doc.getLabel("Add new meter page"));
         JQueryMobileForm form = page.addForm(Action);
         form.addInputs("pageType", "addPage");
         form.addRestAsHiddenInputs();
@@ -52,4 +61,39 @@ public class ContentServlet extends BaseServlet
         JQueryMobilePage page = doc.getPage("addPage");
         return page;
     }
+
+    @Override
+    protected void onSubmit(Context ctx, String field)
+    {
+        if (field != null)
+        {
+            switch (field)
+            {
+                case "addPage":
+                    addPage(ctx);
+                    break;
+            }
+        }
+    }
+    
+    private void addPage(Context ctx)
+    {
+        PageType pageType = ctx.getPageType();
+        if (pageType != null)
+        {
+            String page = "page"+ctx.nextId();
+            ctx.getPages().add(page);
+            ctx.getTypeMap().put(page, pageType);
+            MeterPage mp = document.getPage(pageType);
+            ctx.getGridMap().addAll(page, mp.createInitList());
+        }
+    }
+    
+    @Override
+    protected Context createData()
+    {
+        return new Context();
+    }
+    
 }
+

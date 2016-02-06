@@ -16,18 +16,32 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
+import java.io.IOException;
+import java.util.List;
+import org.vesalainen.web.servlet.bean.ThreadLocalContent;
 
 /**
  *
  * @author tkv
  */
-public abstract class BaseServlet extends JQueryMobileServlet<Context>
+public class LastMeterPage extends ThreadLocalContent<Context>
 {
-    @Override
-    protected Context createData()
+
+    public LastMeterPage(ThreadLocal<Context> local)
     {
-        return new Context();
+        super(local);
     }
 
+    @Override
+    public void append(Appendable out) throws IOException
+    {
+        out.append('#');
+        Context ctx = local.get();
+        List<String> pages = ctx.getPages();
+        if (!pages.isEmpty())
+        {
+            out.append(pages.get(pages.size()-1));
+        }
+    }
+    
 }
