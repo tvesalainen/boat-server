@@ -51,7 +51,8 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
                 .setAttr("href", new LastMeterPage(threadLocalData))
                 .addClasses("ui-btn", "ui-icon-home", "ui-btn-icon-left")
                 .addText(doc.getLabel("lastMeterPage"));
-        header.addText(doc.getLabel("Add new meter page"));
+        header.addElement("h1")
+                .addText(doc.getLabel("Add new meter page"));
         JQueryMobileForm form = page.addForm(Action);
         form.addInputs("pageType", "addPage");
         form.addRestAsHiddenInputs();
