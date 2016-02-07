@@ -36,6 +36,17 @@ public class Context
     private Map<String,PageType> typeMap = new HashMap<>();
     private String addPage;
     private PageType pageType;
+    private Meter meter;
+
+    public Meter getMeter()
+    {
+        return meter;
+    }
+
+    public void setMeter(Meter meter)
+    {
+        this.meter = meter;
+    }
 
     public int nextId()
     {

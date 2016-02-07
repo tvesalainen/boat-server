@@ -17,10 +17,7 @@
 package org.vesalainen.boat.server.pages;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.vesalainen.boat.server.PageType;
 import org.vesalainen.html.Content;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;

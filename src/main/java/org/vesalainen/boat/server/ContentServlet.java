@@ -16,10 +16,7 @@
  */
 package org.vesalainen.boat.server;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.vesalainen.boat.server.pages.MeterPage;
-import org.vesalainen.boat.server.pages.Page12;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
@@ -38,6 +35,9 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
     protected ContentDocument createDocument()
     {
         ContentDocument doc = new ContentDocument(threadLocalData);
+        doc.setAjax(false);
+        Element script = doc.getHead().addElement("script");
+        script.addContent(new DynamicScripts(doc, threadLocalData));
         doc.getBody().addContent(new DynamicPages(doc, threadLocalData));
         createAddPage(doc);
         return doc;
@@ -85,7 +85,7 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
             String page = "page"+ctx.nextId();
             ctx.getPages().add(page);
             ctx.getTypeMap().put(page, pageType);
-            MeterPage mp = document.getPage(pageType);
+            MeterPage mp = document.getMeterPage(pageType);
             ctx.getGridMap().addAll(page, mp.createInitList());
         }
     }

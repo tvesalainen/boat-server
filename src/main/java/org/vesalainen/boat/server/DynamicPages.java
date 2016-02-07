@@ -20,7 +20,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import org.vesalainen.boat.server.pages.MeterPage;
+import org.vesalainen.html.BooleanAttribute;
+import org.vesalainen.html.Element;
+import org.vesalainen.html.Page;
+import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
+import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
+import org.vesalainen.util.Lists;
 import org.vesalainen.util.MapList;
+import org.vesalainen.web.servlet.bean.MultipleSelectorInput;
 import org.vesalainen.web.servlet.bean.ThreadLocalContent;
 
 /**
@@ -30,11 +37,13 @@ import org.vesalainen.web.servlet.bean.ThreadLocalContent;
 public class DynamicPages extends ThreadLocalContent<Context>
 {
     private final ContentDocument document;
+    private MeterForm form;
 
     public DynamicPages(ContentDocument document, ThreadLocal local)
     {
         super(local);
         this.document = document;
+        this.form = new MeterForm(document);
     }
 
     @Override
@@ -46,11 +55,44 @@ public class DynamicPages extends ThreadLocalContent<Context>
         for (String pg : ctx.getPages())
         {
             PageType pt = typeMap.get(pg);
-            List<String> ls = gridMap.get(pt);
-            MeterPage page = document.getPage(pt);
+            MeterPage page = document.getMeterPage(pt);
             page.setPageId(pg);
+            int idx = 0;
+            for (String g : gridMap.get(pg))
+            {
+                if (g == null)
+                {
+                    page.setGrid(idx, form);
+                }
+                idx++;
+            }
             page.append(out);
         }
     }
-    
+    private static class MeterForm extends JQueryMobileForm
+    {
+
+        public MeterForm(JQueryMobileDocument document)
+        {
+            super(document, null, "post", null);
+            String field = "meter";
+            List<Meter> options = Lists.create(Meter.values());
+            MultipleSelectorInput<Context, String> input = new MultipleSelectorInput<>(document.getThreadLocalData(), document.getDataType(), field, options);
+            document.getFieldMap().put(field, input);
+            Element fieldSet = addElement("fieldset");
+            fieldSet.addElement("label").addText(getLabel(field));
+            Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", field).setAttr("data-native-menu", false);
+            select.setAttr(new BooleanAttribute("multiple", true));
+            for (Meter opt : options)
+            {
+                String n = opt.toString();
+                String d = document.getLabel(n);
+                Element option = select.addElement("option")
+                        .setAttr("value", n)
+                        .setAttr("category", opt.getCategory())
+                        .addText(d);
+            }
+        }
+        
+    }
 }

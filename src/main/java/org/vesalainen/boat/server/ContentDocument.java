@@ -36,7 +36,7 @@ public class ContentDocument extends JQueryMobileDocument
         super(threadLocalData);
     }
     
-    protected MeterPage getPage(PageType pageType)
+    protected MeterPage getMeterPage(PageType pageType)
     {
         MeterPage mp = pageMap.get(pageType);
         if (mp == null)
