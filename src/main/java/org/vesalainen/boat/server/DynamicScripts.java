@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import org.vesalainen.html.DynString;
 import org.vesalainen.js.AbstractScriptContainer;
-import org.vesalainen.js.Script;
 import org.vesalainen.util.MapList;
 import org.vesalainen.util.Wrap;
 import org.vesalainen.web.servlet.bean.ThreadLocalContent;
@@ -46,9 +45,9 @@ public class DynamicScripts extends ThreadLocalContent<Context>
     public void append(Appendable out) throws IOException
     {
         Context ctx = local.get();
-        Map<String, PageType> typeMap = ctx.getTypeMap();
-        MapList<String, String> gridMap = ctx.getGridMap();
-        for (String pg : ctx.getPages())
+        Map<Integer, PageType> typeMap = ctx.getTypeMap();
+        MapList<Integer, String> gridMap = ctx.getGridMap();
+        for (int pg : ctx.getPages())
         {
             PageType pt = typeMap.get(pg);
             List<String> ls = gridMap.get(pg);
@@ -74,13 +73,13 @@ public class DynamicScripts extends ThreadLocalContent<Context>
     
     private static class Sc extends AbstractScriptContainer
     {
-        private Wrap<String> pageId = new Wrap();
+        private Wrap<Integer> pageId = new Wrap();
 
         public Sc()
         {
-            prefix = new DynString("$(document).on(\"pagecreate\",\"#", pageId, "\",function(){");
+            prefix = new DynString("$(document).on(\"pagecreate\",\"#page", pageId, "\",function(){");
             suffix = "});";
-            
+            addCode("$('.hidden').hide();");
         }
         
     }

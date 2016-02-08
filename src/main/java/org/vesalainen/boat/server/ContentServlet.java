@@ -17,11 +17,14 @@
 package org.vesalainen.boat.server;
 
 import org.vesalainen.boat.server.pages.MeterPage;
+import org.vesalainen.html.ClassAttribute;
 import org.vesalainen.html.Element;
+import org.vesalainen.html.SimpleAttribute;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
 import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
+import org.vesalainen.http.Query;
 
 /**
  *
@@ -54,7 +57,12 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
         header.addElement("h1")
                 .addText(doc.getLabel("Add new meter page"));
         JQueryMobileForm form = page.addForm(Action);
-        form.addInputs("pageType", "addPage");
+        form.addInput("pageType");
+        form.addInput("addPage",
+                new SimpleAttribute("data-iconpos", "notext"),
+                new SimpleAttribute("data-inline", true),
+                new ClassAttribute("ui-icon-action")
+        );
         form.addRestAsHiddenInputs();
     }
     private JQueryMobilePage createPage(JQueryMobileDocument doc, String id)
@@ -64,7 +72,7 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
     }
 
     @Override
-    protected void onSubmit(Context ctx, String field)
+    protected void onSubmit(Context ctx, String field, Query query)
     {
         if (field != null)
         {
@@ -82,7 +90,7 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
         PageType pageType = ctx.getPageType();
         if (pageType != null)
         {
-            String page = "page"+ctx.nextId();
+            int page = ctx.nextId();
             ctx.getPages().add(page);
             ctx.getTypeMap().put(page, pageType);
             MeterPage mp = document.getMeterPage(pageType);

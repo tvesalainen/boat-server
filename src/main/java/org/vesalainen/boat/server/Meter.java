@@ -16,8 +16,8 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.math.UnitCategory;
-import static org.vesalainen.math.UnitCategory.*;
+import org.vesalainen.math.UnitType;
+import static org.vesalainen.math.UnitType.*;
 
 /**
  *
@@ -25,20 +25,20 @@ import static org.vesalainen.math.UnitCategory.*;
  */
 public enum Meter
 {
-    Latitude(Coordinate),
-    Longitude(Coordinate)
+    Latitude(DEGMIN),
+    Longitude(DEGMIN)
     ;
     
-    private final UnitCategory category;
+    private final UnitType unit;
 
-    private Meter(UnitCategory category)
+    private Meter(UnitType unit)
     {
-        this.category = category;
+        this.unit = unit;
     }
 
-    public UnitCategory getCategory()
+    public UnitType getUnit()
     {
-        return category;
+        return unit;
     }
     
 }

@@ -16,9 +16,11 @@
  */
 package org.vesalainen.boat.server.pages;
 
+import org.vesalainen.html.DynContent;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.RawContent;
+import org.vesalainen.html.ParamContent;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
+import org.vesalainen.util.Wrap;
 
 /**
  *
@@ -34,15 +36,15 @@ public class Page12 extends MeterPage
                 .addClasses("ui-grid-solo");
         Element soloa = gridSolo.addElement("div")
                 .addClasses("ui-block-a");
-        soloa.addContent(new RawContent(grid[0]));
+        soloa.addContent(grid[0]);
         Element gridA = main.addElement("div")
                 .addClasses("ui-grid-a");
         Element blockA = gridA.addElement("div")
                 .addClasses("ui-block-a");
-        blockA.addContent(new RawContent(grid[1]));
+        blockA.addContent(grid[1]);
         Element blockB = gridA.addElement("div")
                 .addClasses("ui-block-b");
-        blockB.addContent(new RawContent(grid[2]));
+        blockB.addContent(grid[2]);
         
     }
     

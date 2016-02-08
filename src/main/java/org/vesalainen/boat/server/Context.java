@@ -31,10 +31,11 @@ import org.vesalainen.web.InputType;
 public class Context
 {
     private int nextId;
-    private List<String> pages = new ArrayList<>();
-    private MapList<String,String> gridMap = new HashMapList<>();
-    private Map<String,PageType> typeMap = new HashMap<>();
+    private List<Integer> pages = new ArrayList<>();
+    private MapList<Integer,String> gridMap = new HashMapList<>();
+    private Map<Integer,PageType> typeMap = new HashMap<>();
     private String addPage;
+    private String addMeter;
     private PageType pageType;
     private Meter meter;
 
@@ -63,6 +64,17 @@ public class Context
         this.pageType = pageType;
     }
 
+    @InputType("submit")
+    public String getAddMeter()
+    {
+        return addMeter;
+    }
+
+    public void setAddMeter(String addMeter)
+    {
+        this.addMeter = addMeter;
+    }
+
     
     @InputType("submit")
     public String getAddPage()
@@ -85,35 +97,35 @@ public class Context
         this.nextId = nextId;
     }
 
-    @InputType(itemType=String.class)
-    public List<String> getPages()
+    @InputType(itemType=Integer.class)
+    public List<Integer> getPages()
     {
         return pages;
     }
 
-    public void setPages(List<String> pages)
+    public void setPages(List<Integer> pages)
     {
         this.pages = pages;
     }
 
     @InputType(itemType=String.class, itemType2=String.class)
-    public MapList<String, String> getGridMap()
+    public MapList<Integer, String> getGridMap()
     {
         return gridMap;
     }
 
-    public void setGridMap(MapList<String, String> gridMap)
+    public void setGridMap(MapList<Integer, String> gridMap)
     {
         this.gridMap = gridMap;
     }
 
     @InputType(itemType=String.class, itemType2=PageType.class)
-    public Map<String, PageType> getTypeMap()
+    public Map<Integer, PageType> getTypeMap()
     {
         return typeMap;
     }
 
-    public void setTypeMap(Map<String, PageType> typeMap)
+    public void setTypeMap(Map<Integer, PageType> typeMap)
     {
         this.typeMap = typeMap;
     }

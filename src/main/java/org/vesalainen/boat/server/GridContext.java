@@ -16,34 +16,39 @@
  */
 package org.vesalainen.boat.server;
 
-import java.io.IOException;
-import java.util.List;
-import org.vesalainen.web.servlet.bean.ThreadLocalContent;
-
 /**
  *
  * @author tkv
  */
-public class LastMeterPage extends ThreadLocalContent<Context>
+public class GridContext
 {
+    private int pageId;
+    private int gridNo;
 
-    public LastMeterPage(ThreadLocal<Context> local)
+    public GridContext(int pageId, int gridNo)
     {
-        super(local);
+        this.pageId = pageId;
+        this.gridNo = gridNo;
     }
 
-    @Override
-    public void append(Appendable out) throws IOException
+    public int getPageId()
     {
-        out.append('#');
-        Context ctx = local.get();
-        List<Integer> pages = ctx.getPages();
-        if (!pages.isEmpty())
-        {
-            Integer id = pages.get(pages.size()-1);
-            out.append("page");
-            out.append(String.valueOf(id));
-        }
+        return pageId;
+    }
+
+    public void setPageId(int pageId)
+    {
+        this.pageId = pageId;
+    }
+
+    public int getGridNo()
+    {
+        return gridNo;
+    }
+
+    public void setGridNo(int gridNo)
+    {
+        this.gridNo = gridNo;
     }
     
 }

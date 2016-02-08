@@ -17,17 +17,27 @@
 package org.vesalainen.boat.server;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.vesalainen.boat.server.pages.MeterPage;
+import org.vesalainen.html.Attribute;
 import org.vesalainen.html.BooleanAttribute;
+import org.vesalainen.html.ClassAttribute;
+import org.vesalainen.html.DynContent;
+import org.vesalainen.html.DynString;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.Page;
+import org.vesalainen.html.ParamContent;
+import org.vesalainen.html.SimpleAttribute;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
+import org.vesalainen.http.Query;
 import org.vesalainen.util.Lists;
 import org.vesalainen.util.MapList;
+import org.vesalainen.util.Wrap;
 import org.vesalainen.web.servlet.bean.MultipleSelectorInput;
+import org.vesalainen.web.servlet.bean.SingleSelectorInput;
 import org.vesalainen.web.servlet.bean.ThreadLocalContent;
 
 /**
@@ -50,49 +60,76 @@ public class DynamicPages extends ThreadLocalContent<Context>
     public void append(Appendable out) throws IOException
     {
         Context ctx = local.get();
-        Map<String, PageType> typeMap = ctx.getTypeMap();
-        MapList<String, String> gridMap = ctx.getGridMap();
-        for (String pg : ctx.getPages())
+        Map<Integer, PageType> typeMap = ctx.getTypeMap();
+        MapList<Integer, String> gridMap = ctx.getGridMap();
+        for (int id : ctx.getPages())
         {
-            PageType pt = typeMap.get(pg);
+            PageType pt = typeMap.get(id);
             MeterPage page = document.getMeterPage(pt);
-            page.setPageId(pg);
+            page.setPageId(id);
             int idx = 0;
-            for (String g : gridMap.get(pg))
+            for (String g : gridMap.get(id))
             {
                 if (g == null)
                 {
-                    page.setGrid(idx, form);
+                    ParamContent<GridContext> grid = page.getGrid(idx);
+                    grid.setContent(form);
+                    grid.getParam().setPageId(id);
                 }
                 idx++;
             }
             page.append(out);
         }
     }
-    private static class MeterForm extends JQueryMobileForm
+    private static class MeterForm extends JQueryMobileForm implements DynContent<GridContext>
     {
-
+        private final Query query;
+        private final Wrap<String> formId = new Wrap<>();
+        private final Wrap<String> inputId = new Wrap<>();
+        
         public MeterForm(JQueryMobileDocument document)
         {
-            super(document, null, "post", null);
+            this(document, new Query());
+        }
+        public MeterForm(JQueryMobileDocument document, Query query)
+        {
+            super(document, null, "post", new DynString(ContentServlet.Action, query));
+            this.query = query;
+            setAttr("id", formId);
+            hasHideScript = true;
             String field = "meter";
             List<Meter> options = Lists.create(Meter.values());
-            MultipleSelectorInput<Context, String> input = new MultipleSelectorInput<>(document.getThreadLocalData(), document.getDataType(), field, options);
+            SingleSelectorInput<Context, String> input = new SingleSelectorInput<>(document.getThreadLocalData(), document.getDataType(), field, options);
             document.getFieldMap().put(field, input);
             Element fieldSet = addElement("fieldset");
             fieldSet.addElement("label").addText(getLabel(field));
-            Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", field).setAttr("data-native-menu", false);
-            select.setAttr(new BooleanAttribute("multiple", true));
+            Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", inputId).setAttr("data-native-menu", false);
             for (Meter opt : options)
             {
                 String n = opt.toString();
                 String d = document.getLabel(n);
                 Element option = select.addElement("option")
                         .setAttr("value", n)
-                        .setAttr("category", opt.getCategory())
                         .addText(d);
             }
+            addInput("addMeter", 
+                    new SimpleAttribute("data-inline", true),
+                    new ClassAttribute("ui-icon-action")
+                    );
+            addRestAsHiddenInputs();
         }
         
+        @Override
+        public void append(GridContext param, Appendable out) throws IOException
+        {
+            query.clear();
+            int pageId = param.getPageId();
+            int gridNo = param.getGridNo();
+            query.add("pageId", String.valueOf(pageId));
+            query.add("gridNo", String.valueOf(gridNo));
+            formId.setValue("fp"+pageId+"g"+gridNo);
+            inputId.setValue("ip"+pageId+"g"+gridNo);
+            append(out);
+        }
     }
 }
