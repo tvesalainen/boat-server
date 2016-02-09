@@ -16,12 +16,10 @@
  */
 package org.vesalainen.boat.server;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.vesalainen.util.HashMapList;
-import org.vesalainen.util.MapList;
+import org.vesalainen.math.UnitType;
+import org.vesalainen.util.TreeMapList;
 import org.vesalainen.web.InputType;
 
 /**
@@ -31,20 +29,41 @@ import org.vesalainen.web.InputType;
 public class Context
 {
     private int nextId;
-    private List<Integer> pages = new ArrayList<>();
-    private MapList<Integer,String> gridMap = new HashMapList<>();
+    private TreeMapList<Integer,MeterData> gridMap = new TreeMapList<>();
     private Map<Integer,PageType> typeMap = new HashMap<>();
     private String addPage;
     private String addMeter;
+    private String setUnit;
     private PageType pageType;
-    private Meter meter;
+    private MeterType meter;
+    private UnitType unit;
 
-    public Meter getMeter()
+    public String getSetUnit()
+    {
+        return setUnit;
+    }
+
+    public void setSetUnit(String setUnit)
+    {
+        this.setUnit = setUnit;
+    }
+
+    public UnitType getUnit()
+    {
+        return unit;
+    }
+
+    public void setUnit(UnitType unit)
+    {
+        this.unit = unit;
+    }
+
+    public MeterType getMeter()
     {
         return meter;
     }
 
-    public void setMeter(Meter meter)
+    public void setMeter(MeterType meter)
     {
         this.meter = meter;
     }
@@ -97,29 +116,18 @@ public class Context
         this.nextId = nextId;
     }
 
-    @InputType(itemType=Integer.class)
-    public List<Integer> getPages()
-    {
-        return pages;
-    }
-
-    public void setPages(List<Integer> pages)
-    {
-        this.pages = pages;
-    }
-
-    @InputType(itemType=String.class, itemType2=String.class)
-    public MapList<Integer, String> getGridMap()
+    @InputType(itemType=Integer.class, itemType2=MeterData.class)
+    public TreeMapList<Integer, MeterData> getGridMap()
     {
         return gridMap;
     }
 
-    public void setGridMap(MapList<Integer, String> gridMap)
+    public void setGridMap(TreeMapList<Integer, MeterData> gridMap)
     {
         this.gridMap = gridMap;
     }
 
-    @InputType(itemType=String.class, itemType2=PageType.class)
+    @InputType(itemType=Integer.class, itemType2=PageType.class)
     public Map<Integer, PageType> getTypeMap()
     {
         return typeMap;

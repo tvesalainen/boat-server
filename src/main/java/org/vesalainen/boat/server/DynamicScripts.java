@@ -46,11 +46,12 @@ public class DynamicScripts extends ThreadLocalContent<Context>
     {
         Context ctx = local.get();
         Map<Integer, PageType> typeMap = ctx.getTypeMap();
-        MapList<Integer, String> gridMap = ctx.getGridMap();
-        for (int pg : ctx.getPages())
+        MapList<Integer, MeterData> gridMap = ctx.getGridMap();
+        for (Map.Entry<Integer, List<MeterData>> e : gridMap.entrySet())
         {
+            int pg = e.getKey();
             PageType pt = typeMap.get(pg);
-            List<String> ls = gridMap.get(pg);
+            List<MeterData> ls = e.getValue();
             if (hasUninitializedGrids(ls))
             {
                 script.pageId.setValue(pg);
@@ -59,11 +60,11 @@ public class DynamicScripts extends ThreadLocalContent<Context>
         }
     }
 
-    private boolean hasUninitializedGrids(List<String> ls)
+    private boolean hasUninitializedGrids(List<MeterData> ls)
     {
-        for (String s : ls)
+        for (MeterData m : ls)
         {
-            if (s == null)
+            if (m == null)
             {
                 return true;
             }

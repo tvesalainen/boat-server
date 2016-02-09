@@ -23,7 +23,7 @@ import static org.vesalainen.math.UnitType.*;
  *
  * @author tkv
  */
-public enum Meter
+public enum MeterType
 {
     Latitude(DEGMIN),
     Longitude(DEGMIN)
@@ -31,7 +31,7 @@ public enum Meter
     
     private final UnitType unit;
 
-    private Meter(UnitType unit)
+    private MeterType(UnitType unit)
     {
         this.unit = unit;
     }

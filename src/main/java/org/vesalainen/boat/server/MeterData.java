@@ -16,50 +16,54 @@
  */
 package org.vesalainen.boat.server;
 
+import org.vesalainen.json.JSONBean;
+import org.vesalainen.math.UnitType;
+
 /**
  *
  * @author tkv
  */
-public class GridContext
+public class MeterData implements JSONBean
 {
-    private int pageId;
-    private int gridNo;
-    private MeterData meterData;
+    private MeterType type;
+    private UnitType unit;
 
-    public GridContext(int pageId, int gridNo)
+    public MeterData(MeterType type)
     {
-        this.pageId = pageId;
-        this.gridNo = gridNo;
+        this.type = type;
+        this.unit = type.getUnit();
     }
 
-    public MeterData getMeterData()
+    public MeterData(MeterType type, UnitType unit)
     {
-        return meterData;
+        this.type = type;
+        this.unit = unit;
     }
 
-    public void setMeterData(MeterData meterData)
+    public MeterType getType()
     {
-        this.meterData = meterData;
+        return type;
     }
 
-    public int getPageId()
+    public void setType(MeterType type)
     {
-        return pageId;
+        this.type = type;
     }
 
-    public void setPageId(int pageId)
+    public UnitType getUnit()
     {
-        this.pageId = pageId;
+        return unit;
     }
 
-    public int getGridNo()
+    public void setUnit(UnitType unit)
     {
-        return gridNo;
+        this.unit = unit;
     }
 
-    public void setGridNo(int gridNo)
+    @Override
+    public String toString()
     {
-        this.gridNo = gridNo;
+        return type + ":" + unit;
     }
     
 }

@@ -16,6 +16,7 @@
  */
 package org.vesalainen.boat.server;
 
+import java.util.List;
 import org.vesalainen.boat.server.pages.MeterPage;
 import org.vesalainen.html.ClassAttribute;
 import org.vesalainen.html.Element;
@@ -25,6 +26,7 @@ import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
 import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
 import org.vesalainen.http.Query;
+import org.vesalainen.util.TreeMapList;
 
 /**
  *
@@ -81,6 +83,9 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
                 case "addPage":
                     addPage(ctx);
                     break;
+                case "addMeter":
+                    addMeter(ctx, query);
+                    break;
             }
         }
     }
@@ -91,11 +96,20 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
         if (pageType != null)
         {
             int page = ctx.nextId();
-            ctx.getPages().add(page);
             ctx.getTypeMap().put(page, pageType);
             MeterPage mp = document.getMeterPage(pageType);
             ctx.getGridMap().addAll(page, mp.createInitList());
         }
+    }
+    
+    private void addMeter(Context ctx, Query query)
+    {
+        MeterType meter = ctx.getMeter();
+        int pageId = Integer.parseInt(query.get("pageId").get(0));
+        int gridNo = Integer.parseInt(query.get("gridNo").get(0));
+        TreeMapList<Integer, MeterData> gridMap = ctx.getGridMap();
+        List<MeterData> lst = gridMap.get(pageId);
+        lst.set(gridNo, new MeterData(meter));
     }
     
     @Override
@@ -103,6 +117,6 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
     {
         return new Context();
     }
-    
+
 }
 

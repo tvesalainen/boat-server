@@ -17,27 +17,13 @@
 package org.vesalainen.boat.server;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import org.vesalainen.boat.server.pages.MeterContainer;
 import org.vesalainen.boat.server.pages.MeterPage;
-import org.vesalainen.html.Attribute;
-import org.vesalainen.html.BooleanAttribute;
-import org.vesalainen.html.ClassAttribute;
-import org.vesalainen.html.DynContent;
-import org.vesalainen.html.DynString;
-import org.vesalainen.html.Element;
-import org.vesalainen.html.Page;
 import org.vesalainen.html.ParamContent;
-import org.vesalainen.html.SimpleAttribute;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
-import org.vesalainen.http.Query;
-import org.vesalainen.util.Lists;
 import org.vesalainen.util.MapList;
-import org.vesalainen.util.Wrap;
-import org.vesalainen.web.servlet.bean.MultipleSelectorInput;
-import org.vesalainen.web.servlet.bean.SingleSelectorInput;
 import org.vesalainen.web.servlet.bean.ThreadLocalContent;
 
 /**
@@ -47,13 +33,15 @@ import org.vesalainen.web.servlet.bean.ThreadLocalContent;
 public class DynamicPages extends ThreadLocalContent<Context>
 {
     private final ContentDocument document;
-    private MeterForm form;
+    private final MeterForm form;
+    private final MeterContainer meterContainer;
 
     public DynamicPages(ContentDocument document, ThreadLocal local)
     {
         super(local);
         this.document = document;
         this.form = new MeterForm(document);
+        this.meterContainer = new MeterContainer(document);
     }
 
     @Override
@@ -61,75 +49,31 @@ public class DynamicPages extends ThreadLocalContent<Context>
     {
         Context ctx = local.get();
         Map<Integer, PageType> typeMap = ctx.getTypeMap();
-        MapList<Integer, String> gridMap = ctx.getGridMap();
-        for (int id : ctx.getPages())
+        MapList<Integer, MeterData> gridMap = ctx.getGridMap();
+        for (Entry<Integer, List<MeterData>> e : gridMap.entrySet())
         {
+            int id = e.getKey();
             PageType pt = typeMap.get(id);
             MeterPage page = document.getMeterPage(pt);
             page.setPageId(id);
             int idx = 0;
-            for (String g : gridMap.get(id))
+            for (MeterData meter : e.getValue())
             {
-                if (g == null)
+                ParamContent<GridContext> grid = page.getGrid(idx);
+                GridContext param = grid.getParam();
+                param.setPageId(id);
+                param.setMeterData(meter);
+                if (meter == null)
                 {
-                    ParamContent<GridContext> grid = page.getGrid(idx);
                     grid.setContent(form);
-                    grid.getParam().setPageId(id);
+                }
+                else
+                {
+                    grid.setContent(meterContainer);
                 }
                 idx++;
             }
             page.append(out);
-        }
-    }
-    private static class MeterForm extends JQueryMobileForm implements DynContent<GridContext>
-    {
-        private final Query query;
-        private final Wrap<String> formId = new Wrap<>();
-        private final Wrap<String> inputId = new Wrap<>();
-        
-        public MeterForm(JQueryMobileDocument document)
-        {
-            this(document, new Query());
-        }
-        public MeterForm(JQueryMobileDocument document, Query query)
-        {
-            super(document, null, "post", new DynString(ContentServlet.Action, query));
-            this.query = query;
-            setAttr("id", formId);
-            hasHideScript = true;
-            String field = "meter";
-            List<Meter> options = Lists.create(Meter.values());
-            SingleSelectorInput<Context, String> input = new SingleSelectorInput<>(document.getThreadLocalData(), document.getDataType(), field, options);
-            document.getFieldMap().put(field, input);
-            Element fieldSet = addElement("fieldset");
-            fieldSet.addElement("label").addText(getLabel(field));
-            Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", inputId).setAttr("data-native-menu", false);
-            for (Meter opt : options)
-            {
-                String n = opt.toString();
-                String d = document.getLabel(n);
-                Element option = select.addElement("option")
-                        .setAttr("value", n)
-                        .addText(d);
-            }
-            addInput("addMeter", 
-                    new SimpleAttribute("data-inline", true),
-                    new ClassAttribute("ui-icon-action")
-                    );
-            addRestAsHiddenInputs();
-        }
-        
-        @Override
-        public void append(GridContext param, Appendable out) throws IOException
-        {
-            query.clear();
-            int pageId = param.getPageId();
-            int gridNo = param.getGridNo();
-            query.add("pageId", String.valueOf(pageId));
-            query.add("gridNo", String.valueOf(gridNo));
-            formId.setValue("fp"+pageId+"g"+gridNo);
-            inputId.setValue("ip"+pageId+"g"+gridNo);
-            append(out);
         }
     }
 }

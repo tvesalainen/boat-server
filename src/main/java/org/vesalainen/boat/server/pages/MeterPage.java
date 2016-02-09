@@ -19,6 +19,8 @@ package org.vesalainen.boat.server.pages;
 import java.util.ArrayList;
 import java.util.List;
 import org.vesalainen.boat.server.GridContext;
+import org.vesalainen.boat.server.MeterData;
+import org.vesalainen.boat.server.MeterType;
 import org.vesalainen.html.DynString;
 import org.vesalainen.html.ParamContent;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
@@ -50,9 +52,9 @@ public class MeterPage extends JQueryMobilePage
         }
     }
 
-    public List<String> createInitList()
+    public List<MeterData> createInitList()
     {
-        List<String> list = new ArrayList<>();
+        List<MeterData> list = new ArrayList<>();
         for (int ii=0;ii<grid.length;ii++)
         {
             list.add(null);

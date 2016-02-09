@@ -17,7 +17,7 @@
 package org.vesalainen.boat.server;
 
 import java.io.IOException;
-import java.util.List;
+import org.vesalainen.util.TreeMapList;
 import org.vesalainen.web.servlet.bean.ThreadLocalContent;
 
 /**
@@ -37,10 +37,10 @@ public class LastMeterPage extends ThreadLocalContent<Context>
     {
         out.append('#');
         Context ctx = local.get();
-        List<Integer> pages = ctx.getPages();
-        if (!pages.isEmpty())
+        TreeMapList<Integer, MeterData> gridMap = ctx.getGridMap();
+        if (!gridMap.isEmpty())
         {
-            Integer id = pages.get(pages.size()-1);
+            Integer id = gridMap.lastKey();
             out.append("page");
             out.append(String.valueOf(id));
         }
