@@ -16,34 +16,19 @@
  */
 package org.vesalainen.boat.server;
 
-import java.io.IOException;
-import org.vesalainen.util.TreeMapList;
-import org.vesalainen.web.servlet.bean.ThreadLocalContent;
-
 /**
  *
  * @author tkv
  */
-public class LastMeterPage extends ThreadLocalContent<Context>
+public enum Id
 {
-
-    public LastMeterPage(ThreadLocal<Context> local)
-    {
-        super(local);
-    }
-
-    @Override
-    public void append(Appendable out) throws IOException
-    {
-        out.append('#');
-        Context ctx = local.get();
-        TreeMapList<Integer, MeterData> gridMap = ctx.gridMap;
-        if (!gridMap.isEmpty())
-        {
-            Integer id = gridMap.lastKey();
-            out.append("page");
-            out.append(String.valueOf(id));
-        }
-    }
-    
+    Page,
+    Form,
+    Input,
+    Popup,
+    Meter,
+    Event,
+    Query,
+    UnitPage,
+    SelectedUnit
 }

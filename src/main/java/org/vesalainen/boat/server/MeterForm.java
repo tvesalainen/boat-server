@@ -18,43 +18,36 @@ package org.vesalainen.boat.server;
 
 import java.io.IOException;
 import org.vesalainen.html.ClassAttribute;
-import org.vesalainen.html.DynContent;
 import org.vesalainen.html.DynString;
 import org.vesalainen.html.Element;
+import org.vesalainen.html.EnumDynContent;
+import org.vesalainen.html.EnumDynContentSupport;
+import org.vesalainen.html.Placeholder;
 import org.vesalainen.html.SimpleAttribute;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
-import org.vesalainen.http.Query;
-import org.vesalainen.util.Wrap;
 import org.vesalainen.web.servlet.bean.EnumInput;
 
 /**
  *
  * @author tkv
  */
-public class MeterForm extends JQueryMobileForm implements DynContent<GridContext>
+public class MeterForm extends JQueryMobileForm implements EnumDynContent<GridContext,Id>
 {
-    private final Query query;
-    private final Wrap<String> formId = new Wrap<>();
-    private final Wrap<String> inputId = new Wrap<>();
+    private final EnumDynContent<GridContext,Id> dynContent = new EnumDynContentSupport<>(Id.class);
 
     public MeterForm(JQueryMobileDocument document)
     {
-        this(document, new Query());
-    }
-
-    public MeterForm(JQueryMobileDocument document, Query query)
-    {
-        super(document, null, "post", new DynString(ContentServlet.Action, "?", query));
-        this.query = query;
-        setAttr("id", formId);
+        super(document, null, "post", null);
+        setAttr("action", new DynString(ContentServlet.Action, "?", wrap(Id.Query)));
+        setAttr("id", wrap(Id.Form));
         hasHideScript = true;
         String field = "meter";
         EnumInput input = new EnumInput(document.getThreadLocalData(), document.getDataType(), field);
         document.getFieldMap().put(field, input);
         Element fieldSet = addElement("fieldset");
         fieldSet.addElement("label").addText(getLabel(field));
-        Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", inputId).setAttr("data-native-menu", false);
+        Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", wrap(Id.Input)).setAttr("data-native-menu", false);
         for (MeterType opt : MeterType.values())
         {
             String n = opt.toString();
@@ -68,14 +61,31 @@ public class MeterForm extends JQueryMobileForm implements DynContent<GridContex
     @Override
     public void append(GridContext param, Appendable out) throws IOException
     {
-        query.clear();
-        int pageId = param.getPageId();
-        int gridNo = param.getGridNo();
-        query.add("pageId", String.valueOf(pageId));
-        query.add("gridNo", String.valueOf(gridNo));
-        formId.setValue("fp" + pageId + "g" + gridNo);
-        inputId.setValue("ip" + pageId + "g" + gridNo);
         append(out);
+    }
+    
+    @Override
+    public final Placeholder wrap(Id key)
+    {
+        return dynContent.wrap(key);
+    }
+
+    @Override
+    public Placeholder<Object> wrap(Id key, Object comp)
+    {
+        return dynContent.wrap(key, comp);
+    }
+
+    @Override
+    public void provision(GridContext param)
+    {
+        dynContent.provision(param);
+    }
+    
+    @Override
+    public void attach(Id key, Placeholder wrap)
+    {
+        dynContent.attach(key, wrap);
     }
     
 }

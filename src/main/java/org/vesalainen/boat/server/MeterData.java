@@ -28,6 +28,10 @@ public class MeterData implements JSONBean
     private MeterType type;
     private UnitType unit;
 
+    public MeterData()
+    {
+    }
+
     public MeterData(MeterType type)
     {
         this.type = type;

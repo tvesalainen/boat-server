@@ -16,50 +16,81 @@
  */
 package org.vesalainen.boat.server;
 
+import org.vesalainen.html.DynParam;
+import org.vesalainen.html.Placeholder;
+import org.vesalainen.http.Query;
+import org.vesalainen.util.Wrap;
+
 /**
  *
  * @author tkv
  */
-public class GridContext
+public class GridContext implements DynParam<Id>
 {
-    private int pageId;
-    private int gridNo;
-    private MeterData meterData;
+    public int pageId;
+    public int gridNo;
+    public MeterData meterData;
 
     public GridContext(int pageId, int gridNo)
     {
         this.pageId = pageId;
         this.gridNo = gridNo;
     }
-
-    public MeterData getMeterData()
+    
+    public void populate(Query query)
     {
-        return meterData;
-    }
-
-    public void setMeterData(MeterData meterData)
-    {
-        this.meterData = meterData;
-    }
-
-    public int getPageId()
-    {
-        return pageId;
-    }
-
-    public void setPageId(int pageId)
-    {
-        this.pageId = pageId;
-    }
-
-    public int getGridNo()
-    {
-        return gridNo;
-    }
-
-    public void setGridNo(int gridNo)
-    {
-        this.gridNo = gridNo;
+        query.clear();
+        query.add("pageId", String.valueOf(pageId));
+        query.add("gridNo", String.valueOf(gridNo));
     }
     
+    public String pageId()
+    {
+        return String.valueOf(pageId);
+    }
+    
+    public String gridId()
+    {
+        return pageId+"-"+gridNo;
+    }
+
+    @Override
+    public void provision(Id key, Placeholder<Object> wrap)
+    {
+        switch (key)
+        {
+            case Page:
+                wrap.setValue("page"+pageId);
+                break;
+            case Form:
+                wrap.setValue("form"+pageId+"-"+gridNo);
+                break;
+            case Input:
+                wrap.setValue("input"+pageId+"-"+gridNo);
+                break;
+            case Popup:
+                wrap.setValue("popup"+pageId+"-"+gridNo);
+                break;
+            case Meter:
+                wrap.setValue("meter"+pageId+"-"+gridNo);
+                break;
+            case Event:
+                wrap.setValue(meterData.getType()+"-"+meterData.getUnit());
+                break;
+            case Query:
+                Query query = new Query();
+                query.add("pageId", String.valueOf(pageId));
+                query.add("gridNo", String.valueOf(gridNo));
+                wrap.setValue(query);
+                break;
+            case UnitPage:
+                wrap.setValue("unit"+pageId+"-"+gridNo);
+                break;
+            case SelectedUnit:
+                wrap.setValue(meterData.getUnit());
+                break;
+            default:
+                throw new UnsupportedOperationException(key+" not supported");
+        }
+    }
 }

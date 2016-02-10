@@ -16,11 +16,8 @@
  */
 package org.vesalainen.boat.server.pages;
 
-import org.vesalainen.html.DynContent;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.ParamContent;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.util.Wrap;
 
 /**
  *

@@ -19,8 +19,8 @@ package org.vesalainen.boat.server.pages;
 import java.util.ArrayList;
 import java.util.List;
 import org.vesalainen.boat.server.GridContext;
+import org.vesalainen.boat.server.Id;
 import org.vesalainen.boat.server.MeterData;
-import org.vesalainen.boat.server.MeterType;
 import org.vesalainen.html.DynString;
 import org.vesalainen.html.ParamContent;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
@@ -33,7 +33,7 @@ import org.vesalainen.util.Wrap;
  */
 public class MeterPage extends JQueryMobilePage
 {
-    protected ParamContent<GridContext>[] grid;
+    protected ParamContent<GridContext,Id>[] grid;
     private Wrap<Integer> pageId;
  
     public MeterPage(JQueryMobileDocument document, int gridCount)
@@ -71,7 +71,7 @@ public class MeterPage extends JQueryMobilePage
         pageId.setValue(pageid);
     }
     
-    public ParamContent<GridContext> getGrid(int index)
+    public ParamContent<GridContext,Id> getGrid(int index)
     {
         return grid[index];
     }

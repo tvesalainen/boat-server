@@ -45,8 +45,8 @@ public class DynamicScripts extends ThreadLocalContent<Context>
     public void append(Appendable out) throws IOException
     {
         Context ctx = local.get();
-        Map<Integer, PageType> typeMap = ctx.getTypeMap();
-        MapList<Integer, MeterData> gridMap = ctx.getGridMap();
+        Map<Integer, PageType> typeMap = ctx.typeMap;
+        MapList<Integer, MeterData> gridMap = ctx.gridMap;
         for (Map.Entry<Integer, List<MeterData>> e : gridMap.entrySet())
         {
             int pg = e.getKey();

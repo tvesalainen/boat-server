@@ -26,6 +26,7 @@ import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
 import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
 import org.vesalainen.http.Query;
+import org.vesalainen.math.UnitType;
 import org.vesalainen.util.TreeMapList;
 
 /**
@@ -86,32 +87,46 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
                 case "addMeter":
                     addMeter(ctx, query);
                     break;
+                case "setUnit":
+                    setUnit(ctx, query);
+                    break;
             }
         }
     }
     
     private void addPage(Context ctx)
     {
-        PageType pageType = ctx.getPageType();
+        PageType pageType = ctx.pageType;
         if (pageType != null)
         {
             int page = ctx.nextId();
-            ctx.getTypeMap().put(page, pageType);
+            ctx.typeMap.put(page, pageType);
             MeterPage mp = document.getMeterPage(pageType);
-            ctx.getGridMap().addAll(page, mp.createInitList());
+            ctx.gridMap.addAll(page, mp.createInitList());
         }
     }
     
     private void addMeter(Context ctx, Query query)
     {
-        MeterType meter = ctx.getMeter();
+        MeterType meter = ctx.meter;
         int pageId = Integer.parseInt(query.get("pageId").get(0));
         int gridNo = Integer.parseInt(query.get("gridNo").get(0));
-        TreeMapList<Integer, MeterData> gridMap = ctx.getGridMap();
+        TreeMapList<Integer, MeterData> gridMap = ctx.gridMap;
         List<MeterData> lst = gridMap.get(pageId);
         lst.set(gridNo, new MeterData(meter));
     }
     
+    private void setUnit(Context ctx, Query query)
+    {
+        UnitType unit = ctx.unit;
+        int pageId = Integer.parseInt(query.get("pageId").get(0));
+        int gridNo = Integer.parseInt(query.get("gridNo").get(0));
+        TreeMapList<Integer, MeterData> gridMap = ctx.gridMap;
+        List<MeterData> lst = gridMap.get(pageId);
+        MeterData md = lst.get(gridNo);
+        md.setUnit(unit);
+    }
+
     @Override
     protected Context createData()
     {

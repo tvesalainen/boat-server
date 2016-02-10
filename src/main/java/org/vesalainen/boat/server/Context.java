@@ -28,114 +28,24 @@ import org.vesalainen.web.InputType;
  */
 public class Context
 {
-    private int nextId;
-    private TreeMapList<Integer,MeterData> gridMap = new TreeMapList<>();
-    private Map<Integer,PageType> typeMap = new HashMap<>();
-    private String addPage;
-    private String addMeter;
-    private String setUnit;
-    private PageType pageType;
-    private MeterType meter;
-    private UnitType unit;
-
-    public String getSetUnit()
-    {
-        return setUnit;
-    }
-
-    public void setSetUnit(String setUnit)
-    {
-        this.setUnit = setUnit;
-    }
-
-    public UnitType getUnit()
-    {
-        return unit;
-    }
-
-    public void setUnit(UnitType unit)
-    {
-        this.unit = unit;
-    }
-
-    public MeterType getMeter()
-    {
-        return meter;
-    }
-
-    public void setMeter(MeterType meter)
-    {
-        this.meter = meter;
-    }
+    public int nextId;
+    @InputType(itemType=Integer.class, itemType2=MeterData.class)
+    public TreeMapList<Integer,MeterData> gridMap = new TreeMapList<>();
+    @InputType(itemType=Integer.class, itemType2=PageType.class)
+    public Map<Integer,PageType> typeMap = new HashMap<>();
+    @InputType("submit")
+    public String addPage;
+    @InputType("submit")
+    public String addMeter;
+    @InputType("submit")
+    public String setUnit;
+    public PageType pageType;
+    public MeterType meter;
+    public UnitType unit;
 
     public int nextId()
     {
         return nextId++;
     }
     
-    public PageType getPageType()
-    {
-        return pageType;
-    }
-
-    public void setPageType(PageType pageType)
-    {
-        this.pageType = pageType;
-    }
-
-    @InputType("submit")
-    public String getAddMeter()
-    {
-        return addMeter;
-    }
-
-    public void setAddMeter(String addMeter)
-    {
-        this.addMeter = addMeter;
-    }
-
-    
-    @InputType("submit")
-    public String getAddPage()
-    {
-        return addPage;
-    }
-
-    public void setAddPage(String addPage)
-    {
-        this.addPage = addPage;
-    }
-
-    public int getNextId()
-    {
-        return nextId;
-    }
-
-    public void setNextId(int nextId)
-    {
-        this.nextId = nextId;
-    }
-
-    @InputType(itemType=Integer.class, itemType2=MeterData.class)
-    public TreeMapList<Integer, MeterData> getGridMap()
-    {
-        return gridMap;
-    }
-
-    public void setGridMap(TreeMapList<Integer, MeterData> gridMap)
-    {
-        this.gridMap = gridMap;
-    }
-
-    @InputType(itemType=Integer.class, itemType2=PageType.class)
-    public Map<Integer, PageType> getTypeMap()
-    {
-        return typeMap;
-    }
-
-    public void setTypeMap(Map<Integer, PageType> typeMap)
-    {
-        this.typeMap = typeMap;
-    }
-
 }

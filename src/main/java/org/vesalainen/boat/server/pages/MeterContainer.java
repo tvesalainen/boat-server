@@ -18,71 +18,71 @@ package org.vesalainen.boat.server.pages;
 
 import java.io.IOException;
 import org.vesalainen.boat.server.GridContext;
-import org.vesalainen.boat.server.MeterData;
-import org.vesalainen.boat.server.UnitForm;
+import org.vesalainen.boat.server.Id;
 import org.vesalainen.html.DataAttribute;
-import org.vesalainen.html.DynContent;
 import org.vesalainen.html.DynString;
 import org.vesalainen.html.Element;
+import org.vesalainen.html.EnumDynContent;
+import org.vesalainen.html.EnumDynContentSupport;
+import org.vesalainen.html.Placeholder;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.http.Query;
-import org.vesalainen.util.Wrap;
 import org.vesalainen.web.servlet.AbstractSSESource;
 
 /**
  *
  * @author tkv
  */
-public class MeterContainer extends Element implements DynContent<GridContext>
+public class MeterContainer extends Element implements EnumDynContent<GridContext,Id>
 {
+    private final EnumDynContent<GridContext,Id> dynContent = new EnumDynContentSupport<>(Id.class);
     private final JQueryMobileDocument document;
-    private final Query query = new Query();
-    private final Wrap<String> eventId = new Wrap<>();
-    private final Wrap<String> meterId = new Wrap<>();
-    private final Wrap<String> panelId = new Wrap<>();
-    private final Wrap<String> formId = new Wrap<>();
-    private final Wrap<String> inputId = new Wrap<>();
-    private final Element panel;
     private final Element meterPanel;
-    private final UnitForm unitForm;
     private final Element meterDiv;
 
     public MeterContainer(JQueryMobileDocument document)
     {
         super("div");
         this.document = document;
-        this.unitForm = new UnitForm(document, query, formId, inputId);
-        panel = addElement("div")
-                .setAttr("data-role", "panel")
-                .setAttr("id", panelId);
-        panel.addContent(unitForm);
         meterDiv = addElement("div");
         meterDiv.addElement("a")
-                .setAttr("href", new DynString("#", panelId))
-                .addClasses("ui-btn", "ui-btn-inline")
-                .addText("muuta");
-        meterPanel = addElement("div")
-                .setAttr("id", meterId)
+                .setAttr("href", new DynString("#", wrap(Id.UnitPage)))
+                .addClasses("ui-btn")
+                .addText(document.getLabel("changeUnit"));
+        meterPanel = meterDiv.addElement("div")
+                .setAttr("id", wrap(Id.Meter))
                 .addClasses(AbstractSSESource.EventClass)
                 .addText("Mittari tässä!");
-        meterPanel.setAttr(new DataAttribute("sse-event", eventId));
+        meterPanel.setAttr(new DataAttribute("sse-event", wrap(Id.Event)));
     }
 
     @Override
     public void append(GridContext param, Appendable out) throws IOException
     {
-        query.clear();
-        int pageId = param.getPageId();
-        int gridNo = param.getGridNo();
-        MeterData meterData = param.getMeterData();
-        query.add("pageId", String.valueOf(pageId));
-        query.add("gridNo", String.valueOf(gridNo));
-        formId.setValue("fp" + pageId + "g" + gridNo);
-        inputId.setValue("ip" + pageId + "g" + gridNo);
-        panelId.setValue("p" + pageId + "g" + gridNo);
-        meterId.setValue("m" + pageId + "g" + gridNo);
-        eventId.setValue(meterData.getType()+":"+meterData.getUnit());
         append(out);
+    }
+
+    @Override
+    public final Placeholder wrap(Id key)
+    {
+        return dynContent.wrap(key);
+    }
+
+    @Override
+    public Placeholder<Object> wrap(Id key, Object comp)
+    {
+        return dynContent.wrap(key, comp);
+    }
+
+    @Override
+    public void provision(GridContext param)
+    {
+        dynContent.provision(param);
+    }
+    
+    @Override
+    public void attach(Id key, Placeholder wrap)
+    {
+        dynContent.attach(key, wrap);
     }
     
 }
