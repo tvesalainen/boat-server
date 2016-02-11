@@ -19,7 +19,7 @@ package org.vesalainen.boat.server.pages;
 import java.io.IOException;
 import org.vesalainen.boat.server.GridContext;
 import org.vesalainen.boat.server.Id;
-import org.vesalainen.html.DataAttribute;
+import org.vesalainen.html.DataAttributeName;
 import org.vesalainen.html.DynString;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.EnumDynContent;
@@ -50,9 +50,8 @@ public class MeterContainer extends Element implements EnumDynContent<GridContex
                 .addText(document.getLabel("changeUnit"));
         meterPanel = meterDiv.addElement("div")
                 .setAttr("id", wrap(Id.Meter))
-                .addClasses(AbstractSSESource.EventClass)
                 .addText("Mittari tässä!");
-        meterPanel.setAttr(new DataAttribute("sse-event", wrap(Id.Event)));
+        meterPanel.setAttr(AbstractSSESource.EventSink, wrap(Id.Event));
     }
 
     @Override

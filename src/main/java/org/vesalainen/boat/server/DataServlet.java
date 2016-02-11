@@ -16,20 +16,29 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.web.server.EmbeddedServer;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import org.vesalainen.web.servlet.AbstractSSEServlet;
 
 /**
  *
  * @author tkv
  */
-public class BoatServer extends EmbeddedServer
+public class DataServlet extends AbstractSSEServlet
 {
 
-    public BoatServer(int port)
+    @Override
+    public void init() throws ServletException
     {
-        super(port);
-        addServlet(ContentServlet.class, ContentServlet.Action);
-        addServlet(DataServlet.class, DataSource.Action);
+        super.init();
+        try
+        {
+            source = DataSource.getInstance();
+        }
+        catch (IOException ex)
+        {
+            throw new ServletException(ex);
+        }
     }
     
 }

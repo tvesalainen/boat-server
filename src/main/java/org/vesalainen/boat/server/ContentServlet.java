@@ -16,6 +16,7 @@
  */
 package org.vesalainen.boat.server;
 
+import java.io.IOException;
 import java.util.List;
 import org.vesalainen.boat.server.pages.MeterPage;
 import org.vesalainen.html.ClassAttribute;
@@ -42,7 +43,11 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
     {
         ContentDocument doc = new ContentDocument(threadLocalData);
         doc.setAjax(false);
-        Element script = doc.getHead().addElement("script");
+        Element head = doc.getHead();
+        Element sse = head.addElement("script")
+                .setAttr("src", "/sse.js");
+        Element script = head.addElement("script");
+        //script.addContent(DataSource.getInstance().createScript());
         script.addContent(new DynamicScripts(doc, threadLocalData));
         doc.getBody().addContent(new DynamicPages(doc, threadLocalData));
         createAddPage(doc);
