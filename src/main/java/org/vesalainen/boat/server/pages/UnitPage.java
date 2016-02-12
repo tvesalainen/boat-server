@@ -39,6 +39,7 @@ import org.vesalainen.math.UnitCategory;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.util.EnumMapList;
 import org.vesalainen.util.MapList;
+import org.vesalainen.web.I18n;
 import org.vesalainen.web.servlet.bean.EnumInput;
 
 /**
@@ -67,7 +68,7 @@ public class UnitPage extends JQueryMobilePage implements EnumDynContent<GridCon
         EnumInput input = new EnumInput(document.getThreadLocalData(), document.getDataType(), field);
         document.getFieldMap().put(field, input);
         Element fieldSet = form.addElement("fieldset");
-        fieldSet.addElement("label").addText(getLabel(field));
+        fieldSet.addElement("label").addText(I18n.getLabel(field));
         Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", wrap(Id.Input)).setAttr("data-native-menu", false);
         select.addContent(options);
         form.addInput("setUnit", new ClassAttribute("ui-icon-action"));
@@ -83,7 +84,7 @@ public class UnitPage extends JQueryMobilePage implements EnumDynContent<GridCon
                 categoryMapList.put(category, container);
             }
             String n = opt.toString();
-            String d = document.getLabel(n);
+            String d = I18n.getLabel(n);
             Element option = container.addElement("option").setAttr("value", n).addText(d);
             option.setAttr(new BooleanAttribute("selected",wrap(Id.SelectedUnit, opt)));
         }

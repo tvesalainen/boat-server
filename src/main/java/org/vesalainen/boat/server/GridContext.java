@@ -19,7 +19,7 @@ package org.vesalainen.boat.server;
 import org.vesalainen.html.DynParam;
 import org.vesalainen.html.Placeholder;
 import org.vesalainen.http.Query;
-import org.vesalainen.util.Wrap;
+import org.vesalainen.web.I18n;
 
 /**
  *
@@ -88,6 +88,12 @@ public class GridContext implements DynParam<Id>
                 break;
             case SelectedUnit:
                 wrap.setValue(meterData.getUnit());
+                break;
+            case MeterName:
+                wrap.setValue(I18n.getLabel(meterData.getType()));
+                break;
+            case MeterUnit:
+                wrap.setValue(I18n.getLabel(meterData.getUnit()));
                 break;
             default:
                 throw new UnsupportedOperationException(key+" not supported");

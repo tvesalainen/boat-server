@@ -26,6 +26,7 @@ import org.vesalainen.html.Placeholder;
 import org.vesalainen.html.SimpleAttribute;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
+import org.vesalainen.web.I18n;
 import org.vesalainen.web.servlet.bean.EnumInput;
 
 /**
@@ -46,12 +47,12 @@ public class MeterForm extends JQueryMobileForm implements EnumDynContent<GridCo
         EnumInput input = new EnumInput(document.getThreadLocalData(), document.getDataType(), field);
         document.getFieldMap().put(field, input);
         Element fieldSet = addElement("fieldset");
-        fieldSet.addElement("label").addText(getLabel(field));
+        fieldSet.addElement("label").addText(I18n.getLabel(field));
         Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", wrap(Id.Input)).setAttr("data-native-menu", false);
         for (MeterType opt : MeterType.values())
         {
             String n = opt.toString();
-            String d = document.getLabel(n);
+            String d = I18n.getLabel(n);
             Element option = select.addElement("option").setAttr("value", n).addText(d);
         }
         addInput("addMeter", new SimpleAttribute("data-inline", true), new ClassAttribute("ui-icon-action"));

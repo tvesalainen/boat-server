@@ -30,5 +30,7 @@ public enum Id
     Event,
     Query,
     UnitPage,
-    SelectedUnit
+    SelectedUnit,
+    MeterName,
+    MeterUnit
 }

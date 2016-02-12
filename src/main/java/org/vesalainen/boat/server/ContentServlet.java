@@ -29,6 +29,7 @@ import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
 import org.vesalainen.http.Query;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.util.TreeMapList;
+import org.vesalainen.web.I18n;
 
 /**
  *
@@ -61,9 +62,9 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
         header.addElement("a")
                 .setAttr("href", new LastMeterPage(threadLocalData))
                 .addClasses("ui-btn", "ui-icon-home", "ui-btn-icon-left")
-                .addText(doc.getLabel("lastMeterPage"));
+                .addText(I18n.getLabel("lastMeterPage"));
         header.addElement("h1")
-                .addText(doc.getLabel("Add new meter page"));
+                .addText(I18n.getLabel("Add new meter page"));
         JQueryMobileForm form = page.addForm(Action);
         form.addInput("pageType");
         form.addInput("addPage",

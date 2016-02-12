@@ -30,12 +30,12 @@ public class Page12 extends MeterPage
     {
         super(document, 3);
         Element gridSolo = main.addElement("div")
-                .addClasses("ui-grid-solo");
+                .addClasses("ui-grid-solo", "ui-responsive");
         Element soloa = gridSolo.addElement("div")
                 .addClasses("ui-block-a");
         soloa.addContent(grid[0]);
         Element gridA = main.addElement("div")
-                .addClasses("ui-grid-a");
+                .addClasses("ui-grid-a", "ui-responsive");
         Element blockA = gridA.addElement("div")
                 .addClasses("ui-block-a");
         blockA.addContent(grid[1]);
