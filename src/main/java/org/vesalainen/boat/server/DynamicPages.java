@@ -18,12 +18,16 @@ package org.vesalainen.boat.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.vesalainen.boat.server.pages.MeterContainer;
+import org.vesalainen.boat.server.pages.BaseContainer;
 import org.vesalainen.boat.server.pages.MeterPage;
+import org.vesalainen.boat.server.pages.OneRowContainer;
 import org.vesalainen.boat.server.pages.UnitPage;
+import org.vesalainen.html.DynContent;
+import org.vesalainen.html.Element;
 import org.vesalainen.html.ParamContent;
 import org.vesalainen.util.MapList;
 import org.vesalainen.web.servlet.bean.ThreadLocalContent;
@@ -36,7 +40,7 @@ public class DynamicPages extends ThreadLocalContent<Context>
 {
     private final ContentDocument document;
     private final MeterForm form;
-    private final MeterContainer meterContainer;
+    private final Map<Layout,DynContent<GridContext,Id>> containerMap = new HashMap<>();
     private final UnitPage unitPage;
 
     public DynamicPages(ContentDocument document, ThreadLocal local)
@@ -44,8 +48,8 @@ public class DynamicPages extends ThreadLocalContent<Context>
         super(local);
         this.document = document;
         this.form = new MeterForm(document);
-        this.meterContainer = new MeterContainer(document);
         this.unitPage = new UnitPage(document);
+        containerMap.put(Layout.OneRow, new OneRowContainer(document));
     }
 
     @Override
@@ -74,7 +78,12 @@ public class DynamicPages extends ThreadLocalContent<Context>
                 }
                 else
                 {
-                    grid.setContent(meterContainer);
+                    DynContent<GridContext, Id> container = containerMap.get(meter.getType().getLayout());
+                    if (container == null)
+                    {
+                        throw new IllegalArgumentException("container for "+meter.getType().getLayout()+" not found");
+                    }
+                    grid.setContent(container);
                     params.add(new ParamContent<>(param));
                 }
                 gridNo++;

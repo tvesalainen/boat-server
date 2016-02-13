@@ -18,6 +18,7 @@ package org.vesalainen.boat.server;
 
 import java.io.IOException;
 import org.vesalainen.html.ClassAttribute;
+import org.vesalainen.html.Content;
 import org.vesalainen.html.DynString;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.EnumDynContent;
@@ -52,7 +53,7 @@ public class MeterForm extends JQueryMobileForm implements EnumDynContent<GridCo
         for (MeterType opt : MeterType.values())
         {
             String n = opt.toString();
-            String d = I18n.getLabel(n);
+            Content d = I18n.getLabel(n);
             Element option = select.addElement("option").setAttr("value", n).addText(d);
         }
         addInput("addMeter", new SimpleAttribute("data-inline", true), new ClassAttribute("ui-icon-action"));

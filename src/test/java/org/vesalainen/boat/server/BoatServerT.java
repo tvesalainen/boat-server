@@ -30,7 +30,7 @@ public class BoatServerT
     
     public BoatServerT()
     {
-    }
+    }   
 
     @Test
     public void test()

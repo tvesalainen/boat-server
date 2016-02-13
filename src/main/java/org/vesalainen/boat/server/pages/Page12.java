@@ -30,6 +30,7 @@ public class Page12 extends MeterPage
     {
         super(document, 3);
         Element gridSolo = main.addElement("div")
+                .setAttr("style", "max-width: 500px;margin: auto")
                 .addClasses("ui-grid-solo", "ui-responsive");
         Element soloa = gridSolo.addElement("div")
                 .addClasses("ui-block-a");

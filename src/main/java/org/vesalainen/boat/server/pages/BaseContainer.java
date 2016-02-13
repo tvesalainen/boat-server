@@ -26,52 +26,36 @@ import org.vesalainen.html.EnumDynContentSupport;
 import org.vesalainen.html.Placeholder;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.web.I18n;
-import org.vesalainen.web.servlet.AbstractSSESource;
 
 /**
  *
  * @author tkv
  */
-public class MeterContainer extends Element implements EnumDynContent<GridContext,Id>
+public abstract class BaseContainer extends Element implements EnumDynContent<GridContext,Id>
 {
     private final EnumDynContent<GridContext,Id> dynContent = new EnumDynContentSupport<>(Id.class);
     private final JQueryMobileDocument document;
     private final Element meterPanel;
     private final Element meterDiv;
 
-    public MeterContainer(JQueryMobileDocument document)
+    public BaseContainer(JQueryMobileDocument document)
     {
         super("div");
         this.document = document;
         meterDiv = addElement("div");
         
-        Element header = meterDiv.addElement("div")
-                .setDataAttr("role", "header");
-        header.addElement("h1")
-                .addText(wrap(Id.MeterName));
+        Element header = meterDiv.addElement("span");
         header.addElement("a")
                 .setAttr("href", new DynString("#", wrap(Id.UnitPage)))
-                .addClasses("ui-btn", "ui-btn-right", "ui-icon-gear", "ui-btn-icon-left", "ui-btn-icon-notext")
+                .addClasses("ui-btn", "ui-icon-gear", "ui-btn-icon-left", "ui-btn-icon-notext")
                 .addText(I18n.getLabel("changeUnit"));
         
         meterPanel = meterDiv.addElement("div")
                 .setAttr("id", wrap(Id.Meter));
         Element svg = meterPanel.addElement("svg")
-                .setAttr("viewBox", "0,0,200,100");
-        svg.addElement("text")
-                .setAttr("x", "0")
-                .setAttr("y", "20")
-                .setAttr("textLength", "200")
-                .setAttr("lengthAdjust", "spacingAndGlyphs")
-                .setAttr(AbstractSSESource.EventSink, wrap(Id.Event));
-        
-        svg.addElement("text")
-                .setAttr("x", "0")
-                .setAttr("y", "50")
-                .setAttr("textLength", "200")
-                .setAttr("lengthAdjust", "spacingAndGlyphs")
-                .addText(wrap(Id.MeterUnit));
-       
+                .setAttr("viewBox", "-50,-50,100,100");
+
+        addSVGContent(svg);
     }
 
     @Override
@@ -103,5 +87,7 @@ public class MeterContainer extends Element implements EnumDynContent<GridContex
     {
         dynContent.attach(key, wrap);
     }
+
+    protected abstract void addSVGContent(Element svg);
     
 }

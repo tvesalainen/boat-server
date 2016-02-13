@@ -19,6 +19,7 @@ package org.vesalainen.boat.server;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.code.PropertySetter;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.parsers.nmea.NMEAProperties;
@@ -32,7 +33,7 @@ import org.vesalainen.web.servlet.AbstractSSESource;
 public class DataSource extends AbstractSSESource implements PropertySetter
 {
     public static final String Action = "/sse";
-    public static final NMEAProperties nmeaProperties = NMEAProperties.getInstance();
+    public static final NMEAProperties NmeaProperties = NMEAProperties.getInstance();
     private static DataSource source;
     private final NMEAService service;
     private final Map<String,Event> eventMap = new HashMap<>();
@@ -54,18 +55,43 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         return source;
     }
     
+    protected Event createEvent(String eventString)
+    {
+        String[] evs = eventString.split("-");
+        UnitType currentUnit = null;
+        UnitType propertyUnit = null;
+        MeterType meterType;
+        String property;
+        switch (evs.length)
+        {
+            case 2:
+                currentUnit = UnitType.valueOf(evs[1]);
+            case 1:
+                meterType = MeterType.valueOf(evs[0]);
+                property = BeanHelper.field(evs[0]);
+                propertyUnit = NmeaProperties.getType(property);
+                break;
+            default:
+                throw new IllegalArgumentException(eventString+" illegal");
+        }
+        switch (meterType)
+        {
+            case Latitude:
+                return new CoordinateEvent(source, eventString, property, currentUnit, propertyUnit, 'N', 'S');
+            case Longitude:
+                return new CoordinateEvent(source, eventString, property, currentUnit, propertyUnit, 'E', 'W');
+            default:
+                return new Event(source, eventString, property, currentUnit, propertyUnit);
+        }
+    }
     @Override
     protected void addEvent(String eventString)
     {
-        Event event = new Event(eventString);
+        Event event = createEvent(eventString);
         eventMap.put(eventString, event);
         String property = event.getProperty();
         propertyMap.put(property, event);
-        if (nmeaProperties.isProperty(property))
-        {
-            event.setPropertyUnit(nmeaProperties.getType(property));
-            service.addNMEAObserver(this, property);
-        }
+        event.register(service);
     }
 
     @Override
@@ -77,7 +103,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
             eventMap.remove(event);
             String property = ev.getProperty();
             propertyMap.remove(property);
-            if (nmeaProperties.isProperty(property))
+            if (NmeaProperties.isProperty(property))
             {
                 service.removeNMEAObserver(this, property);
             }
@@ -148,45 +174,4 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    private class Event
-    {
-        private final String event;
-        private final String property;
-        private final UnitType eventUnit;
-        private UnitType propertyUnit;
-
-        public Event(String ev)
-        {
-            this.event = ev;
-            String[] evs = ev.split("-");
-            property = Character.toLowerCase(evs[0].charAt(0))+evs[0].substring(1);
-            eventUnit = UnitType.valueOf(evs[1]);
-        }
-
-        public void fire(float value)
-        {
-            fireEvent(event, String.valueOf(value));
-        }
-        
-        public String getProperty()
-        {
-            return property;
-        }
-
-        public UnitType getUnit()
-        {
-            return eventUnit;
-        }
-
-        public UnitType getPropertyUnit()
-        {
-            return propertyUnit;
-        }
-
-        public void setPropertyUnit(UnitType propertyUnit)
-        {
-            this.propertyUnit = propertyUnit;
-        }
-        
-    }
 }

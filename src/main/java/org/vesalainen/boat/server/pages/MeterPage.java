@@ -45,6 +45,7 @@ public class MeterPage extends JQueryMobilePage
     {
         super(new DynString("page", pageId), document);
         this.pageId = pageId;
+        getMain().setAttr("style", "height: 100%");
         this.grid = new ParamContent[gridCount];
         for (int ii=0;ii<gridCount;ii++)
         {

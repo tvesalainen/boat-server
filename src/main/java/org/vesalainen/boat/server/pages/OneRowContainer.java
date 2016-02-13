@@ -14,38 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.vesalainen.boat.server;
+package org.vesalainen.boat.server.pages;
 
-import static org.vesalainen.boat.server.Layout.*;
+import org.vesalainen.boat.server.Id;
+import org.vesalainen.html.Element;
+import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
+import org.vesalainen.web.servlet.AbstractSSESource;
 
 /**
  *
  * @author tkv
  */
-public enum MeterType
+public class OneRowContainer extends TitleContainer
 {
-    Latitude(OneRow),
-    Longitude(OneRow),
-    DepthBelowTransducer(OneRow),
-    TrueBearing(OneRow),
-    MagneticBearing(OneRow),
-    TrueHeading(OneRow),
-    WaterTemperature(OneRow),
-    RelativeWindAngle(OneRow),
-    TrueWindAngle(OneRow),
-    WindSpeed(OneRow)
-    ;
-    
-    private final Layout layout;
 
-    private MeterType(Layout layout)
+    public OneRowContainer(JQueryMobileDocument document)
     {
-        this.layout = layout;
+        super(document);
     }
 
-    public Layout getLayout()
+    @Override
+    protected void addRows(Element svg)
     {
-        return layout;
+        svg.addElement("text")
+                .setAttr("x", "-45")
+                .setAttr("y", "16")
+                .setAttr("textLength", "90")
+                .setAttr("lengthAdjust", "spacingAndGlyphs")
+                .setAttr(AbstractSSESource.EventSink, wrap(Id.Event1))
+                .setAttr("style", "font-size: 2em");
     }
     
 }

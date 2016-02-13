@@ -27,7 +27,7 @@ public enum Id
     Input,
     Popup,
     Meter,
-    Event,
+    Event1,
     Query,
     UnitPage,
     SelectedUnit,

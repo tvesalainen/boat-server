@@ -16,8 +16,10 @@
  */
 package org.vesalainen.boat.server;
 
+import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.json.JSONBean;
 import org.vesalainen.math.UnitType;
+import org.vesalainen.parsers.nmea.NMEAProperties;
 
 /**
  *
@@ -35,12 +37,17 @@ public class MeterData implements JSONBean
     public MeterData(MeterType type)
     {
         this.type = type;
-        this.unit = type.getUnit();
+        String property = BeanHelper.field(type.name());
+        unit = NMEAProperties.getInstance().getType(property);  // default type
     }
 
-    public MeterData(MeterType type, UnitType unit)
+    public UnitType getUnit()
     {
-        this.type = type;
+        return unit;
+    }
+
+    public void setUnit(UnitType unit)
+    {
         this.unit = unit;
     }
 
@@ -54,20 +61,10 @@ public class MeterData implements JSONBean
         this.type = type;
     }
 
-    public UnitType getUnit()
-    {
-        return unit;
-    }
-
-    public void setUnit(UnitType unit)
-    {
-        this.unit = unit;
-    }
-
     @Override
     public String toString()
     {
-        return type + ":" + unit;
+        return type + "-" + unit;
     }
     
 }

@@ -26,6 +26,7 @@ import org.vesalainen.html.BooleanAttribute;
 import org.vesalainen.html.ClassAttribute;
 import org.vesalainen.html.Container;
 import org.vesalainen.html.ContainerContent;
+import org.vesalainen.html.Content;
 import org.vesalainen.html.DynString;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.EnumDynContent;
@@ -84,7 +85,7 @@ public class UnitPage extends JQueryMobilePage implements EnumDynContent<GridCon
                 categoryMapList.put(category, container);
             }
             String n = opt.toString();
-            String d = I18n.getLabel(n);
+            Content d = I18n.getLabel(n);
             Element option = container.addElement("option").setAttr("value", n).addText(d);
             option.setAttr(new BooleanAttribute("selected",wrap(Id.SelectedUnit, opt)));
         }

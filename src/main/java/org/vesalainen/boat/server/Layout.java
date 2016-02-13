@@ -16,36 +16,13 @@
  */
 package org.vesalainen.boat.server;
 
-import static org.vesalainen.boat.server.Layout.*;
-
 /**
  *
  * @author tkv
  */
-public enum MeterType
+public enum Layout
 {
-    Latitude(OneRow),
-    Longitude(OneRow),
-    DepthBelowTransducer(OneRow),
-    TrueBearing(OneRow),
-    MagneticBearing(OneRow),
-    TrueHeading(OneRow),
-    WaterTemperature(OneRow),
-    RelativeWindAngle(OneRow),
-    TrueWindAngle(OneRow),
-    WindSpeed(OneRow)
-    ;
-    
-    private final Layout layout;
-
-    private MeterType(Layout layout)
-    {
-        this.layout = layout;
-    }
-
-    public Layout getLayout()
-    {
-        return layout;
-    }
-    
+    FullScreen,
+    OneRow,
+    TwoRow
 }
