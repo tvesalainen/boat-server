@@ -16,7 +16,6 @@
  */
 package org.vesalainen.boat.server;
 
-import java.util.Locale;
 import static org.vesalainen.boat.server.DataSource.NmeaProperties;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.parsers.nmea.NMEAService;

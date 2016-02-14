@@ -16,10 +16,14 @@
  */
 package org.vesalainen.boat.server;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.json.JSONBean;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.parsers.nmea.NMEAProperties;
+import org.vesalainen.util.Lists;
+import org.vesalainen.web.InputType;
 
 /**
  *
@@ -27,18 +31,54 @@ import org.vesalainen.parsers.nmea.NMEAProperties;
  */
 public class MeterData implements JSONBean
 {
-    private MeterType type;
-    private UnitType unit;
+    public MeterType type;
+    public UnitType unit;
+    @InputType(itemType=String.class)
+    public List<String> properties;
 
     public MeterData()
     {
+        properties = new ArrayList<>();
     }
 
     public MeterData(MeterType type)
     {
         this.type = type;
-        String property = BeanHelper.field(type.name());
-        unit = NMEAProperties.getInstance().getType(property);  // default type
+        NMEAProperties instance = NMEAProperties.getInstance();
+        if (type.getProperties() == null)
+        {
+            String property = BeanHelper.field(type.name());
+            this.unit = instance.getType(property);  // default type
+            this.properties = Lists.create(property);
+        }
+        else
+        {
+            properties = Lists.create(type.getProperties());
+            for (String p : this.properties)
+            {
+                String prop = BeanHelper.field(p);
+                if (!instance.isProperty(prop))
+                {
+                    throw new IllegalArgumentException(prop+" not NMEAProperty");
+                }
+                if (unit == null)
+                {
+                    unit = NMEAProperties.getInstance().getType(prop);
+                }
+                else
+                {
+                    if (!unit.equals(NMEAProperties.getInstance().getType(prop)))
+                    {
+                        throw new UnsupportedOperationException("multi unit not supported yet!");
+                    }
+                }
+            }
+        }
+    }
+
+    public List<String> getProperties()
+    {
+        return properties;
     }
 
     public UnitType getUnit()

@@ -16,7 +16,6 @@
  */
 package org.vesalainen.boat.server;
 
-import java.io.IOException;
 import java.util.List;
 import org.vesalainen.boat.server.pages.MeterPage;
 import org.vesalainen.html.ClassAttribute;
@@ -51,35 +50,9 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
         //script.addContent(DataSource.getInstance().createScript());
         script.addContent(new DynamicScripts(doc, threadLocalData));
         doc.getBody().addContent(new DynamicPages(doc, threadLocalData));
-        createAddPage(doc);
         return doc;
     }
     
-    private void createAddPage(JQueryMobileDocument doc)
-    {
-        JQueryMobilePage page = createPage(doc, "addPage");
-        Element header = page.getHeader();
-        header.addElement("a")
-                .setAttr("href", new LastMeterPage(threadLocalData))
-                .addClasses("ui-btn", "ui-icon-home", "ui-btn-icon-left")
-                .addText(I18n.getLabel("lastMeterPage"));
-        header.addElement("h1")
-                .addText(I18n.getLabel("Add new meter page"));
-        JQueryMobileForm form = page.addForm(Action);
-        form.addInput("pageType");
-        form.addInput("addPage",
-                new SimpleAttribute("data-iconpos", "notext"),
-                new SimpleAttribute("data-inline", true),
-                new ClassAttribute("ui-icon-action")
-        );
-        form.addRestAsHiddenInputs();
-    }
-    private JQueryMobilePage createPage(JQueryMobileDocument doc, String id)
-    {
-        JQueryMobilePage page = doc.getPage("addPage");
-        return page;
-    }
-
     @Override
     protected void onSubmit(Context ctx, String field, Query query)
     {

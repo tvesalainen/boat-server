@@ -17,11 +17,14 @@
 package org.vesalainen.boat.server;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.vesalainen.html.DynString;
 import org.vesalainen.js.AbstractScriptContainer;
+import org.vesalainen.js.Function;
 import org.vesalainen.util.MapList;
+import org.vesalainen.util.TreeMapList;
 import org.vesalainen.util.Wrap;
 import org.vesalainen.web.servlet.bean.ThreadLocalContent;
 
@@ -46,17 +49,25 @@ public class DynamicScripts extends ThreadLocalContent<Context>
     {
         Context ctx = local.get();
         Map<Integer, PageType> typeMap = ctx.typeMap;
-        MapList<Integer, MeterData> gridMap = ctx.gridMap;
-        for (Map.Entry<Integer, List<MeterData>> e : gridMap.entrySet())
+        TreeMapList<Integer, MeterData> gridMap = ctx.gridMap;
+        List<Integer> pages = new ArrayList<>();
+        pages.add(-1);
+        pages.addAll(gridMap.keySet());
+        pages.add(-1);
+        int cnt = pages.size()-1;
+        for (int ii=1;ii<cnt;ii++)
         {
-            int pg = e.getKey();
-            PageType pt = typeMap.get(pg);
-            List<MeterData> ls = e.getValue();
-            if (hasUninitializedGrids(ls))
-            {
-                script.pageId.setValue(pg);
-                script.append(out);
-            }
+            script.prevId.setValue(pages.get(ii-1));
+            script.pageId.setValue(pages.get(ii));
+            script.nextId.setValue(pages.get(ii+1));
+            script.append(out);
+        }
+        if (!gridMap.isEmpty())
+        {
+            script.prevId.setValue(gridMap.lastKey());
+            script.pageId.setValue(-1);
+            script.nextId.setValue(gridMap.firstKey());
+            script.append(out);
         }
     }
 
@@ -75,12 +86,34 @@ public class DynamicScripts extends ThreadLocalContent<Context>
     private static class Sc extends AbstractScriptContainer
     {
         private Wrap<Integer> pageId = new Wrap();
+        private Wrap<Integer> prevId = new Wrap();
+        private Wrap<Integer> nextId = new Wrap();
 
         public Sc()
         {
             prefix = new DynString("$(document).on(\"pagecreate\",\"#page", pageId, "\",function(){");
             suffix = "});";
             addCode("$('.hidden').hide();");
+            
+            addCode("$(\"#page");
+            addCode(pageId);
+            addCode("\").on(\"swipeleft\",");
+            Function pf = new Function(null);
+            addCode(pf);
+            pf.addCode("$( \":mobile-pagecontainer\" ).pagecontainer( \"change\", \"#page");
+            pf.addCode(prevId);
+            pf.addCode("\", { role: \"page\"});");
+            addCode(");");
+            
+            addCode("$(\"#page");
+            addCode(pageId);
+            addCode("\").on(\"swiperight\",");
+            Function nf = new Function(null);
+            addCode(nf);
+            nf.addCode("$( \":mobile-pagecontainer\" ).pagecontainer( \"change\", \"#page");
+            nf.addCode(nextId);
+            nf.addCode("\", { role: \"page\"});");
+            addCode(");");
         }
         
     }

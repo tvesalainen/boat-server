@@ -16,7 +16,6 @@
  */
 package org.vesalainen.boat.server;
 
-import java.util.Locale;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.web.I18n;
 

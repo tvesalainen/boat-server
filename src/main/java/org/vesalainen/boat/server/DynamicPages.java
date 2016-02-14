@@ -22,12 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.vesalainen.boat.server.pages.BaseContainer;
+import org.vesalainen.boat.server.pages.AddPage;
 import org.vesalainen.boat.server.pages.MeterPage;
 import org.vesalainen.boat.server.pages.OneRowContainer;
+import org.vesalainen.boat.server.pages.TwoRowContainer;
 import org.vesalainen.boat.server.pages.UnitPage;
 import org.vesalainen.html.DynContent;
-import org.vesalainen.html.Element;
 import org.vesalainen.html.ParamContent;
 import org.vesalainen.util.MapList;
 import org.vesalainen.web.servlet.bean.ThreadLocalContent;
@@ -41,6 +41,7 @@ public class DynamicPages extends ThreadLocalContent<Context>
     private final ContentDocument document;
     private final MeterForm form;
     private final Map<Layout,DynContent<GridContext,Id>> containerMap = new HashMap<>();
+    private final AddPage addPage;
     private final UnitPage unitPage;
 
     public DynamicPages(ContentDocument document, ThreadLocal local)
@@ -48,8 +49,10 @@ public class DynamicPages extends ThreadLocalContent<Context>
         super(local);
         this.document = document;
         this.form = new MeterForm(document);
+        this.addPage = new AddPage(document);
         this.unitPage = new UnitPage(document);
         containerMap.put(Layout.OneRow, new OneRowContainer(document));
+        containerMap.put(Layout.TwoRow, new TwoRowContainer(document));
     }
 
     @Override
@@ -58,7 +61,6 @@ public class DynamicPages extends ThreadLocalContent<Context>
         Context ctx = local.get();
         Map<Integer, PageType> typeMap = ctx.typeMap;
         MapList<Integer, MeterData> gridMap = ctx.gridMap;
-        List<ParamContent<GridContext,Id>> params = new ArrayList<>();
         for (Entry<Integer, List<MeterData>> e : gridMap.entrySet())
         {
             int pageId = e.getKey();
@@ -66,6 +68,7 @@ public class DynamicPages extends ThreadLocalContent<Context>
             MeterPage page = document.getMeterPage(pt);
             page.setPageId(pageId);
             int gridNo = 0;
+            List<ParamContent<GridContext,Id>> params = new ArrayList<>();
             for (MeterData meter : e.getValue())
             {
                 ParamContent<GridContext,Id> grid = page.getGrid(gridNo);
@@ -89,11 +92,12 @@ public class DynamicPages extends ThreadLocalContent<Context>
                 gridNo++;
             }
             page.append(out);
+            for (ParamContent<GridContext,Id> param : params)
+            {
+                param.setContent(unitPage);
+                param.append(out);
+            }
         }
-        for (ParamContent<GridContext,Id> param : params)
-        {
-            param.setContent(unitPage);
-            param.append(out);
-        }
+        addPage.append(out);
     }
 }

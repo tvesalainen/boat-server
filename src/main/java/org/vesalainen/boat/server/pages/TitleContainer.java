@@ -19,7 +19,6 @@ package org.vesalainen.boat.server.pages;
 import org.vesalainen.boat.server.Id;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.web.servlet.AbstractSSESource;
 
 /**
  *
@@ -39,7 +38,6 @@ public abstract class TitleContainer extends BaseContainer
         svg.addElement("text")
                 .setAttr("x", "-45")
                 .setAttr("y", "-35")
-                .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
                 .addText(wrap(Id.MeterName))
                 .setAttr("style", "font-size: 1em");
@@ -48,7 +46,6 @@ public abstract class TitleContainer extends BaseContainer
         svg.addElement("text")
                 .setAttr("x", "-45")
                 .setAttr("y", "45")
-                .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
                 .addText(wrap(Id.MeterUnit))
                 .setAttr("style", "font-size: 1em");

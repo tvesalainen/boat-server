@@ -25,10 +25,10 @@ import org.vesalainen.web.servlet.AbstractSSESource;
  *
  * @author tkv
  */
-public class OneRowContainer extends TitleContainer
+public class TwoRowContainer extends TitleContainer
 {
 
-    public OneRowContainer(JQueryMobileDocument document)
+    public TwoRowContainer(JQueryMobileDocument document)
     {
         super(document);
     }
@@ -38,10 +38,18 @@ public class OneRowContainer extends TitleContainer
     {
         svg.addElement("text")
                 .setAttr("x", "-45")
-                .setAttr("y", "16")
+                .setAttr("y", "0")
                 .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
-                .setAttr(AbstractSSESource.EventSink, wrap(Id.Event))
+                .setAttr(AbstractSSESource.EventSink, wrap(Id.Prop1))
+                .setAttr("style", "font-size: 2em");
+        
+        svg.addElement("text")
+                .setAttr("x", "-45")
+                .setAttr("y", "26")
+                .setAttr("textLength", "90")
+                .setAttr("lengthAdjust", "spacingAndGlyphs")
+                .setAttr(AbstractSSESource.EventSink, wrap(Id.Prop2))
                 .setAttr("style", "font-size: 2em");
     }
     

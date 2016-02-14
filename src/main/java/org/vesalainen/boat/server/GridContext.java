@@ -74,7 +74,7 @@ public class GridContext implements DynParam<Id>
             case Meter:
                 wrap.setValue("meter"+pageId+"-"+gridNo);
                 break;
-            case Event1:
+            case Event:
                 wrap.setValue(meterData.getType()+"-"+meterData.getUnit());
                 break;
             case Query:
@@ -94,6 +94,24 @@ public class GridContext implements DynParam<Id>
                 break;
             case MeterUnit:
                 wrap.setValue(meterData.getUnit().getUnit());
+                break;
+            case Prop1:
+                wrap.setValue(meterData.getProperties().get(0)+"-"+meterData.getUnit());
+                break;
+            case Prop2:
+                wrap.setValue(meterData.getProperties().get(1)+"-"+meterData.getUnit());
+                break;
+            case Prop3:
+                wrap.setValue(meterData.getProperties().get(2)+"-"+meterData.getUnit());
+                break;
+            case Prop4:
+                wrap.setValue(meterData.getProperties().get(3)+"-"+meterData.getUnit());
+                break;
+            case Prop5:
+                wrap.setValue(meterData.getProperties().get(4)+"-"+meterData.getUnit());
+                break;
+            case Prop6:
+                wrap.setValue(meterData.getProperties().get(5)+"-"+meterData.getUnit());
                 break;
             default:
                 throw new UnsupportedOperationException(key+" not supported");

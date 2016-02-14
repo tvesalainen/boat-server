@@ -24,8 +24,7 @@ import static org.vesalainen.boat.server.Layout.*;
  */
 public enum MeterType
 {
-    Latitude(OneRow),
-    Longitude(OneRow),
+    Location(TwoRow, "Latitude", "Longitude"),
     DepthBelowTransducer(OneRow),
     TrueBearing(OneRow),
     MagneticBearing(OneRow),
@@ -33,14 +32,29 @@ public enum MeterType
     WaterTemperature(OneRow),
     RelativeWindAngle(OneRow),
     TrueWindAngle(OneRow),
-    WindSpeed(OneRow)
+    WindSpeed(OneRow),
+    Latitude(OneRow),
+    Longitude(OneRow)
     ;
     
     private final Layout layout;
+    private final String[] properties;
 
     private MeterType(Layout layout)
     {
         this.layout = layout;
+        this.properties = null;
+    }
+
+    private MeterType(Layout layout, String... properties)
+    {
+        this.layout = layout;
+        this.properties = properties;
+    }
+
+    public String[] getProperties()
+    {
+        return properties;
     }
 
     public Layout getLayout()

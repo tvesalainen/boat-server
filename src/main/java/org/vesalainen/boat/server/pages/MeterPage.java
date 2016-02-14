@@ -25,6 +25,7 @@ import org.vesalainen.html.DynString;
 import org.vesalainen.html.ParamContent;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
+import org.vesalainen.js.ScriptContainer;
 import org.vesalainen.util.Wrap;
 
 /**
@@ -45,7 +46,6 @@ public class MeterPage extends JQueryMobilePage
     {
         super(new DynString("page", pageId), document);
         this.pageId = pageId;
-        getMain().setAttr("style", "height: 100%");
         this.grid = new ParamContent[gridCount];
         for (int ii=0;ii<gridCount;ii++)
         {
