@@ -16,6 +16,7 @@
  */
 package org.vesalainen.boat.server;
 
+import org.json.JSONObject;
 import static org.vesalainen.boat.server.DataSource.NmeaProperties;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.parsers.nmea.NMEAService;
@@ -32,6 +33,7 @@ public class Event
     protected final String property;
     protected final UnitType currentUnit;
     protected UnitType propertyUnit;
+    protected JSONObject json = new JSONObject();
 
     public Event(DataSource source, String event, String property, UnitType currentUnit, UnitType propertyUnit)
     {
@@ -44,10 +46,27 @@ public class Event
 
     public void fire(float value)
     {
-        double dval = propertyUnit.convertTo(value, currentUnit);
-        source.fireEvent(event, format(dval));
+        populate(json, convert(value));
+        source.fireEvent(event, json);
     }
 
+    protected double convert(double value)
+    {
+        if (propertyUnit != null)
+        {
+            return propertyUnit.convertTo(value, currentUnit);
+        }
+        else
+        {
+            return value;
+        }
+    }
+    
+    protected void populate(JSONObject jo, double value)
+    {
+        json.keySet().clear();
+        json.put("text", format(value));
+    }
     protected String format(double value)
     {
         String format;

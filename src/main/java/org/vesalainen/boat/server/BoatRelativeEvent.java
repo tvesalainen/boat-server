@@ -16,34 +16,25 @@
  */
 package org.vesalainen.boat.server;
 
-import java.io.IOException;
-import org.vesalainen.util.TreeMapList;
-import org.vesalainen.web.servlet.bean.ThreadLocalContent;
+import org.vesalainen.boat.server.pages.Transform;
 
 /**
  *
  * @author tkv
  */
-public class LastMeterPage extends ThreadLocalContent<Context>
+public class BoatRelativeEvent extends RotateEvent
 {
 
-    public LastMeterPage(ThreadLocal<Context> local)
+    public BoatRelativeEvent(DataSource source, String eventString, String property, Transform transform)
     {
-        super(local);
+        super(source, eventString, property, transform);
     }
 
     @Override
-    public void append(Appendable out) throws IOException
+    protected double convert(double value)
     {
-        out.append('#');
-        Context ctx = local.get();
-        TreeMapList<Integer, MeterData> gridMap = ctx.gridMap;
-        if (!gridMap.isEmpty())
-        {
-            Integer id = gridMap.lastKey();
-            out.append("page");
-            out.append(String.valueOf(id));
-        }
+        float trueHeading = source.getTrueHeading();
+        return (trueHeading+value) % 360;
     }
     
 }

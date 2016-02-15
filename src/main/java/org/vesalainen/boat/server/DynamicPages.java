@@ -16,15 +16,18 @@
  */
 package org.vesalainen.boat.server;
 
+import org.vesalainen.boat.server.pages.MeterForm;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.vesalainen.boat.server.pages.AddMeterContent;
 import org.vesalainen.boat.server.pages.AddPage;
 import org.vesalainen.boat.server.pages.MeterPage;
 import org.vesalainen.boat.server.pages.OneRowContainer;
+import org.vesalainen.boat.server.pages.TackticalContainer;
 import org.vesalainen.boat.server.pages.TwoRowContainer;
 import org.vesalainen.boat.server.pages.UnitPage;
 import org.vesalainen.html.DynContent;
@@ -39,7 +42,7 @@ import org.vesalainen.web.servlet.bean.ThreadLocalContent;
 public class DynamicPages extends ThreadLocalContent<Context>
 {
     private final ContentDocument document;
-    private final MeterForm form;
+    private final AddMeterContent addMeterContent;
     private final Map<Layout,DynContent<GridContext,Id>> containerMap = new HashMap<>();
     private final AddPage addPage;
     private final UnitPage unitPage;
@@ -48,11 +51,12 @@ public class DynamicPages extends ThreadLocalContent<Context>
     {
         super(local);
         this.document = document;
-        this.form = new MeterForm(document);
+        this.addMeterContent = new AddMeterContent(document);
         this.addPage = new AddPage(document);
         this.unitPage = new UnitPage(document);
         containerMap.put(Layout.OneRow, new OneRowContainer(document));
         containerMap.put(Layout.TwoRow, new TwoRowContainer(document));
+        containerMap.put(Layout.TackticalFullScreen, new TackticalContainer(document));
     }
 
     @Override
@@ -77,7 +81,7 @@ public class DynamicPages extends ThreadLocalContent<Context>
                 param.meterData=meter;
                 if (meter == null)
                 {
-                    grid.setContent(form);
+                    grid.setContent(addMeterContent);
                 }
                 else
                 {

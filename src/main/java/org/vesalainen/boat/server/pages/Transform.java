@@ -14,15 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.vesalainen.boat.server;
+package org.vesalainen.boat.server.pages;
 
 /**
  *
  * @author tkv
  */
-public enum Layout
+public enum Transform
 {
-    TackticalFullScreen,
-    OneRow,
-    TwoRow
+    ROTATE
 }

@@ -40,7 +40,7 @@ public class Context
     @InputType("submit")
     public String setUnit;
     public PageType pageType;
-    public MeterType meter;
+    public MeterChoice meter;
     public UnitType unit;
 
     public int nextId()

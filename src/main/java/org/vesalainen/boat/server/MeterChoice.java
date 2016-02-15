@@ -22,8 +22,9 @@ import static org.vesalainen.boat.server.Layout.*;
  *
  * @author tkv
  */
-public enum MeterType
+public enum MeterChoice
 {
+    Tacktical(TackticalFullScreen),
     Location(TwoRow, "Latitude", "Longitude"),
     DepthBelowTransducer(OneRow),
     TrueBearing(OneRow),
@@ -40,13 +41,13 @@ public enum MeterType
     private final Layout layout;
     private final String[] properties;
 
-    private MeterType(Layout layout)
+    private MeterChoice(Layout layout)
     {
         this.layout = layout;
         this.properties = null;
     }
 
-    private MeterType(Layout layout, String... properties)
+    private MeterChoice(Layout layout, String... properties)
     {
         this.layout = layout;
         this.properties = properties;

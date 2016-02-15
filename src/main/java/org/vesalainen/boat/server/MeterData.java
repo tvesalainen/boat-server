@@ -31,7 +31,7 @@ import org.vesalainen.web.InputType;
  */
 public class MeterData implements JSONBean
 {
-    public MeterType type;
+    public MeterChoice type;
     public UnitType unit;
     @InputType(itemType=String.class)
     public List<String> properties;
@@ -41,7 +41,7 @@ public class MeterData implements JSONBean
         properties = new ArrayList<>();
     }
 
-    public MeterData(MeterType type)
+    public MeterData(MeterChoice type)
     {
         this.type = type;
         NMEAProperties instance = NMEAProperties.getInstance();
@@ -91,12 +91,12 @@ public class MeterData implements JSONBean
         this.unit = unit;
     }
 
-    public MeterType getType()
+    public MeterChoice getType()
     {
         return type;
     }
 
-    public void setType(MeterType type)
+    public void setType(MeterChoice type)
     {
         this.type = type;
     }

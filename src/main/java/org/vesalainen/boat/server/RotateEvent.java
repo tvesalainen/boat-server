@@ -16,13 +16,27 @@
  */
 package org.vesalainen.boat.server;
 
+import java.util.Locale;
+import org.json.JSONObject;
+import org.vesalainen.boat.server.pages.Transform;
+
 /**
  *
  * @author tkv
  */
-public enum Layout
+public class RotateEvent extends Event
 {
-    TackticalFullScreen,
-    OneRow,
-    TwoRow
+
+    public RotateEvent(DataSource source, String eventString, String property, Transform transform)
+    {
+        super(source, eventString, property, null, null);
+    }
+
+    @Override
+    protected void populate(JSONObject jo, double value)
+    {
+        jo.keySet().clear();
+        jo.put("transform", String.format(Locale.US, "rotate(%.0f)", value));
+    }
+    
 }

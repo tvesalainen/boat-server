@@ -95,8 +95,11 @@ public class UnitPage extends JQueryMobilePage implements EnumDynContent<GridCon
     public void append(GridContext param, Appendable out) throws IOException
     {
         UnitType unit = param.meterData.getUnit();
-        options.setValue(categoryMapList.get(unit.getCategory()));
-        append(out);
+        if (unit != null)
+        {
+            options.setValue(categoryMapList.get(unit.getCategory()));
+            append(out);
+        }
     }
     
     @Override

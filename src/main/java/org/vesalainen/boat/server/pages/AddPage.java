@@ -17,7 +17,6 @@
 package org.vesalainen.boat.server.pages;
 
 import static org.vesalainen.boat.server.ContentServlet.Action;
-import org.vesalainen.boat.server.LastMeterPage;
 import org.vesalainen.html.ClassAttribute;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.SimpleAttribute;
@@ -37,9 +36,6 @@ public class AddPage extends MeterPage
         super(document, 0);
         setPageId(-1);
         Element header = getHeader();
-        header.addElement("a")
-                .addClasses("ui-btn", "ui-icon-home", "ui-btn-icon-left")
-                .addText(I18n.getLabel("lastMeterPage"));
         header.addElement("h1")
                 .addText(I18n.getLabel("Add new meter page"));
         JQueryMobileForm form = addForm(Action);

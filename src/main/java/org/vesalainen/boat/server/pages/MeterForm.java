@@ -14,9 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.vesalainen.boat.server;
+package org.vesalainen.boat.server.pages;
 
 import java.io.IOException;
+import org.vesalainen.boat.server.ContentServlet;
+import org.vesalainen.boat.server.GridContext;
+import org.vesalainen.boat.server.Id;
+import org.vesalainen.boat.server.MeterChoice;
 import org.vesalainen.html.ClassAttribute;
 import org.vesalainen.html.Content;
 import org.vesalainen.html.DynString;
@@ -50,13 +54,13 @@ public class MeterForm extends JQueryMobileForm implements EnumDynContent<GridCo
         Element fieldSet = addElement("fieldset");
         fieldSet.addElement("label").addText(I18n.getLabel(field));
         Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", wrap(Id.Input)).setAttr("data-native-menu", false);
-        for (MeterType opt : MeterType.values())
+        for (MeterChoice opt : MeterChoice.values())
         {
             String n = opt.toString();
             Content d = I18n.getLabel(n);
             Element option = select.addElement("option").setAttr("value", n).addText(d);
         }
-        addInput("addMeter", new SimpleAttribute("data-inline", true), new ClassAttribute("ui-icon-action"));
+        addInput("addMeter", new ClassAttribute("ui-icon-action"));
         addRestAsHiddenInputs();
     }
 

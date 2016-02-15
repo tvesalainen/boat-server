@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.vesalainen.bean.BeanHelper;
+import org.vesalainen.boat.server.pages.Transform;
 import org.vesalainen.code.PropertySetter;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.parsers.nmea.NMEAProperties;
@@ -38,6 +39,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     private final NMEAService service;
     private final Map<String,Event> eventMap = new HashMap<>();
     private final Map<String,Event> propertyMap = new HashMap<>();
+    private float trueHeading;
 
     public DataSource() throws IOException
     {
@@ -60,28 +62,51 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         String[] evs = eventString.split("-");
         UnitType currentUnit = null;
         UnitType propertyUnit = null;
-        MeterType meterType;
+        MeterChoice meterChoice;
         String property;
+        Transform transform = null;
         switch (evs.length)
         {
+            case 3:
+                transform = Transform.valueOf(evs[2]);
             case 2:
                 currentUnit = UnitType.valueOf(evs[1]);
             case 1:
-                meterType = MeterType.valueOf(evs[0]);
+                meterChoice = MeterChoice.valueOf(evs[0]);
                 property = BeanHelper.field(evs[0]);
                 propertyUnit = NmeaProperties.getType(property);
                 break;
             default:
                 throw new IllegalArgumentException(eventString+" illegal");
         }
-        switch (meterType)
+        if (transform != null)
         {
-            case Latitude:
-                return new CoordinateEvent(source, eventString, property, currentUnit, propertyUnit, 'N', 'S');
-            case Longitude:
-                return new CoordinateEvent(source, eventString, property, currentUnit, propertyUnit, 'E', 'W');
-            default:
-                return new Event(source, eventString, property, currentUnit, propertyUnit);
+            switch (transform)
+            {
+                case ROTATE:
+                    if (MeterChoice.TrueHeading.equals(meterChoice))
+                    {
+                        return new RotateEvent(source, eventString, property, transform);
+                    }
+                    else
+                    {
+                        return new BoatRelativeEvent(source, eventString, property, transform);
+                    }
+                default:
+                    throw new UnsupportedOperationException(transform+" not supported");
+            }
+        }
+        else
+        {
+            switch (meterChoice)
+            {
+                case Latitude:
+                    return new CoordinateEvent(source, eventString, property, currentUnit, propertyUnit, 'N', 'S');
+                case Longitude:
+                    return new CoordinateEvent(source, eventString, property, currentUnit, propertyUnit, 'E', 'W');
+                default:
+                    return new Event(source, eventString, property, currentUnit, propertyUnit);
+            }
         }
     }
     @Override
@@ -155,6 +180,10 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     @Override
     public void set(String property, float arg)
     {
+        if ("trueHeading".equals(property))
+        {
+            trueHeading = arg;
+        }
         Event ev = propertyMap.get(property);
         if (ev != null)
         {
@@ -172,6 +201,11 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     public void set(String property, Object arg)
     {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public float getTrueHeading()
+    {
+        return trueHeading;
     }
     
 }

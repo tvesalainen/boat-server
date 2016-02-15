@@ -87,7 +87,7 @@ public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
     
     private void addMeter(Context ctx, Query query)
     {
-        MeterType meter = ctx.meter;
+        MeterChoice meter = ctx.meter;
         int pageId = Integer.parseInt(query.get("pageId").get(0));
         int gridNo = Integer.parseInt(query.get("gridNo").get(0));
         TreeMapList<Integer, MeterData> gridMap = ctx.gridMap;
