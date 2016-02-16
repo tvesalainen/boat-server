@@ -18,6 +18,7 @@ package org.vesalainen.boat.server;
 
 import org.json.JSONObject;
 import static org.vesalainen.boat.server.DataSource.NmeaProperties;
+import org.vesalainen.json.JsonHelper;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.parsers.nmea.NMEAService;
 import org.vesalainen.web.I18n;
@@ -28,12 +29,15 @@ import org.vesalainen.web.I18n;
  */
 public class Event
 {
+    private static final long RefreshLimit = 5000;
     protected final DataSource source;
     protected final String event;
     protected final String property;
     protected final UnitType currentUnit;
     protected UnitType propertyUnit;
     protected JSONObject json = new JSONObject();
+    protected JSONObject prev = new JSONObject();
+    protected long lastFire;
 
     public Event(DataSource source, String event, String property, UnitType currentUnit, UnitType propertyUnit)
     {
@@ -47,7 +51,13 @@ public class Event
     public void fire(float value)
     {
         populate(json, convert(value));
-        source.fireEvent(event, json);
+        long now = System.currentTimeMillis();
+        if (!json.similar(prev) || now-lastFire > RefreshLimit)
+        {
+            source.fireEvent(event, json);
+            prev = JsonHelper.copy(json, prev);
+            lastFire = now;
+        }
     }
 
     protected double convert(double value)

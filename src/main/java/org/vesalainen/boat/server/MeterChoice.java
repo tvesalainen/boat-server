@@ -30,6 +30,8 @@ public enum MeterChoice
     TrueBearing(OneRow),
     MagneticBearing(OneRow),
     TrueHeading(OneRow),
+    TrackMadeGood(OneRow),
+    SpeedOverGround(OneRow),
     WaterTemperature(OneRow),
     RelativeWindAngle(OneRow),
     TrueWindAngle(OneRow),

@@ -47,7 +47,6 @@ public class MeterForm extends JQueryMobileForm implements EnumDynContent<GridCo
         super(document, null, "post", null);
         setAttr("action", new DynString(ContentServlet.Action, "?", wrap(Id.Query)));
         setAttr("id", wrap(Id.Form));
-        hasHideScript = true;
         String field = "meter";
         EnumInput input = new EnumInput(document.getThreadLocalData(), document.getDataType(), field);
         document.getFieldMap().put(field, input);

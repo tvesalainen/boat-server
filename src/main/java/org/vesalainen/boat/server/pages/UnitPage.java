@@ -64,7 +64,6 @@ public class UnitPage extends JQueryMobilePage implements EnumDynContent<GridCon
         setDataAttr("dialog", true);
         JQueryMobileForm form = addForm("post", new DynString(ContentServlet.Action, "?", wrap(Id.Query)));
         form.setAttr("id", wrap(Id.Form));
-        form.setHasHideScript(true);
         String field = "unit";
         EnumInput input = new EnumInput(document.getThreadLocalData(), document.getDataType(), field);
         document.getFieldMap().put(field, input);

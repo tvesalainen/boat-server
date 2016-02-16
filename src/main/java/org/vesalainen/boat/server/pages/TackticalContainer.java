@@ -16,7 +16,6 @@
  */
 package org.vesalainen.boat.server.pages;
 
-import org.vesalainen.boat.server.Id;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.web.servlet.AbstractSSESource;
@@ -49,27 +48,38 @@ public class TackticalContainer extends BaseContainer
                         "M -20 40 "+
                         "C -23 10 -20 -15 0 -40"
                 );
-        Element g = svg.addElement("g")
+
+        Element relativeWindAngle = svg.addElement("g")
                 .setAttr("transform", "rotate(0)")
                 .setAttr(AbstractSSESource.EventSink, "RelativeWindAngle-DEGREE-ROTATE");
-        g.addElement("path")
-                .setAttr("id", "windexTip")
+        relativeWindAngle.addElement("path")
+                .setAttr("id", "windIndicatorTip")
                 .setAttr("stroke", "red")
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "red")
                 .setAttr("d", "M -3 -20 L 0 -30 L 3 -20 Z");
-        g.addElement("path")
-                .setAttr("id", "windexShaft")
+        relativeWindAngle.addElement("path")
+                .setAttr("id", "windIndicatorShaft")
                 .setAttr("stroke", "black")
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
                 .setAttr("d", "M 0 20 l 0 -40");
-        g.addElement("path")
-                .setAttr("id", "windexTail")
+        relativeWindAngle.addElement("path")
+                .setAttr("id", "windIndicatorTail")
                 .setAttr("stroke", "red")
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "red")
                 .setAttr("d", "M -3 30 L -3 25 L 0 20 L 3 25 L 3 30 Z");
+
+        Element trackMadeGood = svg.addElement("g")
+                .setAttr("transform", "rotate(0)")
+                .setAttr(AbstractSSESource.EventSink, "TrackMadeGood-DEGREE-ROTATE");
+        trackMadeGood.addElement("path")
+                .setAttr("id", "windIndicatorShaft")
+                .setAttr("stroke", "black")
+                .setAttr("stroke-width", "2")
+                .setAttr("fill", "none")
+                .setAttr("d", "M 0 00 l 0 -100");
     }
     
 }
