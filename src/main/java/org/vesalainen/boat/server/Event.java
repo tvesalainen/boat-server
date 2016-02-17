@@ -48,7 +48,7 @@ public class Event
         this.propertyUnit = propertyUnit;
     }
 
-    public void fire(float value)
+    public void fire(double value)
     {
         populate(json, convert(value));
         long now = System.currentTimeMillis();

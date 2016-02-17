@@ -23,6 +23,7 @@ import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.boat.server.pages.Transform;
 import org.vesalainen.code.PropertySetter;
 import org.vesalainen.math.UnitType;
+import org.vesalainen.navi.TimeSlidingAngleAverage;
 import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.parsers.nmea.NMEAService;
 import org.vesalainen.web.servlet.AbstractSSESource;
@@ -40,6 +41,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     private final Map<String,Event> eventMap = new HashMap<>();
     private final Map<String,Event> propertyMap = new HashMap<>();
     private float trueHeading;
+    private TimeSlidingAngleAverage trackMadeGoodAve = new TimeSlidingAngleAverage(10, 5000);
 
     public DataSource() throws IOException
     {
@@ -84,7 +86,10 @@ public class DataSource extends AbstractSSESource implements PropertySetter
             switch (transform)
             {
                 case ROTATE:
-                    if (MeterChoice.TrueHeading.equals(meterChoice))
+                    if (
+                            MeterChoice.TrueHeading.equals(meterChoice) ||
+                            MeterChoice.TrackMadeGood.equals(meterChoice)
+                            )
                     {
                         return new RotateEvent(source, eventString, property, transform);
                     }
@@ -180,14 +185,23 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     @Override
     public void set(String property, float arg)
     {
-        if ("trueHeading".equals(property))
-        {
-            trueHeading = arg;
-        }
         Event ev = propertyMap.get(property);
         if (ev != null)
         {
-            ev.fire(arg);
+            switch (property)
+            {
+                case "trueHeading":
+                    trueHeading = arg;
+                    ev.fire(arg);
+                    break;
+                case "trackMadeGood":
+                    trackMadeGoodAve.add(arg);
+                    ev.fire(trackMadeGoodAve.fast());
+                    break;
+                default:
+                    ev.fire(arg);
+                    break;
+            }
         }
     }
 

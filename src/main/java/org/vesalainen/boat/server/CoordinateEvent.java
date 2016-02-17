@@ -34,7 +34,7 @@ public class CoordinateEvent extends Event
     }
 
     @Override
-    public void fire(float value)
+    public void fire(double value)
     {
         source.fireEvent(event, format(value));
     }

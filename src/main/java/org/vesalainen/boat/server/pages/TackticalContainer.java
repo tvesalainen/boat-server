@@ -35,8 +35,20 @@ public class TackticalContainer extends BaseContainer
     @Override
     protected void addSVGContent(Element svg)
     {
+        svg.addElement("marker")
+                .setAttr("id", "triangle")
+                .setAttr("viewBox", "0 0 10 10")
+                .setAttr("refX", "0")
+                .setAttr("refY", "5")
+                .setAttr("markerUnits", "strokeWidth")
+                .setAttr("markerWidth", "4")
+                .setAttr("markerHeight", "3")
+                .setAttr("orient", "auto")
+                .setAttr("d", "M 0 0 L 10 5 L 0 10 z");
+        
         svg.addElement("path")
                 .setAttr("id", "boat")
+                .setAttr("style", "display: none;")
                 .setAttr("stroke", "blue")
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
@@ -50,6 +62,7 @@ public class TackticalContainer extends BaseContainer
                 );
 
         Element relativeWindAngle = svg.addElement("g")
+                .setAttr("style", "display: none;")
                 .setAttr("transform", "rotate(0)")
                 .setAttr(AbstractSSESource.EventSink, "RelativeWindAngle-DEGREE-ROTATE");
         relativeWindAngle.addElement("path")
@@ -57,29 +70,31 @@ public class TackticalContainer extends BaseContainer
                 .setAttr("stroke", "red")
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "red")
-                .setAttr("d", "M -3 -20 L 0 -30 L 3 -20 Z");
+                .setAttr("d", "M -3 -15 L 0 -25 L 3 -15 Z");
         relativeWindAngle.addElement("path")
                 .setAttr("id", "windIndicatorShaft")
                 .setAttr("stroke", "black")
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
-                .setAttr("d", "M 0 20 l 0 -40");
+                .setAttr("d", "M 0 15 l 0 -30");
         relativeWindAngle.addElement("path")
                 .setAttr("id", "windIndicatorTail")
                 .setAttr("stroke", "red")
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "red")
-                .setAttr("d", "M -3 30 L -3 25 L 0 20 L 3 25 L 3 30 Z");
+                .setAttr("d", "M -3 25 L -3 20 L 0 15 L 3 20 L 3 25 Z");
 
         Element trackMadeGood = svg.addElement("g")
+                .setAttr("style", "display: none;")
                 .setAttr("transform", "rotate(0)")
                 .setAttr(AbstractSSESource.EventSink, "TrackMadeGood-DEGREE-ROTATE");
         trackMadeGood.addElement("path")
-                .setAttr("id", "windIndicatorShaft")
-                .setAttr("stroke", "black")
+                .setAttr("id", "trackMadeGood")
+                .setAttr("stroke", "blue")
                 .setAttr("stroke-width", "2")
                 .setAttr("fill", "none")
-                .setAttr("d", "M 0 00 l 0 -100");
+                .setAttr("d", "M 0 0 l 0 -40")
+                .setAttr("marker-end", "url(#triangle)");
     }
     
 }
