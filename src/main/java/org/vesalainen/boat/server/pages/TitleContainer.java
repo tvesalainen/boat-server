@@ -38,18 +38,10 @@ public abstract class TitleContainer extends BaseContainer
         svg.addElement("text")
                 .setAttr("x", "-45")
                 .setAttr("y", "-35")
-                .setAttr("lengthAdjust", "spacingAndGlyphs")
                 .addText(wrap(Id.MeterName))
-                .setAttr("style", "font-size: 1em");
+                .setAttr("style", "font-size: 0.5em");
         addRows(svg);
         
-        svg.addElement("text")
-                .setAttr("x", "-45")
-                .setAttr("y", "45")
-                .setAttr("lengthAdjust", "spacingAndGlyphs")
-                .addText(wrap(Id.MeterUnit))
-                .setAttr("style", "font-size: 1em");
-       
     }
 
     protected abstract void addRows(Element svg);

@@ -34,5 +34,17 @@ public class BoatServer extends EmbeddedServer
         addServlet(ContentServlet.class, ContentServlet.Action);
         addServlet(DataServlet.class, DataSource.Action);
     }
-    
+
+    public static void main(String... args)
+    {
+        try
+        {
+            BoatServer server = new BoatServer(8080);
+            server.start();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 }

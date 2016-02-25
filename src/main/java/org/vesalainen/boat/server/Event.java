@@ -16,6 +16,8 @@
  */
 package org.vesalainen.boat.server;
 
+import java.util.EnumMap;
+import java.util.Map;
 import org.json.JSONObject;
 import static org.vesalainen.boat.server.DataSource.NmeaProperties;
 import org.vesalainen.json.JsonHelper;
@@ -30,6 +32,21 @@ import org.vesalainen.web.I18n;
 public class Event
 {
     private static final long RefreshLimit = 5000;
+    
+    protected static final Map<UnitType,String> formatMap = new EnumMap<>(UnitType.class);
+    static
+    {
+        formatMap.put(UnitType.BEAUFORT, "%.0f %s");
+        formatMap.put(UnitType.DEGREE, "%.0f %s");
+        formatMap.put(UnitType.FOOT, "%.0f %s");
+        formatMap.put(UnitType.GFORCEEARTH, "%.2f %s");
+        formatMap.put(UnitType.HPA, "%.0f %s");
+        formatMap.put(UnitType.INCH, "%.0f %s");
+        formatMap.put(UnitType.PASCAL, "%.0f %s");
+        formatMap.put(UnitType.RADIAN, "%.2f %s");
+        formatMap.put(UnitType.YARD, "%.0f %s");
+    }
+
     protected final DataSource source;
     protected final String event;
     protected final String property;
@@ -79,16 +96,19 @@ public class Event
     }
     protected String format(double value)
     {
-        String format;
-        if (value < 10.0)
+        String format = formatMap.get(currentUnit);
+        if (format == null)
         {
-            format = "%.2f";
+            if (value < 10.0)
+            {
+                format = "%.2f %s";
+            }
+            else
+            {
+                format = "%.1f %s";
+            }
         }
-        else
-        {
-            format = "%.1f";
-        }
-        return String.format(I18n.getLocale(), format, value);
+        return String.format(I18n.getLocale(), format, value, currentUnit.getUnit());
     }
     
     public String getProperty()

@@ -18,6 +18,7 @@ package org.vesalainen.boat.server;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.boat.server.pages.Transform;
@@ -26,6 +27,8 @@ import org.vesalainen.math.UnitType;
 import org.vesalainen.navi.TimeSlidingAngleAverage;
 import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.parsers.nmea.NMEAService;
+import org.vesalainen.util.HashMapList;
+import org.vesalainen.util.MapList;
 import org.vesalainen.web.servlet.AbstractSSESource;
 
 /**
@@ -39,7 +42,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     private static DataSource source;
     private final NMEAService service;
     private final Map<String,Event> eventMap = new HashMap<>();
-    private final Map<String,Event> propertyMap = new HashMap<>();
+    private final MapList<String,Event> propertyMapList = new HashMapList<>();
     private float trueHeading;
     private TimeSlidingAngleAverage trackMadeGoodAve = new TimeSlidingAngleAverage(10, 5000);
 
@@ -117,10 +120,11 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     @Override
     protected void addEvent(String eventString)
     {
+        System.err.println(eventString);
         Event event = createEvent(eventString);
         eventMap.put(eventString, event);
         String property = event.getProperty();
-        propertyMap.put(property, event);
+        propertyMapList.add(property, event);
         event.register(service);
     }
 
@@ -132,7 +136,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         {
             eventMap.remove(event);
             String property = ev.getProperty();
-            propertyMap.remove(property);
+            propertyMapList.remove(property);
             if (NmeaProperties.isProperty(property))
             {
                 service.removeNMEAObserver(this, property);
@@ -185,26 +189,30 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     @Override
     public void set(String property, float arg)
     {
-        Event ev = propertyMap.get(property);
-        if (ev != null)
+        switch (property)
         {
-            switch (property)
-            {
-                case "trueHeading":
-                    trueHeading = arg;
-                    ev.fire(arg);
-                    break;
-                case "trackMadeGood":
-                    trackMadeGoodAve.add(arg);
-                    ev.fire(trackMadeGoodAve.fast());
-                    break;
-                default:
-                    ev.fire(arg);
-                    break;
-            }
+            case "trueHeading":
+                trueHeading = arg;
+                fireAll(property, arg);
+                break;
+            case "trackMadeGood":
+                trackMadeGoodAve.add(arg);
+                fireAll(property, trackMadeGoodAve.fast());
+                break;
+            default:
+                fireAll(property, arg);
+                break;
         }
     }
 
+    private void fireAll(String property, double arg)
+    {
+        for (Event ev : propertyMapList.get(property))
+        {
+            ev.fire(arg);
+        }
+    }
+    
     @Override
     public void set(String property, double arg)
     {
