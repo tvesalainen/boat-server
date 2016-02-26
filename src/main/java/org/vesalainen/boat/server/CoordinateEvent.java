@@ -29,12 +29,12 @@ public class CoordinateEvent extends Event
     
     public CoordinateEvent(DataSource source, String event, String property, UnitType currentUnit, UnitType propertyUnit, char... chars)
     {
-        super(source, event, property, currentUnit, propertyUnit);
+        super(source, event, new String[] {property}, currentUnit, propertyUnit);
         this.chars = chars;
     }
 
     @Override
-    public void fire(double value)
+    public void fire(String property, double value)
     {
         source.fireEvent(event, format(value));
     }

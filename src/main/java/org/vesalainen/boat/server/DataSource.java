@@ -18,7 +18,6 @@ package org.vesalainen.boat.server;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.boat.server.pages.Transform;
@@ -88,6 +87,8 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         {
             switch (transform)
             {
+                case ROUTE:
+                    return new RouteEvent(source, eventString, currentUnit, propertyUnit);
                 case ROTATE:
                     if (
                             MeterChoice.TrueHeading.equals(meterChoice) ||
@@ -113,7 +114,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
                 case Longitude:
                     return new CoordinateEvent(source, eventString, property, currentUnit, propertyUnit, 'E', 'W');
                 default:
-                    return new Event(source, eventString, property, currentUnit, propertyUnit);
+                    return new Event(source, eventString, new String[] {property}, currentUnit, propertyUnit);
             }
         }
     }
@@ -123,8 +124,11 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         System.err.println(eventString);
         Event event = createEvent(eventString);
         eventMap.put(eventString, event);
-        String property = event.getProperty();
-        propertyMapList.add(property, event);
+        String[] properties = event.getProperties();
+        for (String property : properties)
+        {
+            propertyMapList.add(property, event);
+        }
         event.register(service);
     }
 
@@ -135,12 +139,12 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         if (ev != null)
         {
             eventMap.remove(event);
-            String property = ev.getProperty();
-            propertyMapList.remove(property);
-            if (NmeaProperties.isProperty(property))
+            String[] properties = ev.getProperties();
+            for (String property : properties)
             {
-                service.removeNMEAObserver(this, property);
+                propertyMapList.remove(property);
             }
+            service.removeNMEAObserver(this, properties);
         }
     }
 
@@ -209,7 +213,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     {
         for (Event ev : propertyMapList.get(property))
         {
-            ev.fire(arg);
+            ev.fire(property, arg);
         }
     }
     

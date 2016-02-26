@@ -22,5 +22,6 @@ package org.vesalainen.boat.server.pages;
  */
 public enum Transform
 {
-    ROTATE
+    ROTATE,
+    ROUTE
 }

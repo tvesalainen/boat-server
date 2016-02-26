@@ -37,7 +37,9 @@ public enum MeterChoice
     TrueWindAngle(OneRow),
     WindSpeed(OneRow),
     Latitude(OneRow),
-    Longitude(OneRow)
+    Longitude(OneRow),
+    BearingToDestination(OneRow),
+    CrossTrackError(OneRow)
     ;
     
     private final Layout layout;

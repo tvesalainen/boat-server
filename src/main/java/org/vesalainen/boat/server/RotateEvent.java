@@ -29,11 +29,11 @@ public class RotateEvent extends Event
 
     public RotateEvent(DataSource source, String eventString, String property, Transform transform)
     {
-        super(source, eventString, property, null, null);
+        super(source, eventString, new String[] {property}, null, null);
     }
 
     @Override
-    protected void populate(JSONObject jo, double value)
+    protected void populate(JSONObject jo, String property, double value)
     {
         jo.keySet().clear();
         jo.put("transform", String.format(Locale.US, "rotate(%.0f)", value));

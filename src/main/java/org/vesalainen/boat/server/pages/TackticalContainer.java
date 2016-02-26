@@ -46,6 +46,29 @@ public class TackticalContainer extends BaseContainer
                 .setAttr("orient", "auto")
                 .setAttr("d", "M 0 0 L 10 5 L 0 10 z");
         
+        Element route = svg.addElement("g")
+                .setAttr("style", "display: none;")
+                .setAttr("transform", "rotate(0)")
+                .setAttr(AbstractSSESource.EventSink, "BearingToDestination-DEGREE-ROUTE");
+        route.addElement("path")
+                .setAttr("id", "centerLine")
+                .setAttr("stroke", "green")
+                .setAttr("stroke-width", "1")
+                .setAttr("fill", "none")
+                .setAttr("d", "M 0 50 l 0 -100");
+        route.addElement("path")
+                .setAttr("id", "leftLine")
+                .setAttr("stroke", "green")
+                .setAttr("stroke-width", "1")
+                .setAttr("fill", "none")
+                .setAttr("d", "M -30 50 l 0 -100");
+        route.addElement("path")
+                .setAttr("id", "rightLine")
+                .setAttr("stroke", "green")
+                .setAttr("stroke-width", "1")
+                .setAttr("fill", "none")
+                .setAttr("d", "M 30 50 l 0 -100");
+        
         svg.addElement("path")
                 .setAttr("id", "boat")
                 .setAttr("style", "display: none;")
@@ -94,7 +117,8 @@ public class TackticalContainer extends BaseContainer
                 .setAttr("stroke-width", "2")
                 .setAttr("fill", "none")
                 .setAttr("d", "M 0 0 l 0 -40")
-                .setAttr("marker-end", "url(#triangle)");
+                .setAttr("marker-end", "url(#triangle)");   // TODO
+        
     }
     
 }

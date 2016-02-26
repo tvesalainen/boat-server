@@ -49,25 +49,25 @@ public class Event
 
     protected final DataSource source;
     protected final String event;
-    protected final String property;
+    protected String[] properties;
     protected final UnitType currentUnit;
     protected UnitType propertyUnit;
     protected JSONObject json = new JSONObject();
     protected JSONObject prev = new JSONObject();
     protected long lastFire;
 
-    public Event(DataSource source, String event, String property, UnitType currentUnit, UnitType propertyUnit)
+    public Event(DataSource source, String event, String[] properties, UnitType currentUnit, UnitType propertyUnit)
     {
         this.source = source;
         this.event = event;
-        this.property = property;
+        this.properties = properties;
         this.currentUnit = currentUnit;
         this.propertyUnit = propertyUnit;
     }
 
-    public void fire(double value)
+    public void fire(String property, double value)
     {
-        populate(json, convert(value));
+        populate(json, property, convert(value));
         long now = System.currentTimeMillis();
         if (!json.similar(prev) || now-lastFire > RefreshLimit)
         {
@@ -76,7 +76,7 @@ public class Event
             lastFire = now;
         }
     }
-
+    
     protected double convert(double value)
     {
         if (propertyUnit != null)
@@ -89,7 +89,7 @@ public class Event
         }
     }
     
-    protected void populate(JSONObject jo, double value)
+    protected void populate(JSONObject jo, String property, double value)
     {
         json.keySet().clear();
         json.put("text", format(value));
@@ -111,9 +111,9 @@ public class Event
         return String.format(I18n.getLocale(), format, value, currentUnit.getUnit());
     }
     
-    public String getProperty()
+    public String[] getProperties()
     {
-        return property;
+        return properties;
     }
 
     public UnitType getUnit()
@@ -123,14 +123,7 @@ public class Event
 
     public void register(NMEAService service)
     {
-        if (NmeaProperties.isProperty(property))
-        {
-            service.addNMEAObserver(source, property);
-        }
-        else
-        {
-            throw new IllegalArgumentException(property+" is not NMEAObserver property");
-        }
+        service.addNMEAObserver(source, properties);
     }
 
 }
