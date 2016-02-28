@@ -35,7 +35,8 @@ public class TackticalContainer extends BaseContainer
     @Override
     protected void addSVGContent(Element svg)
     {
-        svg.addElement("marker")
+        Element defs = svg.addElement("defs");
+        defs.addElement("marker")
                 .setAttr("id", "triangle")
                 .setAttr("viewBox", "0 0 10 10")
                 .setAttr("refX", "0")
@@ -45,6 +46,8 @@ public class TackticalContainer extends BaseContainer
                 .setAttr("markerHeight", "3")
                 .setAttr("orient", "auto")
                 .setAttr("d", "M 0 0 L 10 5 L 0 10 z");
+
+        svg.addElement(new CompassRing(0.5, 45));
         
         Element route = svg.addElement("g")
                 .setAttr("style", "display: none;")

@@ -26,6 +26,8 @@ import org.vesalainen.math.UnitType;
  */
 public class RouteEvent extends Event
 {
+    private static final double A = Math.pow(40, 0.1);
+    
     private double bearingToDestination;
     private double crossTrackError;
     
@@ -49,9 +51,9 @@ public class RouteEvent extends Event
                 throw new IllegalArgumentException(property+" unexpected");
         }
         jo.keySet().clear();
-        double scale = 1.0/Math.exp(Math.abs(crossTrackError));
-        double translate = Math.signum(crossTrackError)*scale;
-        jo.put("transform", String.format(Locale.US, "scale(%.3f) translate(%.3f) rotate(%.0f)", scale, translate, bearingToDestination));
+        double scale = 1.0/Math.pow(A, Math.abs(crossTrackError));
+        double translate = Math.signum(crossTrackError)*(30-scale*30);
+        jo.put("transform", String.format(Locale.US, " rotate(%.0f)  translate(%.3f,0) scale(%.3f,1)", bearingToDestination, translate, scale));
     }
 
 }

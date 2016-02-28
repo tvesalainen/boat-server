@@ -23,7 +23,7 @@ import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.boat.server.pages.Transform;
 import org.vesalainen.code.PropertySetter;
 import org.vesalainen.math.UnitType;
-import org.vesalainen.navi.TimeSlidingAngleAverage;
+import org.vesalainen.math.sliding.TimeoutSlidingAngleAverage;
 import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.parsers.nmea.NMEAService;
 import org.vesalainen.util.HashMapList;
@@ -43,7 +43,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     private final Map<String,Event> eventMap = new HashMap<>();
     private final MapList<String,Event> propertyMapList = new HashMapList<>();
     private float trueHeading;
-    private TimeSlidingAngleAverage trackMadeGoodAve = new TimeSlidingAngleAverage(10, 5000);
+    private TimeoutSlidingAngleAverage trackMadeGoodAve = new TimeoutSlidingAngleAverage(10, 5000);
 
     public DataSource() throws IOException
     {
