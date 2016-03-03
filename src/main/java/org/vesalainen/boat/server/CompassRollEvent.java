@@ -16,33 +16,37 @@
  */
 package org.vesalainen.boat.server;
 
-import java.util.Locale;
 import org.json.JSONObject;
 import org.vesalainen.boat.server.pages.Transform;
+import org.vesalainen.math.sliding.TimeoutSlidingMax;
+import org.vesalainen.math.sliding.TimeoutSlidingMin;
 
 /**
  *
  * @author tkv
  */
-public class RotateEvent extends Event
+public class CompassRollEvent extends RotateEvent
 {
-    private String format;
-    public RotateEvent(DataSource source, String eventString, String property, Transform transform)
+    private static final long Timeout = 15*60*1000;
+    private static final int Size = 16*60;
+    private TimeoutSlidingMax max = new TimeoutSlidingMax(Size, Timeout);
+    private TimeoutSlidingMin min = new TimeoutSlidingMin(Size, Timeout);
+    
+    public CompassRollEvent(DataSource source, String eventString, String property, Transform transform)
     {
-        this(source, eventString, property, transform, "rotate(%.0f)");
-    }
-
-    public RotateEvent(DataSource source, String eventString, String property, Transform transform, String format)
-    {
-        super(source, eventString, property, null, null);
-        this.format = format;
+        super(source, eventString, property, transform, "rotate(%.1f)");
     }
 
     @Override
     protected void populate(JSONObject jo, String property, double value)
     {
-        jo.keySet().clear();
-        jo.put("transform", String.format(Locale.US, format, value));
+        max.add(value);
+        min.add(value);
+        if (value < 0)
+        {
+            value += 360;
+        }
+        super.populate(jo, property, value);
     }
-    
+
 }

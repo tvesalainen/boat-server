@@ -14,15 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.vesalainen.boat.server.pages;
+package org.vesalainen.boat.server;
+
+import java.util.Locale;
+import org.json.JSONObject;
+import org.vesalainen.math.UnitType;
 
 /**
  *
  * @author tkv
  */
-public enum Transform
+public class CompassPitchEvent extends Event
 {
-    ROTATE,
-    COMPASS,
-    ROUTE
+    private static final double ViewAngle = 45;
+    
+    public CompassPitchEvent(DataSource source, String event, String property, UnitType currentUnit, UnitType propertyUnit)
+    {
+        super(source, event, property, currentUnit, propertyUnit);
+    }
+    
+    @Override
+    protected void populate(JSONObject jo, String property, double value)
+    {
+        jo.keySet().clear();
+        jo.put("transform", String.format(Locale.US, "scale(1,%.3f)", Math.cos(Math.toRadians(90-ViewAngle-value))));
+    }
+    
 }

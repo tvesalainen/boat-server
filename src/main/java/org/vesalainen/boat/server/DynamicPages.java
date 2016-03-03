@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.vesalainen.boat.server.pages.AddMeterContent;
 import org.vesalainen.boat.server.pages.AddPage;
+import org.vesalainen.boat.server.pages.CompassContainer;
 import org.vesalainen.boat.server.pages.MeterPage;
 import org.vesalainen.boat.server.pages.OneRowContainer;
 import org.vesalainen.boat.server.pages.TackticalContainer;
@@ -57,6 +58,7 @@ public class DynamicPages extends ThreadLocalContent<Context>
         containerMap.put(Layout.OneRow, new OneRowContainer(document));
         containerMap.put(Layout.TwoRow, new TwoRowContainer(document));
         containerMap.put(Layout.TackticalFullScreen, new TackticalContainer(document));
+        containerMap.put(Layout.CompassFullScreen, new CompassContainer(document));
     }
 
     @Override

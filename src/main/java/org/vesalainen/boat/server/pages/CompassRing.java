@@ -16,8 +16,6 @@
  */
 package org.vesalainen.boat.server.pages;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.vesalainen.html.Element;
 import org.vesalainen.util.Lists;
 
@@ -36,48 +34,12 @@ public class CompassRing extends Element
     public CompassRing(double em, double r, double cx, double cy)
     {
         super("g");
-        addElement(new Ring(r, cx, cy, 1, 5, 0.3, "black"));
-        addElement(new Ring(r, cx, cy, 5, 7, 0.6, "black"));
-        addElement(new Ring(r, cx, cy, 10, 10, 1, "black"));
+        addElement(new Arc(r, cx, cy, 1, 5, 0.3, "black"));
+        addElement(new Arc(r, cx, cy, 5, 7, 0.6, "black"));
+        addElement(new Arc(r, cx, cy, 10, 10, 1, "black"));
         addElement(new Scale(em, r, cx, cy));
     }
 
-    private static class Ring extends Element
-    {
-
-        public Ring(double r1, double cx, double cy, int step, double length, double strokeWidth, String color)
-        {
-            super("path");
-            setAttr("stroke", color);
-            setAttr("stroke-width", strokeWidth);
-            StringBuilder sb = new StringBuilder();
-            double r2 = r1-length;
-            for (int a=0;a<360;a+=step)
-            {
-                double rad = Math.toRadians(a);
-                double sin = Math.sin(rad);
-                double cos = Math.cos(rad);
-                double x1 = cx + sin*r1;
-                double y1 = cy - cos*r1;
-                double x2 = cx + sin*r2;
-                double y2 = cy - cos*r2;
-                if (a > 0)
-                {
-                    sb.append(" ");
-                }
-                sb.append("M");
-                sb.append(x1);
-                sb.append(",");
-                sb.append(y1);
-                sb.append("L");
-                sb.append(x2);
-                sb.append(",");
-                sb.append(y2);
-            }
-            setAttr("d", sb.toString());
-        }
-        
-    }
     private static class Scale extends Element
     {
 

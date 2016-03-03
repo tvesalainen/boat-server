@@ -22,6 +22,7 @@ package org.vesalainen.boat.server;
  */
 public enum Layout
 {
+    CompassFullScreen,
     TackticalFullScreen,
     OneRow,
     TwoRow

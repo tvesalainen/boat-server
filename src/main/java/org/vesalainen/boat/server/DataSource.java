@@ -69,8 +69,11 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         MeterChoice meterChoice;
         String property;
         Transform transform = null;
+        String ext = null;
         switch (evs.length)
         {
+            case 4:
+                ext = evs[3];
             case 3:
                 transform = Transform.valueOf(evs[2]);
             case 2:
@@ -87,6 +90,23 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         {
             switch (transform)
             {
+                case COMPASS:
+                    switch (meterChoice)
+                    {
+                        case TrueHeading:
+                            return new CompassRotateEvent(source, eventString, property, transform, "rotate(%.1f)");
+                        case Pitch:
+                            return new CompassPitchEvent(source, eventString, property, currentUnit, propertyUnit);
+                        case Roll:
+                            if (ext == null)
+                            {
+                                return new CompassRollEvent(source, eventString, property, transform);
+                            }
+                            else
+                            {
+                                return new CompassRollBoundEvent(source, eventString, property, ext);
+                            }
+                    }
                 case ROUTE:
                     return new RouteEvent(source, eventString, currentUnit, propertyUnit);
                 case ROTATE:

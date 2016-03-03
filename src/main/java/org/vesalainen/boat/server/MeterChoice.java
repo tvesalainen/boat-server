@@ -24,6 +24,7 @@ import static org.vesalainen.boat.server.Layout.*;
  */
 public enum MeterChoice
 {
+    Compass(CompassFullScreen),
     Tacktical(TackticalFullScreen),
     Location(TwoRow, "Latitude", "Longitude"),
     DepthBelowTransducer(OneRow),
@@ -36,6 +37,8 @@ public enum MeterChoice
     RelativeWindAngle(OneRow),
     TrueWindAngle(OneRow),
     WindSpeed(OneRow),
+    Pitch(OneRow),
+    Roll(OneRow),
     Latitude(OneRow),
     Longitude(OneRow),
     BearingToDestination(OneRow),

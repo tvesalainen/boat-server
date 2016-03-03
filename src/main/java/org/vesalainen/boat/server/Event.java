@@ -19,7 +19,6 @@ package org.vesalainen.boat.server;
 import java.util.EnumMap;
 import java.util.Map;
 import org.json.JSONObject;
-import static org.vesalainen.boat.server.DataSource.NmeaProperties;
 import org.vesalainen.json.JsonHelper;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.parsers.nmea.NMEAService;
@@ -56,6 +55,11 @@ public class Event
     protected JSONObject prev = new JSONObject();
     protected long lastFire;
 
+    public Event(DataSource source, String event, String property, UnitType currentUnit, UnitType propertyUnit)
+    {
+        this(source, event, new String[] {property}, currentUnit, propertyUnit);
+    }
+    
     public Event(DataSource source, String event, String[] properties, UnitType currentUnit, UnitType propertyUnit)
     {
         this.source = source;
