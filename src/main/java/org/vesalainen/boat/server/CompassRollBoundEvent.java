@@ -17,7 +17,6 @@
 package org.vesalainen.boat.server;
 
 import org.json.JSONObject;
-import org.vesalainen.boat.server.pages.Transform;
 import org.vesalainen.math.sliding.AbstractTimeoutSlidingBound;
 import org.vesalainen.math.sliding.TimeoutSlidingMax;
 import org.vesalainen.math.sliding.TimeoutSlidingMin;
@@ -38,10 +37,10 @@ public class CompassRollBoundEvent extends RotateEvent
         switch (ext)
         {
             case "Port":
-                bound = new TimeoutSlidingMin(Size, Timeout);
+                bound = new TimeoutSlidingMax(Size, Timeout);
                 break;
             case "Starboard":
-                bound = new TimeoutSlidingMax(Size, Timeout);
+                bound = new TimeoutSlidingMin(Size, Timeout);
                 break;
             default:
                 throw new IllegalArgumentException(ext+" unknown");
@@ -51,7 +50,7 @@ public class CompassRollBoundEvent extends RotateEvent
     @Override
     protected void populate(JSONObject jo, String property, double value)
     {
-        bound.add(value);
+        bound.add(-value);
         double b = bound.getBound();
         if (b < 0)
         {

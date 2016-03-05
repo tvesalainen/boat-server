@@ -29,8 +29,6 @@ public class CompassRollEvent extends RotateEvent
 {
     private static final long Timeout = 15*60*1000;
     private static final int Size = 16*60;
-    private TimeoutSlidingMax max = new TimeoutSlidingMax(Size, Timeout);
-    private TimeoutSlidingMin min = new TimeoutSlidingMin(Size, Timeout);
     
     public CompassRollEvent(DataSource source, String eventString, String property, Transform transform)
     {
@@ -40,8 +38,7 @@ public class CompassRollEvent extends RotateEvent
     @Override
     protected void populate(JSONObject jo, String property, double value)
     {
-        max.add(value);
-        min.add(value);
+        value = -value;
         if (value < 0)
         {
             value += 360;
