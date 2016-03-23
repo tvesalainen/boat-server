@@ -50,7 +50,7 @@ public class CompassRollBoundEvent extends RotateEvent
     @Override
     protected void populate(JSONObject jo, String property, double value)
     {
-        bound.add(-value);
+        bound.accept(-value);
         double b = bound.getBound();
         if (b < 0)
         {

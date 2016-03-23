@@ -35,9 +35,39 @@ public class CompassContainer extends BaseContainer
     @Override
     protected void addSVGContent(Element svg)
     {
-        svg.addElement(new Arc(50, 0, 0, 120, 240, 1, 3, 0.3, "black"));
-        svg.addElement(new Arc(50, 0, 0, 120, 240, 5, 5, 0.6, "black"));
-        svg.addElement(new Arc(50, 0, 0, 120, 240, 10, 7, 0.9, "black"));
+        //svg.addElement(new Arc(50, 0, 0, 120, 240, 1, 3, 0.3, "black"));
+        //svg.addElement(new Arc(50, 0, 0, 120, 240, 5, 5, 0.6, "black"));
+        //svg.addElement(new Arc(50, 0, 0, 120, 240, 10, 7, 0.9, "black"));
+        Element g1 = svg.addElement("g");
+        g1.setAttr("clip-rue", "nonzero");
+        Element clipPath = g1.addElement("clipPath");
+        clipPath.setAttr("id", "leanScale");
+        double rad = Math.toRadians(60);
+        double sin = Math.sin(rad);
+        double cos = Math.cos(rad);
+        double x = 100*sin;
+        double y = 100*cos;
+        Element path = clipPath.addElement("path");
+        path.setAttr("d", "M0,0L-"+x+","+y+"L"+x+","+y+"z");
+        Element g2 = g1.addElement("g");
+        g2.setAttr("clip-path", "url(#leanScale)");
+        g2.addElement("use")
+                .setAttr("xlink:href", "/defs.svg#compass-scale-1")
+                .setAttr("transform", "scale(50)")
+                .setAttr("stroke", "black")
+                .setAttr("stroke-width", 0.3/50);
+
+        g2.addElement("use")
+                .setAttr("xlink:href", "/defs.svg#compass-scale-5")
+                .setAttr("transform", "scale(50)")
+                .setAttr("stroke", "black")
+                .setAttr("stroke-width", 0.6/50);
+
+        g2.addElement("use")
+                .setAttr("xlink:href", "/defs.svg#compass-scale-10")
+                .setAttr("transform", "scale(50)")
+                .setAttr("stroke", "black")
+                .setAttr("stroke-width", 1/50);
 
         svg.addElement("path")
                 .setAttr("style", "display: none;")

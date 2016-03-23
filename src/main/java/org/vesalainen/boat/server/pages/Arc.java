@@ -32,8 +32,6 @@ public class Arc extends Element
     public Arc(double r1, double cx, double cy, int start, int end, int step, double length, double strokeWidth, String color)
     {
         super("path");
-        setAttr("stroke", color);
-        setAttr("stroke-width", strokeWidth);
         StringBuilder sb = new StringBuilder();
         double r2 = r1 - length;
         for (int a = start; a < end; a += step)

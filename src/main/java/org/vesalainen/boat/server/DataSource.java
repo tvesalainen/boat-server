@@ -220,7 +220,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
                 fireAll(property, arg);
                 break;
             case "trackMadeGood":
-                trackMadeGoodAve.add(arg);
+                trackMadeGoodAve.accept(arg);
                 fireAll(property, trackMadeGoodAve.fast());
                 break;
             default:
