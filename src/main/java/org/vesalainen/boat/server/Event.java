@@ -16,6 +16,7 @@
  */
 package org.vesalainen.boat.server;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.DoubleUnaryOperator;
 import org.json.JSONObject;
 import org.vesalainen.bean.BeanHelper;
@@ -23,6 +24,10 @@ import static org.vesalainen.boat.server.DataSource.NmeaProperties;
 import org.vesalainen.boat.server.pages.EventAction;
 import org.vesalainen.json.JsonHelper;
 import org.vesalainen.math.UnitType;
+import org.vesalainen.math.sliding.Stats;
+import org.vesalainen.math.sliding.StatsSupplier;
+import org.vesalainen.math.sliding.TimeoutStats;
+import org.vesalainen.math.sliding.TimeoutStatsService.StatsObserver;
 
 /**
  *
@@ -38,8 +43,8 @@ public class Event
     protected final UnitType currentUnit;
     protected final UnitType propertyUnit;
     protected final String action;
-    protected final BiFormat format;
-    protected final DoubleUnaryOperator func;
+    protected final EventFormat format;
+    protected final EventFunction func;
     protected JSONObject json = new JSONObject();
     protected JSONObject prev = new JSONObject();
     protected long lastFire;
@@ -73,12 +78,15 @@ public class Event
         UnitType propertyUnit = null;
         MeterChoice meterChoice;
         String property;
-        EventAction action = EventAction.DEFAULT;
-        String ext = null;
+        EventAction action = EventAction.Default;
+        int seconds = 0;
+        StatsType statsType = null;
         switch (evs.length)
         {
+            case 5:
+                statsType = StatsType.valueOf(evs[4]);
             case 4:
-                ext = evs[3];
+                seconds = Integer.parseInt(evs[3]);
             case 3:
                 action = EventAction.valueOf(evs[2]);
             case 2:
@@ -91,13 +99,44 @@ public class Event
             default:
                 throw new IllegalArgumentException(eventString+" illegal");
         }
-        return new Event(source, eventString, property, currentUnit, propertyUnit, action);
+        if (statsType == null)
+        {
+            return new Event(source, eventString, property, currentUnit, propertyUnit, action);
+        }
+        else
+        {
+            StatsSupplier op = null;
+            switch (statsType)
+            {
+                case Ave:
+                    op = Stats::fast;
+                    break;
+                case Min:
+                    op = Stats::getMin;
+                    break;
+                case Max:
+                    op = Stats::getMax;
+                    break;
+            }
+            return new StatsEvent(source, eventString, property, currentUnit, propertyUnit, action, seconds, op);
+        }
     }
+    
+    public void register()
+    {
+        source.getService().addNMEAObserver(source, property);
+    }
+    
+    public void unregister()
+    {
+        source.getService().removeNMEAObserver(source, property);
+    }
+    
     public void fire(String property, double value)
     {
         json.keySet().clear();
         value = convert(value);
-        value = (double) func.applyAsDouble(value);
+        value = (double) func.apply(value, source.getValueMap());
         json.put(action, format.format(value, currentUnit));
         long now = System.currentTimeMillis();
         if (!json.similar(prev) || now-lastFire > RefreshLimit)
@@ -138,6 +177,46 @@ public class Event
     public UnitType getUnit()
     {
         return currentUnit;
+    }
+
+    public static class StatsEvent extends Event implements StatsObserver
+    {
+        private int seconds;
+        private StatsSupplier op;
+        
+        public StatsEvent(DataSource source, String eventString, String property, UnitType currentUnit, UnitType propertyUnit, EventAction action, int seconds, StatsSupplier op)
+        {
+            super(source, eventString, property, currentUnit, propertyUnit, action);
+            this.seconds = seconds;
+            this.op = op;
+        }
+
+        @Override
+        public void register()
+        {
+            source.getStatsService().addObserver(property+':'+seconds, this, UnitType.DEGREE.equals(propertyUnit));
+        }
+
+        @Override
+        public void unregister()
+        {
+            source.getStatsService().removeObserver(property+':'+seconds, this);
+        }
+
+        @Override
+        public void changed(TimeoutStats stats)
+        {
+            if (op != null)
+            {
+                fire(property, op.get(stats));
+            }
+            else
+            {
+                throw new UnsupportedOperationException("not supported");
+            }
+        }
+        
+        
     }
 
 }

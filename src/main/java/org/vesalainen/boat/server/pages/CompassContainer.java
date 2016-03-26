@@ -85,11 +85,11 @@ public class CompassContainer extends BaseContainer
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
                 .setAttr("d", "M 0 50 l 0 -10")
-                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-ROTATE-STATS-500-Max");
+                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-Rotate-Stats-500-Max");
         
         Element view = svg.addElement("g")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-ROTATE-STATS-500-Current");
+                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-Rotate-Stats-500-Current");
         
         view.addElement("path")
                 .setAttr("stroke", "blue")
@@ -99,7 +99,7 @@ public class CompassContainer extends BaseContainer
         
         Element plane = view.addElement("g")
                 .setAttr("transform", "scale(1,0.5)")
-                .setAttr(AbstractSSESource.EventSink, "Pitch-DEGREE-COMPASS");
+                .setAttr(AbstractSSESource.EventSink, "Pitch-DEGREE-CompassPitch");
         Element compass = plane.addElement("g")
                 .setAttr("style", "display: none;")
                 .setAttr("transform", "rotate(0)")

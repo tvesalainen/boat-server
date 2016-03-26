@@ -16,14 +16,14 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.math.UnitType;
+import org.vesalainen.util.FloatMap;
 
 /**
  *
  * @author tkv
  */
 @FunctionalInterface
-public interface BiFormat
+public interface EventFunction
 {
-    String format(double value, UnitType unit);
+    double apply(double value, FloatMap map);
 }

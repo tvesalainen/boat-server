@@ -21,8 +21,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.vesalainen.code.PropertySetter;
 import org.vesalainen.math.sliding.TimeoutSlidingAngleAverage;
+import org.vesalainen.math.sliding.TimeoutStatsService;
 import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.parsers.nmea.NMEAService;
+import org.vesalainen.util.FloatMap;
 import org.vesalainen.util.HashMapList;
 import org.vesalainen.util.MapList;
 import org.vesalainen.web.servlet.AbstractSSESource;
@@ -39,14 +41,15 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     private final NMEAService service;
     private final Map<String,Event> eventMap = new HashMap<>();
     private final MapList<String,Event> propertyMapList = new HashMapList<>();
-    private float trueHeading;
-    private TimeoutSlidingAngleAverage trackMadeGoodAve = new TimeoutSlidingAngleAverage(10, 5000);
+    private final FloatMap<String> valueMap = new FloatMap();
+    private final TimeoutStatsService statsService;
 
     public DataSource() throws IOException
     {
         super(Action);
         service = new NMEAService("224.0.0.3", 10110);
         service.start();
+        statsService = new TimeoutStatsService(service.getDispatcher(), "boat-server");
     }
 
     public static DataSource getInstance() throws IOException
@@ -136,6 +139,17 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         }
     }
     */
+
+    public NMEAService getService()
+    {
+        return service;
+    }
+
+    public TimeoutStatsService getStatsService()
+    {
+        return statsService;
+    }
+    
     @Override
     protected void addEvent(String eventString)
     {
@@ -144,7 +158,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         eventMap.put(eventString, event);
         String property = event.getProperty();
         propertyMapList.add(property, event);
-        service.addNMEAObserver(source, property);
+        event.register();
     }
 
     @Override
@@ -156,8 +170,13 @@ public class DataSource extends AbstractSSESource implements PropertySetter
             eventMap.remove(eventString);
             String property = event.getProperty();
             propertyMapList.remove(property);
-            service.removeNMEAObserver(this, property);
+            event.unregister();
         }
+    }
+
+    public FloatMap<String> getValueMap()
+    {
+        return valueMap;
     }
 
     @Override
@@ -205,19 +224,14 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     @Override
     public void set(String property, float arg)
     {
-        switch (property)
+        valueMap.put(property, arg);
+        try
         {
-            case "trueHeading":
-                trueHeading = arg;
-                fireAll(property, arg);
-                break;
-            case "trackMadeGood":
-                trackMadeGoodAve.accept(arg);
-                fireAll(property, trackMadeGoodAve.fast());
-                break;
-            default:
-                fireAll(property, arg);
-                break;
+            fireAll(property, arg);
+        }
+        catch (Exception ex)
+        {
+            System.err.println(ex.getMessage());
         }
     }
 
@@ -241,9 +255,4 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public float getTrueHeading()
-    {
-        return trueHeading;
-    }
-    
 }

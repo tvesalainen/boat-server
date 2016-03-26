@@ -16,10 +16,13 @@
  */
 package org.vesalainen.boat.server.pages;
 
-import java.util.function.DoubleUnaryOperator;
-import org.vesalainen.boat.server.BiFormat;
+import java.util.Locale;
+import static org.vesalainen.boat.server.Constants.*;
+import org.vesalainen.boat.server.EventFormat;
+import org.vesalainen.boat.server.EventFunction;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.navi.CoordinateFormat;
+import org.vesalainen.util.FloatMap;
 import org.vesalainen.web.I18n;
 
 /**
@@ -29,24 +32,31 @@ import org.vesalainen.web.I18n;
 public enum EventAction
 {
 
-    DEFAULT("text", "%.1f%s", EventAction::same),
-    ROTATE("transform", "rotate(%.1f)", EventAction::same),
-    LATITUDE("text", (double v, UnitType u)->CoordinateFormat.formatLatitude(v, I18n.getLocale(), u), EventAction::same),
-    LONGITUDE("text", (double v, UnitType u)->CoordinateFormat.formatLongitude(v, I18n.getLocale(), u), EventAction::same)
+    Default("text", "%.1f%s", EventAction::same),
+    Rotate("transform", (double v, UnitType u)->{ return String.format(Locale.US, "rotate(%.1f)", v);}, EventAction::same),
+    BoatRelativeRotate("transform", (double v, UnitType u)->{ return String.format(Locale.US, "rotate(%.1f)", v);}, (double v, FloatMap m)->{return (m.getFloat("trueHeading")+v) % 360;}),
+    Latitude("text", (double v, UnitType u)->{ return CoordinateFormat.formatLatitude(v, I18n.getLocale(), u);}, EventAction::same),
+    Longitude("text", (double v, UnitType u)->{ return CoordinateFormat.formatLongitude(v, I18n.getLocale(), u);}, EventAction::same),
+    CompassPitch("transform", (double v, UnitType u)->{ return String.format(Locale.US, "scale(1,%.3f)", v);}, (double v, FloatMap m)->{ return Math.cos(Math.toRadians(90-ViewAngle-v));}),
+    CompassRotate("transform", (double v, UnitType u)->{ return String.format(Locale.US, "rotate(%.1f)", v);}, (double v, FloatMap m)->{return 360-v;}),
+    Route1("transform", (double v, UnitType u)->{ return String.format(Locale.US, "rotate(%.0f)", v);}, EventAction::same),
+    Route2("transform", (double v, UnitType u)->{ return String.format(Locale.US, "translate(%.3f,0)", v);}, (double v, FloatMap m)->{return 1.0/Math.pow(A, Math.abs(v));}),
+    Route3("transform", (double v, UnitType u)->{ return String.format(Locale.US, "translate(%.3f,0)", v);}, (double v, FloatMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
+
 ;
 
     private final String action;
-    private final BiFormat format;
-    private final DoubleUnaryOperator func;
+    private final EventFormat format;
+    private final EventFunction func;
 
-    private EventAction(String action, BiFormat format, DoubleUnaryOperator func)
+    private EventAction(String action, EventFormat format, EventFunction func)
     {
         this.action = action;
         this.format = format;
         this.func = func;
     }
 
-    private EventAction(String action, String format, DoubleUnaryOperator func)
+    private EventAction(String action, String format, EventFunction func)
     {
         this.action = action;
         this.format = (double v, UnitType u)->String.format(I18n.getLocale(), format, v, u.getUnit());
@@ -58,17 +68,17 @@ public enum EventAction
         return action;
     }
 
-    public BiFormat getFormat()
+    public EventFormat getFormat()
     {
         return format;
     }
 
-    public DoubleUnaryOperator getFunc()
+    public EventFunction getFunc()
     {
         return func;
     }
 
-    private static double same(double value)
+    private static double same(double value, FloatMap map)
     {
         return value;
     }

@@ -49,23 +49,29 @@ public class TackticalContainer extends BaseContainer
 
         svg.addElement(new CompassRing(0.5, 45));
         
-        Element route = svg.addElement("g")
+        Element route1 = svg.addElement("g")
                 .setAttr("style", "display: none;")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "BearingToDestination-DEGREE-ROUTE");
-        route.addElement("path")
+                .setAttr(AbstractSSESource.EventSink, "BearingToDestination-DEGREE-Route1");
+        Element route2 = route1.addElement("g")
+                .setAttr("transform", "rotate(0)")
+                .setAttr(AbstractSSESource.EventSink, "CrossTrackError-NM-Route2");
+        Element route3 = route2.addElement("g")
+                .setAttr("transform", "rotate(0)")
+                .setAttr(AbstractSSESource.EventSink, "CrossTrackError-NM-Route3");
+        route3.addElement("path")
                 .setAttr("id", "centerLine")
                 .setAttr("stroke", "green")
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
                 .setAttr("d", "M 0 50 l 0 -100");
-        route.addElement("path")
+        route3.addElement("path")
                 .setAttr("id", "leftLine")
                 .setAttr("stroke", "green")
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
                 .setAttr("d", "M -30 50 l 0 -100");
-        route.addElement("path")
+        route3.addElement("path")
                 .setAttr("id", "rightLine")
                 .setAttr("stroke", "green")
                 .setAttr("stroke-width", "1")
@@ -79,7 +85,7 @@ public class TackticalContainer extends BaseContainer
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "TrueHeading-DEGREE-ROTATE")
+                .setAttr(AbstractSSESource.EventSink, "TrueHeading-DEGREE-Rotate")
                 .setAttr("d", 
                         "M -20 40 l 40 0 "+
                         "C 23 10 20 -15 0 -40"+
@@ -90,7 +96,7 @@ public class TackticalContainer extends BaseContainer
         Element relativeWindAngle = svg.addElement("g")
                 .setAttr("style", "display: none;")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "RelativeWindAngle-DEGREE-ROTATE");
+                .setAttr(AbstractSSESource.EventSink, "RelativeWindAngle-DEGREE-BoatRelativeRotate");
         relativeWindAngle.addElement("path")
                 .setAttr("id", "windIndicatorTip")
                 .setAttr("stroke", "red")
@@ -113,7 +119,7 @@ public class TackticalContainer extends BaseContainer
         Element trackMadeGood = svg.addElement("g")
                 .setAttr("style", "display: none;")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "TrackMadeGood-DEGREE-ROTATE");
+                .setAttr(AbstractSSESource.EventSink, "TrackMadeGood-DEGREE-Rotate-300-Ave");
         trackMadeGood.addElement("path")
                 .setAttr("id", "trackMadeGood")
                 .setAttr("stroke", "blue")

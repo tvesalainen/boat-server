@@ -16,29 +16,13 @@
  */
 package org.vesalainen.boat.server;
 
-import org.json.JSONObject;
-import org.vesalainen.boat.server.pages.EventAction;
-
 /**
  *
  * @author tkv
  */
-public class CompassRotateEvent extends RotateEvent
+public enum StatsType
 {
-    public CompassRotateEvent(DataSource source, String eventString, String property, EventAction transform)
-    {
-        this(source, eventString, property, transform, "rotate(%.1f)");
-    }
-
-    public CompassRotateEvent(DataSource source, String eventString, String property, EventAction transform, String format)
-    {
-        super(source, eventString, property, transform, format);
-    }
-
-    @Override
-    protected void populate(JSONObject jo, String property, double value)
-    {
-        super.populate(jo, property, 360-value);
-    }
-
+    Ave,
+    Min,
+    Max
 }

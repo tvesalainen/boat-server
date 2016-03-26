@@ -16,25 +16,13 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.boat.server.pages.EventAction;
-
 /**
  *
  * @author tkv
  */
-public class BoatRelativeEvent extends RotateEvent
+public class Constants
 {
-
-    public BoatRelativeEvent(DataSource source, String eventString, String property, EventAction transform)
-    {
-        super(source, eventString, property, transform);
-    }
-
-    @Override
-    protected double convert(double value)
-    {
-        float trueHeading = source.getTrueHeading();
-        return (trueHeading+value) % 360;
-    }
+    public static final double ViewAngle = 45;
+    public static final double A = Math.pow(40, 0.1);
     
 }
