@@ -36,7 +36,7 @@ public class CoordinateEvent extends Event
     @Override
     public void fire(String property, double value)
     {
-        source.fireEvent(event, format(value));
+        source.fireEvent(eventString, format(value));
     }
 
     @Override

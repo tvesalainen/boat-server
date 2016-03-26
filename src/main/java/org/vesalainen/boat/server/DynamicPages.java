@@ -16,7 +16,6 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.boat.server.pages.MeterForm;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +25,7 @@ import java.util.Map.Entry;
 import org.vesalainen.boat.server.pages.AddMeterContent;
 import org.vesalainen.boat.server.pages.AddPage;
 import org.vesalainen.boat.server.pages.CompassContainer;
+import org.vesalainen.boat.server.pages.LocationContainer;
 import org.vesalainen.boat.server.pages.MeterPage;
 import org.vesalainen.boat.server.pages.OneRowContainer;
 import org.vesalainen.boat.server.pages.TackticalContainer;
@@ -57,6 +57,7 @@ public class DynamicPages extends ThreadLocalContent<Context>
         this.unitPage = new UnitPage(document);
         containerMap.put(Layout.OneRow, new OneRowContainer(document));
         containerMap.put(Layout.TwoRow, new TwoRowContainer(document));
+        containerMap.put(Layout.Location, new LocationContainer(document));
         containerMap.put(Layout.TackticalFullScreen, new TackticalContainer(document));
         containerMap.put(Layout.CompassFullScreen, new CompassContainer(document));
     }

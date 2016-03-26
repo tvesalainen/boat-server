@@ -17,7 +17,7 @@
 package org.vesalainen.boat.server;
 
 import org.json.JSONObject;
-import org.vesalainen.boat.server.pages.Transform;
+import org.vesalainen.boat.server.pages.EventAction;
 
 /**
  *
@@ -25,12 +25,12 @@ import org.vesalainen.boat.server.pages.Transform;
  */
 public class CompassRotateEvent extends RotateEvent
 {
-    public CompassRotateEvent(DataSource source, String eventString, String property, Transform transform)
+    public CompassRotateEvent(DataSource source, String eventString, String property, EventAction transform)
     {
         this(source, eventString, property, transform, "rotate(%.1f)");
     }
 
-    public CompassRotateEvent(DataSource source, String eventString, String property, Transform transform, String format)
+    public CompassRotateEvent(DataSource source, String eventString, String property, EventAction transform, String format)
     {
         super(source, eventString, property, transform, format);
     }

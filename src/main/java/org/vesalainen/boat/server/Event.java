@@ -16,13 +16,13 @@
  */
 package org.vesalainen.boat.server;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.function.DoubleUnaryOperator;
 import org.json.JSONObject;
+import org.vesalainen.bean.BeanHelper;
+import static org.vesalainen.boat.server.DataSource.NmeaProperties;
+import org.vesalainen.boat.server.pages.EventAction;
 import org.vesalainen.json.JsonHelper;
 import org.vesalainen.math.UnitType;
-import org.vesalainen.parsers.nmea.NMEAService;
-import org.vesalainen.web.I18n;
 
 /**
  *
@@ -32,50 +32,77 @@ public class Event
 {
     private static final long RefreshLimit = 5000;
     
-    protected static final Map<UnitType,String> formatMap = new EnumMap<>(UnitType.class);
-    static
-    {
-        formatMap.put(UnitType.BEAUFORT, "%.0f %s");
-        formatMap.put(UnitType.DEGREE, "%.0f %s");
-        formatMap.put(UnitType.FOOT, "%.0f %s");
-        formatMap.put(UnitType.GFORCEEARTH, "%.2f %s");
-        formatMap.put(UnitType.HPA, "%.0f %s");
-        formatMap.put(UnitType.INCH, "%.0f %s");
-        formatMap.put(UnitType.PASCAL, "%.0f %s");
-        formatMap.put(UnitType.RADIAN, "%.2f %s");
-        formatMap.put(UnitType.YARD, "%.0f %s");
-    }
-
     protected final DataSource source;
-    protected final String event;
-    protected String[] properties;
+    protected final String eventString;
+    protected final String property;
     protected final UnitType currentUnit;
-    protected UnitType propertyUnit;
+    protected final UnitType propertyUnit;
+    protected final String action;
+    protected final BiFormat format;
+    protected final DoubleUnaryOperator func;
     protected JSONObject json = new JSONObject();
     protected JSONObject prev = new JSONObject();
     protected long lastFire;
 
-    public Event(DataSource source, String event, String property, UnitType currentUnit, UnitType propertyUnit)
-    {
-        this(source, event, new String[] {property}, currentUnit, propertyUnit);
-    }
-    
     public Event(DataSource source, String event, String[] properties, UnitType currentUnit, UnitType propertyUnit)
     {
+        throw new UnsupportedOperationException("String[] properties");
+    }
+    
+    public Event(DataSource source, String eventString, String property, UnitType currentUnit, UnitType propertyUnit)
+    {
+        throw new UnsupportedOperationException("String[] properties");
+    }
+    
+    public Event(DataSource source, String eventString, String property, UnitType currentUnit, UnitType propertyUnit, EventAction action)
+    {
         this.source = source;
-        this.event = event;
-        this.properties = properties;
+        this.eventString = eventString;
+        this.property = property;
         this.currentUnit = currentUnit;
         this.propertyUnit = propertyUnit;
+        this.action = action.getAction();
+        this.format = action.getFormat();
+        this.func = action.getFunc();
     }
 
+    public static Event create(DataSource source, String eventString)
+    {
+        String[] evs = eventString.split("-");
+        UnitType currentUnit = null;
+        UnitType propertyUnit = null;
+        MeterChoice meterChoice;
+        String property;
+        EventAction action = EventAction.DEFAULT;
+        String ext = null;
+        switch (evs.length)
+        {
+            case 4:
+                ext = evs[3];
+            case 3:
+                action = EventAction.valueOf(evs[2]);
+            case 2:
+                currentUnit = UnitType.valueOf(evs[1]);
+            case 1:
+                meterChoice = MeterChoice.valueOf(evs[0]);
+                property = BeanHelper.field(evs[0]);
+                propertyUnit = NmeaProperties.getType(property);
+                break;
+            default:
+                throw new IllegalArgumentException(eventString+" illegal");
+        }
+        return new Event(source, eventString, property, currentUnit, propertyUnit, action);
+    }
     public void fire(String property, double value)
     {
-        populate(json, property, convert(value));
+        json.keySet().clear();
+        value = convert(value);
+        value = (double) func.applyAsDouble(value);
+        json.put(action, format.format(value, currentUnit));
         long now = System.currentTimeMillis();
         if (!json.similar(prev) || now-lastFire > RefreshLimit)
         {
-            source.fireEvent(event, json);
+            source.fireEvent(eventString, json);
             prev = JsonHelper.copy(json, prev);
             lastFire = now;
         }
@@ -95,39 +122,22 @@ public class Event
     
     protected void populate(JSONObject jo, String property, double value)
     {
-        json.keySet().clear();
-        json.put("text", format(value));
-    }
-    protected String format(double value)
-    {
-        String format = formatMap.get(currentUnit);
-        if (format == null)
-        {
-            if (value < 10.0)
-            {
-                format = "%.2f %s";
-            }
-            else
-            {
-                format = "%.1f %s";
-            }
-        }
-        return String.format(I18n.getLocale(), format, value, currentUnit.getUnit());
+        throw new UnsupportedOperationException("not supported");
     }
     
-    public String[] getProperties()
+    protected String format(double value)
     {
-        return properties;
+        throw new UnsupportedOperationException("not supported");
+    }
+    
+    public String getProperty()
+    {
+        return property;
     }
 
     public UnitType getUnit()
     {
         return currentUnit;
-    }
-
-    public void register(NMEAService service)
-    {
-        service.addNMEAObserver(source, properties);
     }
 
 }

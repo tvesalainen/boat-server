@@ -16,7 +16,7 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.boat.server.pages.Transform;
+import org.vesalainen.boat.server.pages.EventAction;
 
 /**
  *
@@ -25,7 +25,7 @@ import org.vesalainen.boat.server.pages.Transform;
 public class BoatRelativeEvent extends RotateEvent
 {
 
-    public BoatRelativeEvent(DataSource source, String eventString, String property, Transform transform)
+    public BoatRelativeEvent(DataSource source, String eventString, String property, EventAction transform)
     {
         super(source, eventString, property, transform);
     }

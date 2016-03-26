@@ -18,7 +18,7 @@ package org.vesalainen.boat.server;
 
 import java.util.Locale;
 import org.json.JSONObject;
-import org.vesalainen.boat.server.pages.Transform;
+import org.vesalainen.boat.server.pages.EventAction;
 
 /**
  *
@@ -27,12 +27,12 @@ import org.vesalainen.boat.server.pages.Transform;
 public class RotateEvent extends Event
 {
     private String format;
-    public RotateEvent(DataSource source, String eventString, String property, Transform transform)
+    public RotateEvent(DataSource source, String eventString, String property, EventAction transform)
     {
         this(source, eventString, property, transform, "rotate(%.0f)");
     }
 
-    public RotateEvent(DataSource source, String eventString, String property, Transform transform, String format)
+    public RotateEvent(DataSource source, String eventString, String property, EventAction transform, String format)
     {
         super(source, eventString, property, null, null);
         this.format = format;

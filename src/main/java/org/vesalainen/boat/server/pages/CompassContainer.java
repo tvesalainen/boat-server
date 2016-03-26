@@ -39,7 +39,7 @@ public class CompassContainer extends BaseContainer
         //svg.addElement(new Arc(50, 0, 0, 120, 240, 5, 5, 0.6, "black"));
         //svg.addElement(new Arc(50, 0, 0, 120, 240, 10, 7, 0.9, "black"));
         Element g1 = svg.addElement("g");
-        g1.setAttr("clip-rue", "nonzero");
+        g1.setAttr("clip-rule", "nonzero");
         Element clipPath = g1.addElement("clipPath");
         clipPath.setAttr("id", "leanScale");
         double rad = Math.toRadians(60);
@@ -76,7 +76,7 @@ public class CompassContainer extends BaseContainer
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
                 .setAttr("d", "M 0 50 l 0 -10")
-                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-COMPASS-Port");
+                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-ROTATE-STATS-500-Min");
         
         svg.addElement("path")
                 .setAttr("style", "display: none;")
@@ -85,11 +85,12 @@ public class CompassContainer extends BaseContainer
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
                 .setAttr("d", "M 0 50 l 0 -10")
-                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-COMPASS-Starboard");
+                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-ROTATE-STATS-500-Max");
         
         Element view = svg.addElement("g")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-COMPASS");
+                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-ROTATE-STATS-500-Current");
+        
         view.addElement("path")
                 .setAttr("stroke", "blue")
                 .setAttr("stroke-width", "1")

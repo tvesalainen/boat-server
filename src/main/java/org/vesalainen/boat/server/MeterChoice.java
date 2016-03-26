@@ -26,7 +26,7 @@ public enum MeterChoice
 {
     Compass(CompassFullScreen),
     Tacktical(TackticalFullScreen),
-    Location(TwoRow, "Latitude", "Longitude"),
+    Location(Layout.Location, "Latitude", "Longitude"),
     DepthBelowTransducer(OneRow),
     TrueBearing(OneRow),
     MagneticBearing(OneRow),

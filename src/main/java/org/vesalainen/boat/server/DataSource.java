@@ -19,10 +19,7 @@ package org.vesalainen.boat.server;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.vesalainen.bean.BeanHelper;
-import org.vesalainen.boat.server.pages.Transform;
 import org.vesalainen.code.PropertySetter;
-import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.TimeoutSlidingAngleAverage;
 import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.parsers.nmea.NMEAService;
@@ -60,7 +57,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         }
         return source;
     }
-    
+    /*
     protected Event createEvent(String eventString)
     {
         String[] evs = eventString.split("-");
@@ -68,14 +65,14 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         UnitType propertyUnit = null;
         MeterChoice meterChoice;
         String property;
-        Transform transform = null;
+        EventAction transform = null;
         String ext = null;
         switch (evs.length)
         {
             case 4:
                 ext = evs[3];
             case 3:
-                transform = Transform.valueOf(evs[2]);
+                transform = Action.valueOf(evs[2]);
             case 2:
                 currentUnit = UnitType.valueOf(evs[1]);
             case 1:
@@ -138,33 +135,28 @@ public class DataSource extends AbstractSSESource implements PropertySetter
             }
         }
     }
+    */
     @Override
     protected void addEvent(String eventString)
     {
         System.err.println(eventString);
-        Event event = createEvent(eventString);
+        Event event = Event.create(this, eventString);
         eventMap.put(eventString, event);
-        String[] properties = event.getProperties();
-        for (String property : properties)
-        {
-            propertyMapList.add(property, event);
-        }
-        event.register(service);
+        String property = event.getProperty();
+        propertyMapList.add(property, event);
+        service.addNMEAObserver(source, property);
     }
 
     @Override
-    protected void removeEvent(String event)
+    protected void removeEvent(String eventString)
     {
-        Event ev = eventMap.get(event);
-        if (ev != null)
+        Event event = eventMap.get(eventString);
+        if (event != null)
         {
-            eventMap.remove(event);
-            String[] properties = ev.getProperties();
-            for (String property : properties)
-            {
-                propertyMapList.remove(property);
-            }
-            service.removeNMEAObserver(this, properties);
+            eventMap.remove(eventString);
+            String property = event.getProperty();
+            propertyMapList.remove(property);
+            service.removeNMEAObserver(this, property);
         }
     }
 

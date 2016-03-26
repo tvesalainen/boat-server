@@ -17,7 +17,7 @@
 package org.vesalainen.boat.server;
 
 import org.json.JSONObject;
-import org.vesalainen.boat.server.pages.Transform;
+import org.vesalainen.boat.server.pages.EventAction;
 import org.vesalainen.math.sliding.TimeoutSlidingMax;
 import org.vesalainen.math.sliding.TimeoutSlidingMin;
 
@@ -30,7 +30,7 @@ public class CompassRollEvent extends RotateEvent
     private static final long Timeout = 15*60*1000;
     private static final int Size = 16*60;
     
-    public CompassRollEvent(DataSource source, String eventString, String property, Transform transform)
+    public CompassRollEvent(DataSource source, String eventString, String property, EventAction transform)
     {
         super(source, eventString, property, transform, "rotate(%.1f)");
     }

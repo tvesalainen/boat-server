@@ -25,5 +25,6 @@ public enum Layout
     CompassFullScreen,
     TackticalFullScreen,
     OneRow,
-    TwoRow
+    TwoRow,
+    Location
 }
