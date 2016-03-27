@@ -16,34 +16,47 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.math.sliding.StatsSupplier;
+import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.TimeoutStats;
 
 /**
  *
  * @author tkv
  */
-public enum StatsType
+public class EventContext
 {
-    Ave(TimeoutStats::fast),
-    Min(TimeoutStats::getMin),
-    Max(TimeoutStats::getMax),
-    Last(TimeoutStats::last),
-    Prev(TimeoutStats::previous),
-    LastTime(TimeoutStats::lastTime),
-    PrevTime(TimeoutStats::previousTime)
-    ;
-    
-    private final StatsSupplier func;
+    private double value;
+    private UnitType unit;
+    private TimeoutStats stats;
 
-    private StatsType(StatsSupplier func)
+    public double getValue()
     {
-        this.func = func;
+        return value;
     }
 
-    public StatsSupplier getFunc()
+    public void setValue(double value)
     {
-        return func;
+        this.value = value;
+    }
+
+    public UnitType getUnit()
+    {
+        return unit;
+    }
+
+    public void setUnit(UnitType unit)
+    {
+        this.unit = unit;
+    }
+
+    public TimeoutStats getStats()
+    {
+        return stats;
+    }
+
+    public void setStats(TimeoutStats stats)
+    {
+        this.stats = stats;
     }
     
 }

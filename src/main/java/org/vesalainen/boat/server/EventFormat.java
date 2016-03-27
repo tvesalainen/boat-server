@@ -16,8 +16,6 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.math.UnitType;
-
 /**
  *
  * @author tkv
@@ -25,5 +23,5 @@ import org.vesalainen.math.UnitType;
 @FunctionalInterface
 public interface EventFormat
 {
-    String format(double value, UnitType unit);
+    String format(EventContext c);
 }

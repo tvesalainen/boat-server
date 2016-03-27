@@ -89,7 +89,7 @@ public class CompassContainer extends BaseContainer
         
         Element view = svg.addElement("g")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-Rotate-Stats-500-Current");
+                .setAttr(AbstractSSESource.EventSink, "Roll-DEGREE-Rotate-Stats-500-Last");
         
         view.addElement("path")
                 .setAttr("stroke", "blue")

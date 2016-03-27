@@ -18,6 +18,7 @@ package org.vesalainen.boat.server.pages;
 
 import java.util.Locale;
 import static org.vesalainen.boat.server.Constants.*;
+import org.vesalainen.boat.server.EventContext;
 import org.vesalainen.boat.server.EventFormat;
 import org.vesalainen.boat.server.EventFunction;
 import org.vesalainen.math.UnitType;
@@ -33,15 +34,15 @@ public enum EventAction
 {
 
     Default("text", "%.1f%s", EventAction::same),
-    Rotate("transform", (double v, UnitType u)->{ return String.format(Locale.US, "rotate(%.1f)", v);}, EventAction::same),
-    BoatRelativeRotate("transform", (double v, UnitType u)->{ return String.format(Locale.US, "rotate(%.1f)", v);}, (double v, FloatMap m)->{return (m.getFloat("trueHeading")+v) % 360;}),
-    Latitude("text", (double v, UnitType u)->{ return CoordinateFormat.formatLatitude(v, I18n.getLocale(), u);}, EventAction::same),
-    Longitude("text", (double v, UnitType u)->{ return CoordinateFormat.formatLongitude(v, I18n.getLocale(), u);}, EventAction::same),
-    CompassPitch("transform", (double v, UnitType u)->{ return String.format(Locale.US, "scale(1,%.3f)", v);}, (double v, FloatMap m)->{ return Math.cos(Math.toRadians(90-ViewAngle-v));}),
-    CompassRotate("transform", (double v, UnitType u)->{ return String.format(Locale.US, "rotate(%.1f)", v);}, (double v, FloatMap m)->{return 360-v;}),
-    Route1("transform", (double v, UnitType u)->{ return String.format(Locale.US, "rotate(%.0f)", v);}, EventAction::same),
-    Route2("transform", (double v, UnitType u)->{ return String.format(Locale.US, "translate(%.3f,0)", v);}, (double v, FloatMap m)->{return 1.0/Math.pow(A, Math.abs(v));}),
-    Route3("transform", (double v, UnitType u)->{ return String.format(Locale.US, "translate(%.3f,0)", v);}, (double v, FloatMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
+    Rotate("transform", (EventContext c)->{ return String.format(Locale.US, "rotate(%.1f)", c.getValue());}, EventAction::same),
+    BoatRelativeRotate("transform", (EventContext c)->{ return String.format(Locale.US, "rotate(%.1f)", c.getValue());}, (double v, FloatMap m)->{return (m.getFloat("trueHeading")+v) % 360;}),
+    Latitude("text", (EventContext c)->{ return CoordinateFormat.formatLatitude(c.getValue(), I18n.getLocale(), c.getUnit());}, EventAction::same),
+    Longitude("text", (EventContext c)->{ return CoordinateFormat.formatLongitude(c.getValue(), I18n.getLocale(), c.getUnit());}, EventAction::same),
+    CompassPitch("transform", (EventContext c)->{ return String.format(Locale.US, "scale(1,%.3f)", c.getValue());}, (double v, FloatMap m)->{ return Math.cos(Math.toRadians(90-ViewAngle-v));}),
+    CompassRotate("transform", (EventContext c)->{ return String.format(Locale.US, "rotate(%.1f)", c.getValue());}, (double v, FloatMap m)->{return 360-v;}),
+    Route1("transform", (EventContext c)->{ return String.format(Locale.US, "rotate(%.0f)", c.getValue());}, EventAction::same),
+    Route2("transform", (EventContext c)->{ return String.format(Locale.US, "translate(%.3f,0)", c.getValue());}, (double v, FloatMap m)->{return 1.0/Math.pow(A, Math.abs(v));}),
+    Route3("transform", (EventContext c)->{ return String.format(Locale.US, "translate(%.3f,0)", c.getValue());}, (double v, FloatMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
 
 ;
 
@@ -59,7 +60,7 @@ public enum EventAction
     private EventAction(String action, String format, EventFunction func)
     {
         this.action = action;
-        this.format = (double v, UnitType u)->String.format(I18n.getLocale(), format, v, u.getUnit());
+        this.format = (EventContext c)->String.format(I18n.getLocale(), format, c.getValue(), c.getUnit());
         this.func = func;
     }
 

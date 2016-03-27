@@ -16,15 +16,12 @@
  */
 package org.vesalainen.boat.server;
 
-import java.util.function.DoubleSupplier;
-import java.util.function.DoubleUnaryOperator;
 import org.json.JSONObject;
 import org.vesalainen.bean.BeanHelper;
 import static org.vesalainen.boat.server.DataSource.NmeaProperties;
 import org.vesalainen.boat.server.pages.EventAction;
 import org.vesalainen.json.JsonHelper;
 import org.vesalainen.math.UnitType;
-import org.vesalainen.math.sliding.Stats;
 import org.vesalainen.math.sliding.StatsSupplier;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.math.sliding.TimeoutStatsService.StatsObserver;
@@ -48,6 +45,7 @@ public class Event
     protected JSONObject json = new JSONObject();
     protected JSONObject prev = new JSONObject();
     protected long lastFire;
+    protected EventContext ec;
 
     public Event(DataSource source, String event, String[] properties, UnitType currentUnit, UnitType propertyUnit)
     {
@@ -69,6 +67,8 @@ public class Event
         this.action = action.getAction();
         this.format = action.getFormat();
         this.func = action.getFunc();
+        ec = new EventContext();
+        ec.setUnit(currentUnit);
     }
 
     public static Event create(DataSource source, String eventString)
@@ -105,20 +105,7 @@ public class Event
         }
         else
         {
-            StatsSupplier op = null;
-            switch (statsType)
-            {
-                case Ave:
-                    op = Stats::fast;
-                    break;
-                case Min:
-                    op = Stats::getMin;
-                    break;
-                case Max:
-                    op = Stats::getMax;
-                    break;
-            }
-            return new StatsEvent(source, eventString, property, currentUnit, propertyUnit, action, seconds, op);
+            return new StatsEvent(source, eventString, property, currentUnit, propertyUnit, action, seconds, statsType.getFunc());
         }
     }
     
@@ -134,10 +121,16 @@ public class Event
     
     public void fire(String property, double value)
     {
-        json.keySet().clear();
         value = convert(value);
         value = (double) func.apply(value, source.getValueMap());
-        json.put(action, format.format(value, currentUnit));
+        ec.setValue(value);
+        fire(ec);
+    }
+    
+    public void fire(EventContext ec)
+    {
+        json.keySet().clear();
+        json.put(action, format.format(ec));
         long now = System.currentTimeMillis();
         if (!json.similar(prev) || now-lastFire > RefreshLimit)
         {
@@ -194,7 +187,7 @@ public class Event
         @Override
         public void register()
         {
-            source.getStatsService().addObserver(property+':'+seconds, this, UnitType.DEGREE.equals(propertyUnit));
+            source.getStatsService().addObserver(property+':'+seconds, this, UnitType.Degree.equals(propertyUnit));
         }
 
         @Override

@@ -44,11 +44,11 @@ public class CoordinateEvent extends Event
     {
         switch (currentUnit)
         {
-            case DEG:
+            case Deg:
                 return deg(lat);
-            case DEGMIN:
+            case DegMin:
                 return degmin(lat);
-            case DEGMINSEC:
+            case DegMinSec:
                 return degminsec(lat);
             default:
                 throw new UnsupportedOperationException(currentUnit+" no supported");
