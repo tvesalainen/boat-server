@@ -42,7 +42,7 @@ public class LocationContainer extends TitleContainer
                 .setAttr("y", "0")
                 .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
-                .setAttr(AbstractSSESource.EventSink, new DynString("Latitude-", wrap(Id.SelectedUnit), "-LATITUDE"))
+                .setAttr(AbstractSSESource.EventSink, new DynString("Latitude-", wrap(Id.SelectedUnit), "-Latitude"))
                 .setAttr("style", "font-size: 2em");
         
         svg.addElement("text")
@@ -50,7 +50,7 @@ public class LocationContainer extends TitleContainer
                 .setAttr("y", "26")
                 .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
-                .setAttr(AbstractSSESource.EventSink, new DynString("Longitude-", wrap(Id.SelectedUnit), "-LONGITUDE"))
+                .setAttr(AbstractSSESource.EventSink, new DynString("Longitude-", wrap(Id.SelectedUnit), "-Longitude"))
                 .setAttr("style", "font-size: 2em");
     }
     

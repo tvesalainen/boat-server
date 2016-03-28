@@ -25,7 +25,6 @@ import org.vesalainen.html.DynString;
 import org.vesalainen.html.ParamContent;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
-import org.vesalainen.js.ScriptContainer;
 import org.vesalainen.util.Wrap;
 
 /**

@@ -52,7 +52,7 @@ public class TackticalContainer extends BaseContainer
         Element route1 = svg.addElement("g")
                 .setAttr("style", "display: none;")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "BearingToDestination-DEGREE-Route1");
+                .setAttr(AbstractSSESource.EventSink, "BearingToDestination-Degree-Route1");
         Element route2 = route1.addElement("g")
                 .setAttr("transform", "rotate(0)")
                 .setAttr(AbstractSSESource.EventSink, "CrossTrackError-NM-Route2");
@@ -85,7 +85,7 @@ public class TackticalContainer extends BaseContainer
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "TrueHeading-DEGREE-Rotate")
+                .setAttr(AbstractSSESource.EventSink, "TrueHeading-Degree-Rotate")
                 .setAttr("d", 
                         "M -20 40 l 40 0 "+
                         "C 23 10 20 -15 0 -40"+
@@ -96,7 +96,7 @@ public class TackticalContainer extends BaseContainer
         Element relativeWindAngle = svg.addElement("g")
                 .setAttr("style", "display: none;")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "RelativeWindAngle-DEGREE-BoatRelativeRotate");
+                .setAttr(AbstractSSESource.EventSink, "RelativeWindAngle-Degree-BoatRelativeRotate");
         relativeWindAngle.addElement("path")
                 .setAttr("id", "windIndicatorTip")
                 .setAttr("stroke", "red")
@@ -119,7 +119,7 @@ public class TackticalContainer extends BaseContainer
         Element trackMadeGood = svg.addElement("g")
                 .setAttr("style", "display: none;")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "TrackMadeGood-DEGREE-Rotate-300-Ave");
+                .setAttr(AbstractSSESource.EventSink, "TrackMadeGood-Degree-Rotate-300-Ave");
         trackMadeGood.addElement("path")
                 .setAttr("id", "trackMadeGood")
                 .setAttr("stroke", "blue")

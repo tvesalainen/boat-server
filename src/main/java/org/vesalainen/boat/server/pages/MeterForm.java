@@ -28,7 +28,6 @@ import org.vesalainen.html.Element;
 import org.vesalainen.html.EnumDynContent;
 import org.vesalainen.html.EnumDynContentSupport;
 import org.vesalainen.html.Placeholder;
-import org.vesalainen.html.SimpleAttribute;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
 import org.vesalainen.web.I18n;

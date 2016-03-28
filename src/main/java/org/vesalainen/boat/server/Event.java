@@ -42,8 +42,8 @@ public class Event
     protected final String action;
     protected final EventFormat format;
     protected final EventFunction func;
-    protected JSONObject json = new JSONObject();
-    protected JSONObject prev = new JSONObject();
+    protected StringBuilder json = new StringBuilder();
+    protected StringBuilder prev = new StringBuilder();
     protected long lastFire;
     protected EventContext ec;
 
@@ -81,23 +81,31 @@ public class Event
         EventAction action = EventAction.Default;
         int seconds = 0;
         StatsType statsType = null;
-        switch (evs.length)
+        try
         {
-            case 5:
-                statsType = StatsType.valueOf(evs[4]);
-            case 4:
-                seconds = Integer.parseInt(evs[3]);
-            case 3:
-                action = EventAction.valueOf(evs[2]);
-            case 2:
-                currentUnit = UnitType.valueOf(evs[1]);
-            case 1:
-                meterChoice = MeterChoice.valueOf(evs[0]);
-                property = BeanHelper.field(evs[0]);
-                propertyUnit = NmeaProperties.getType(property);
-                break;
-            default:
-                throw new IllegalArgumentException(eventString+" illegal");
+            switch (evs.length)
+            {
+                case 5:
+                    statsType = StatsType.valueOf(evs[4]);
+                case 4:
+                    seconds = Integer.parseInt(evs[3]);
+                case 3:
+                    action = EventAction.valueOf(evs[2]);
+                case 2:
+                    currentUnit = UnitType.valueOf(evs[1]);
+                case 1:
+                    meterChoice = MeterChoice.valueOf(evs[0]);
+                    property = BeanHelper.field(evs[0]);
+                    propertyUnit = NmeaProperties.getType(property);
+                    break;
+                default:
+                    throw new IllegalArgumentException(eventString+" illegal");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.err.println(eventString);
+            throw ex;
         }
         if (statsType == null)
         {
@@ -129,13 +137,18 @@ public class Event
     
     public void fire(EventContext ec)
     {
-        json.keySet().clear();
-        json.put(action, format.format(ec));
+        json.setLength(0);
+        json.append("{\"");
+        json.append(action);
+        json.append("\":\"");
+        format.format(json, ec);
+        json.append("\"}");
         long now = System.currentTimeMillis();
-        if (!json.similar(prev) || now-lastFire > RefreshLimit)
+        if (!json.equals(prev) || now-lastFire > RefreshLimit)
         {
             source.fireEvent(eventString, json);
-            prev = JsonHelper.copy(json, prev);
+            prev.setLength(0);
+            prev.append(json);
             lastFire = now;
         }
     }
