@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.vesalainen.boat.server.pages;
+package org.vesalainen.boat.server.defs;
 
 import org.vesalainen.html.Element;
 
@@ -36,6 +36,14 @@ public class Arc extends Element
         double r2 = r1 - length;
         for (int a = start; a < end; a += step)
         {
+            if (step == 1 && (a % 5) == 0)
+            {
+                continue;
+            }
+            if (step == 5 && (a % 10) == 0)
+            {
+                continue;
+            }
             double rad = Math.toRadians(a);
             double sin = Math.sin(rad);
             double cos = Math.cos(rad);

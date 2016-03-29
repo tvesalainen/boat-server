@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.vesalainen.boat.server.pages;
+package org.vesalainen.boat.server.defs;
 
-import java.io.FileNotFoundException;
+import org.vesalainen.boat.server.defs.Arc;
+import org.vesalainen.boat.server.defs.Scale;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.vesalainen.html.Element;
 import org.vesalainen.svg.SVGDocument;
 
