@@ -40,6 +40,10 @@ public abstract class BaseContainer extends Element implements EnumDynContent<Gr
 
     public BaseContainer(JQueryMobileDocument document)
     {
+        this(document, "-50,-50,100,100");
+    }
+    public BaseContainer(JQueryMobileDocument document, String viewBox)
+    {
         super("div");
         this.document = document;
         meterDiv = addElement("div");
@@ -53,7 +57,7 @@ public abstract class BaseContainer extends Element implements EnumDynContent<Gr
         meterPanel = meterDiv.addElement("div")
                 .setAttr("id", wrap(Id.Meter));
         Element svg = meterPanel.addElement("svg")
-                .setAttr("viewBox", "-50,-50,100,100");
+                .setAttr("viewBox", viewBox);
 
         addSVGContent(svg);
     }

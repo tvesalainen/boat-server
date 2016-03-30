@@ -67,7 +67,7 @@ public class CompassContainer extends BaseContainer
                 .setAttr("xlink:href", "/defs.svg#compass-scale-10")
                 .setAttr("transform", "scale(50)")
                 .setAttr("stroke", "black")
-                .setAttr("stroke-width", 1/50);
+                .setAttr("stroke-width", 1.0/50);
 
         svg.addElement("path")
                 .setAttr("style", "display: none;")

@@ -25,11 +25,11 @@ import org.vesalainen.html.Element;
 public class Arc extends Element
 {
 
-    public Arc(double r1, double cx, double cy, int step, double length, double strokeWidth, String color)
+    public Arc(double r1, double cx, double cy, int step, double length)
     {
-        this(r1, cx, cy, 0, 360, step, length, strokeWidth, color);
+        this(r1, cx, cy, 0, 360, step, length);
     }
-    public Arc(double r1, double cx, double cy, int start, int end, int step, double length, double strokeWidth, String color)
+    public Arc(double r1, double cx, double cy, int start, int end, int step, double length)
     {
         super("path");
         StringBuilder sb = new StringBuilder();

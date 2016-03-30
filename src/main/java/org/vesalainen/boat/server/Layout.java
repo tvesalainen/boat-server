@@ -24,6 +24,7 @@ public enum Layout
 {
     CompassFullScreen,
     TackticalFullScreen,
+    StatsContainer,
     OneRow,
     TwoRow,
     Location

@@ -26,51 +26,24 @@ import org.vesalainen.util.Lists;
 public class Scale extends Element
 {
 
-    public Scale()
+    public Scale(int start, int end, int step, boolean vertical)
     {
         super("g");
+        Element text = addElement("text").setAttr("text-anchor", "middle");
         
-        String a1 = Lists.print(" ", 0);
-        String a2 = Lists.print(" ", 357, 3);
-        String a3 = Lists.print(" ", 355, 0, 5);
-        
-        String x1 = Lists.print(" ", Math.sin(Math.toRadians(0)));
-        String x2 = Lists.print(" ", Math.sin(Math.toRadians(357)), Math.sin(Math.toRadians(3)));
-        String x3 = Lists.print(" ", Math.sin(Math.toRadians(355)), Math.sin(Math.toRadians(0)), Math.sin(Math.toRadians(5)));
-        
-        String y1 = Lists.print(" ", -Math.cos(Math.toRadians(0)));
-        String y2 = Lists.print(" ", -Math.cos(Math.toRadians(357)), -Math.cos(Math.toRadians(3)));
-        String y3 = Lists.print(" ", -Math.cos(Math.toRadians(355)), -Math.cos(Math.toRadians(0)), -Math.cos(Math.toRadians(5)));
-        
-        for (int a = 0; a < 360; a += 30)
+        for (int a = start; a <= end; a+=step)
         {
-            Element text = addElement("text").setAttr("text-anchor", "middle").setAttr("transform", "rotate(" + a + ")");
-            String l = String.valueOf(a);
-            text.addText(l);
-            String angles = null;
-            String x = null;
-            String y = null;
-            switch (l.length())
+            Element tspan = text.addElement("tspan");
+            String l = String.valueOf(-a);
+            tspan.addText(l);
+            if (vertical)
             {
-                case 1:
-                    y = y1;
-                    x = x1;
-                    angles = a1;
-                    break;
-                case 2:
-                    y = y2;
-                    x = x2;
-                    angles = a2;
-                    break;
-                case 3:
-                    y = y3;
-                    x = x3;
-                    angles = a3;
-                    break;
+                tspan.setAttr("y", a);
             }
-            text.setAttr("x", x);
-            text.setAttr("y", y);
-            text.setAttr("rotate", angles);
+            else
+            {
+                tspan.setAttr("x", a);
+            }
         }
     }
     

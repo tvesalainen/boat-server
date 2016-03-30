@@ -35,6 +35,7 @@ public class MeterData implements JSONBean
     public UnitType unit;
     @InputType(itemType=String.class)
     public List<String> properties;
+    public int timeSpan = 60;
 
     public MeterData()
     {
@@ -74,6 +75,11 @@ public class MeterData implements JSONBean
                 }
             }
         }
+    }
+
+    public int getTimeSpan()
+    {
+        return timeSpan;
     }
 
     public List<String> getProperties()

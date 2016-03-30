@@ -19,8 +19,6 @@ package org.vesalainen.boat.server;
 import org.json.JSONObject;
 import org.vesalainen.bean.BeanHelper;
 import static org.vesalainen.boat.server.DataSource.NmeaProperties;
-import org.vesalainen.boat.server.pages.EventAction;
-import org.vesalainen.json.JsonHelper;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.StatsSupplier;
 import org.vesalainen.math.sliding.TimeoutStats;

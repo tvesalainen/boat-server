@@ -24,6 +24,7 @@ import static org.vesalainen.boat.server.Layout.*;
  */
 public enum MeterChoice
 {
+    WindSpeedStats(StatsContainer, "WindSpeed"),
     Compass(CompassFullScreen),
     Tacktical(TackticalFullScreen),
     Location(Layout.Location, "Latitude", "Longitude"),

@@ -38,5 +38,6 @@ public enum Id
     UnitPage,
     SelectedUnit,
     MeterName,
-    MeterUnit
+    MeterUnit,
+    TimeSpan
 }

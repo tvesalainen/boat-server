@@ -14,13 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.vesalainen.boat.server.pages;
+package org.vesalainen.boat.server;
 
 import java.util.Locale;
 import static org.vesalainen.boat.server.Constants.*;
-import org.vesalainen.boat.server.EventContext;
-import org.vesalainen.boat.server.EventFormat;
-import org.vesalainen.boat.server.EventFunction;
+import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.navi.CoordinateFormat;
 import org.vesalainen.util.FloatMap;
 import org.vesalainen.util.ThreadLocalFormatter;
@@ -43,6 +41,15 @@ public enum EventAction
     Route1("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.0f)", c.getValue()), EventAction::same),
     Route2("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, FloatMap m)->{return 1.0/Math.pow(A, Math.abs(v));}),
     Route3("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, FloatMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
+    ViewBox("viewBox", (Appendable o, EventContext c)->{
+        TimeoutStats s = c.getStats();
+        ThreadLocalFormatter.format(o, Locale.US, "%.1f %.1f %.1f %.1f", 
+                s.firstTime(),
+                -s.getMin(),
+                s.lastTime()-s.firstTime(),
+                s.getMax()-s.getMin()
+                );
+    }, EventAction::same),
 
 ;
 

@@ -113,6 +113,9 @@ public class GridContext implements DynParam<Id>
             case Prop6:
                 wrap.setValue(meterData.getProperties().get(5)+"-"+meterData.getUnit());
                 break;
+            case TimeSpan:
+                wrap.setValue(meterData.getTimeSpan());
+                break;
             default:
                 throw new UnsupportedOperationException(key+" not supported");
         }
