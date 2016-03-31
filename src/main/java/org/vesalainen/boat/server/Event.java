@@ -45,16 +45,6 @@ public class Event
     protected long lastFire;
     protected EventContext ec;
 
-    public Event(DataSource source, String event, String[] properties, UnitType currentUnit, UnitType propertyUnit)
-    {
-        throw new UnsupportedOperationException("String[] properties");
-    }
-    
-    public Event(DataSource source, String eventString, String property, UnitType currentUnit, UnitType propertyUnit)
-    {
-        throw new UnsupportedOperationException("String[] properties");
-    }
-    
     public Event(DataSource source, String eventString, String property, UnitType currentUnit, UnitType propertyUnit, EventAction action)
     {
         this.source = source;
@@ -74,7 +64,6 @@ public class Event
         String[] evs = eventString.split("-");
         UnitType currentUnit = null;
         UnitType propertyUnit = null;
-        MeterChoice meterChoice;
         String property;
         EventAction action = EventAction.Default;
         int seconds = 0;
@@ -92,7 +81,6 @@ public class Event
                 case 2:
                     currentUnit = UnitType.valueOf(evs[1]);
                 case 1:
-                    meterChoice = MeterChoice.valueOf(evs[0]);
                     property = BeanHelper.field(evs[0]);
                     propertyUnit = NmeaProperties.getType(property);
                     break;
@@ -210,6 +198,7 @@ public class Event
         @Override
         public void changed(TimeoutStats stats)
         {
+            ec.setStats(stats);
             if (op != null)
             {
                 fire(property, op.get(stats));

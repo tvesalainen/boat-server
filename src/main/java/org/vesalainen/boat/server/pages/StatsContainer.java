@@ -37,7 +37,7 @@ public class StatsContainer extends BaseContainer
     @Override
     protected void addSVGContent(Element svg)
     {
-        svg.setAttr(AbstractSSESource.EventSink, new DynString(wrap(Id.Event), "-ViewBox-", wrap(Id.TimeSpan), "-Last"));
+        svg.setAttr(AbstractSSESource.EventSink, new DynString(wrap(Id.Prop1), "-ViewBox-", wrap(Id.TimeSpan), "-Last"));
         Element g = svg.addElement("g");
         g.addElement("use")
             .setAttr("xlink:href", "/defs.svg#vertical-scale");

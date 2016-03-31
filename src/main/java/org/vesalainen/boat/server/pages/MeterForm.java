@@ -17,9 +17,14 @@
 package org.vesalainen.boat.server.pages;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.vesalainen.boat.server.ContentServlet;
 import org.vesalainen.boat.server.GridContext;
 import org.vesalainen.boat.server.Id;
+import org.vesalainen.boat.server.Layout;
 import org.vesalainen.boat.server.MeterChoice;
 import org.vesalainen.html.ClassAttribute;
 import org.vesalainen.html.Content;
@@ -51,12 +56,18 @@ public class MeterForm extends JQueryMobileForm implements EnumDynContent<GridCo
         document.getFieldMap().put(field, input);
         Element fieldSet = addElement("fieldset");
         fieldSet.addElement("label").addText(I18n.getLabel(field));
-        Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", wrap(Id.Input)).setAttr("data-native-menu", false);
-        for (MeterChoice opt : MeterChoice.values())
+        Element select = fieldSet.addElement("select").setAttr("name", field).setAttr("id", wrap(Id.Input)).setAttr("data-native-menu", true);
+        Map<Layout,List<MeterChoice>> map = Arrays.stream(MeterChoice.values()).collect(Collectors.groupingBy(MeterChoice::getLayout));
+        for (Layout layout : map.keySet())
         {
-            String n = opt.toString();
-            Content d = I18n.getLabel(n);
-            Element option = select.addElement("option").setAttr("value", n).addText(d);
+            Element optgroup = select.addElement("optgroup")
+                    .setAttr("label", I18n.getLabel(layout.name()));
+            for (MeterChoice opt : map.get(layout))
+            {
+                String n = opt.toString();
+                Content d = I18n.getLabel(n);
+                optgroup.addElement("option").setAttr("value", n).addText(d);
+            }
         }
         addInput("addMeter", new ClassAttribute("ui-icon-action"));
         addRestAsHiddenInputs();

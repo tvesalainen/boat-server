@@ -43,7 +43,7 @@ public enum EventAction
     Route3("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, FloatMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
     ViewBox("viewBox", (Appendable o, EventContext c)->{
         TimeoutStats s = c.getStats();
-        ThreadLocalFormatter.format(o, Locale.US, "%.1f %.1f %.1f %.1f", 
+        ThreadLocalFormatter.format(o, Locale.US, "%d %.1f %d %.1f", 
                 s.firstTime(),
                 -s.getMin(),
                 s.lastTime()-s.firstTime(),

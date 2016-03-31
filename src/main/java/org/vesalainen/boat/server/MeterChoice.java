@@ -27,7 +27,7 @@ public enum MeterChoice
     WindSpeedStats(StatsContainer, "WindSpeed"),
     Compass(CompassFullScreen),
     Tacktical(TackticalFullScreen),
-    Location(Layout.Location, "Latitude", "Longitude"),
+    Location(Layout.Location, "Latitude"),
     DepthBelowTransducer(OneRow),
     TrueBearing(OneRow),
     MagneticBearing(OneRow),
