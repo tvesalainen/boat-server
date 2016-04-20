@@ -40,7 +40,7 @@ public class BoatServer extends EmbeddedServer
         try
         {
             BoatServer server = new BoatServer(8080);
-            server.start();
+            server.startAndWait();
         }
         catch (Exception ex)
         {

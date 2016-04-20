@@ -38,7 +38,7 @@ public class BoatServerT
         try
         {
             BoatServer bs = new BoatServer(8080);
-            bs.start();
+            bs.startAndWait();
         }
         catch (Exception ex)
         {
