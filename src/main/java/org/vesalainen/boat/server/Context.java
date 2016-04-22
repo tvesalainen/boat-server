@@ -29,9 +29,7 @@ import org.vesalainen.web.InputType;
 public class Context
 {
     public int nextId;
-    @InputType(itemType=Integer.class, itemType2=MeterData.class)
     public TreeMapList<Integer,MeterData> gridMap = new TreeMapList<>();
-    @InputType(itemType=Integer.class, itemType2=PageType.class)
     public Map<Integer,PageType> typeMap = new HashMap<>();
     @InputType("submit")
     public String addPage;

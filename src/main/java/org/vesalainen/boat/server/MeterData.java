@@ -33,7 +33,6 @@ public class MeterData implements JSONBean
 {
     public MeterChoice type;
     public UnitType unit;
-    @InputType(itemType=String.class)
     public List<String> properties;
     public int timeSpan = 60;
 
