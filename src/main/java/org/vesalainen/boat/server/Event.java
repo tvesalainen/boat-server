@@ -81,7 +81,7 @@ public class Event
                 case 2:
                     currentUnit = UnitType.valueOf(evs[1]);
                 case 1:
-                    property = BeanHelper.field(evs[0]);
+                    property = BeanHelper.property(evs[0]);
                     propertyUnit = NmeaProperties.getType(property);
                     break;
                 default:

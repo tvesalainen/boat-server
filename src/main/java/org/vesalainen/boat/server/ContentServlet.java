@@ -18,17 +18,11 @@ package org.vesalainen.boat.server;
 
 import java.util.List;
 import org.vesalainen.boat.server.pages.MeterPage;
-import org.vesalainen.html.ClassAttribute;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.SimpleAttribute;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
-import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
 import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
 import org.vesalainen.http.Query;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.util.TreeMapList;
-import org.vesalainen.web.I18n;
 
 /**
  *

@@ -47,7 +47,7 @@ public class MeterData implements JSONBean
         NMEAProperties instance = NMEAProperties.getInstance();
         if (type.getProperties() == null)
         {
-            String property = BeanHelper.field(type.name());
+            String property = BeanHelper.property(type.name());
             this.unit = instance.getType(property);  // default type
             this.properties = Lists.create(property);
         }
@@ -56,7 +56,7 @@ public class MeterData implements JSONBean
             properties = Lists.create(type.getProperties());
             for (String p : this.properties)
             {
-                String prop = BeanHelper.field(p);
+                String prop = BeanHelper.property(p);
                 if (!instance.isProperty(prop))
                 {
                     throw new IllegalArgumentException(prop+" not NMEAProperty");
