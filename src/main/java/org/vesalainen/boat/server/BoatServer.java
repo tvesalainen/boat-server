@@ -16,8 +16,6 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.web.I18n;
-import org.vesalainen.web.I18nResourceBundle;
 import org.vesalainen.web.server.EmbeddedServer;
 
 /**
@@ -30,8 +28,7 @@ public class BoatServer extends EmbeddedServer
     public BoatServer(int port)
     {
         super(port);
-        I18n.setI18n(new I18nResourceBundle("text"));
-        addServlet(ContentServlet.class, ContentServlet.Action);
+        addServlet(ContentServlet.class, ContentServlet.Action+"/*");
         addServlet(DataServlet.class, DataSource.Action);
     }
 

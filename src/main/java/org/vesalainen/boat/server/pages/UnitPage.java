@@ -20,26 +20,19 @@ import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 import org.vesalainen.boat.server.ContentServlet;
-import org.vesalainen.boat.server.GridContext;
 import org.vesalainen.boat.server.Id;
 import org.vesalainen.html.BooleanAttribute;
 import org.vesalainen.html.ClassAttribute;
 import org.vesalainen.html.Container;
 import org.vesalainen.html.ContainerContent;
 import org.vesalainen.html.Content;
-import org.vesalainen.html.DynString;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.EnumDynContent;
-import org.vesalainen.html.EnumDynContentSupport;
 import org.vesalainen.html.Placeholder;
-import org.vesalainen.html.SimpleAttribute;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.math.UnitCategory;
 import org.vesalainen.math.UnitType;
-import org.vesalainen.util.EnumMapList;
-import org.vesalainen.util.MapList;
 import org.vesalainen.web.I18n;
 import org.vesalainen.web.servlet.bean.EnumInput;
 
@@ -47,12 +40,10 @@ import org.vesalainen.web.servlet.bean.EnumInput;
  *
  * @author tkv
  */
-public class UnitPage extends JQueryMobilePage implements EnumDynContent<GridContext,Id>
+public class UnitPage //extends JQueryMobilePage
 {
-    private final EnumDynContent<GridContext,Id> dynContent = new EnumDynContentSupport<>(Id.class);
     private final Map<UnitCategory,Container> categoryMapList = new EnumMap<>(UnitCategory.class);
-    private Placeholder<Container> options = new Placeholder<>();
-
+/*
     public UnitPage(JQueryMobileDocument document)
     {
         this(document, new Placeholder());
@@ -89,40 +80,5 @@ public class UnitPage extends JQueryMobilePage implements EnumDynContent<GridCon
             option.setAttr(new BooleanAttribute("selected",wrap(Id.SelectedUnit, opt)));
         }
     }
-
-    @Override
-    public void append(GridContext param, Appendable out) throws IOException
-    {
-        UnitType unit = param.meterData.getUnit();
-        if (unit != null)
-        {
-            options.setValue(categoryMapList.get(unit.getCategory()));
-            append(out);
-        }
-    }
-    
-    @Override
-    public final Placeholder wrap(Id key)
-    {
-        return dynContent.wrap(key);
-    }
-
-    @Override
-    public Placeholder<Object> wrap(Id key, Object comp)
-    {
-        return dynContent.wrap(key, comp);
-    }
-
-    @Override
-    public void provision(GridContext param)
-    {
-        dynContent.provision(param);
-    }
-
-    @Override
-    public final void attach(Id key, Placeholder wrap)
-    {
-        dynContent.attach(key, wrap);
-    }
-    
+*/
 }

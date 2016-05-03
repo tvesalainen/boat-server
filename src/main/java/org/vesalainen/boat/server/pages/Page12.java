@@ -16,8 +16,12 @@
  */
 package org.vesalainen.boat.server.pages;
 
+import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
+import org.vesalainen.html.Renderer;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
+import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
+import org.vesalainen.web.servlet.bean.Context;
 
 /**
  *
@@ -26,24 +30,31 @@ import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 public class Page12 extends MeterPage
 {
 
-    public Page12(JQueryMobileDocument document)
+    public Page12(ThreadLocal<Context<Model>> threadLocalModel)
     {
-        super(document, 3);
+        super(threadLocalModel, 3);
+    }
+
+    @Override
+    protected Renderer create()
+    {
+        JQueryMobilePage page = new JQueryMobilePage(null, "${pageId}", threadLocalModel);
+        Element main = page.getMain();
         Element gridSolo = main.addElement("div")
                 .setAttr("style", "max-width: 500px;margin: auto")
                 .addClasses("ui-grid-solo", "ui-responsive");
         Element soloa = gridSolo.addElement("div")
                 .addClasses("ui-block-a");
-        soloa.addContent(grid[0]);
+        soloa.add(grid[0]);
         Element gridA = main.addElement("div")
                 .addClasses("ui-grid-a", "ui-responsive");
         Element blockA = gridA.addElement("div")
                 .addClasses("ui-block-a");
-        blockA.addContent(grid[1]);
+        blockA.add(grid[1]);
         Element blockB = gridA.addElement("div")
                 .addClasses("ui-block-b");
-        blockB.addContent(grid[2]);
-        
+        blockB.add(grid[2]);
+        return page;
     }
     
 }

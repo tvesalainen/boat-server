@@ -16,6 +16,7 @@
  */
 package org.vesalainen.boat.server;
 
+import org.vesalainen.boat.server.pages.PageType;
 import java.util.HashMap;
 import java.util.Map;
 import org.vesalainen.math.UnitType;

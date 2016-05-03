@@ -17,34 +17,45 @@
 package org.vesalainen.boat.server.pages;
 
 import static org.vesalainen.boat.server.ContentServlet.Action;
-import org.vesalainen.html.ClassAttribute;
+import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.SimpleAttribute;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
+import org.vesalainen.html.Renderer;
+import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.web.I18n;
+import org.vesalainen.web.servlet.bean.Context;
+import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 
 /**
  *
  * @author tkv
  */
-public class AddPage extends MeterPage
+public class AddPage extends ThreadLocalBeanRenderer<Model>
 {
 
-    public AddPage(JQueryMobileDocument document)
+    public AddPage(ThreadLocal<Context<Model>> threadLocalModel)
     {
-        super(document, 0);
-        setPageId(-1);
-        Element header = getHeader();
+        super(threadLocalModel);
+    }
+
+    @Override
+    protected Renderer create()
+    {
+        JQueryMobilePage page = new JQueryMobilePage(null, "addPage", threadLocalModel);
+        Element header = page.getHeader();
         header.addElement("h1")
                 .addText(I18n.getLabel("Add new meter page"));
-        JQueryMobileForm form = addForm(Action);
-        form.addInput("pageType");
-        form.addInput("addPage",
-                new SimpleAttribute("data-iconpos", "notext"),
-                new ClassAttribute("ui-icon-action")
-        );
-        form.addRestAsHiddenInputs();
+        
+        Context<Model> ctx = threadLocalModel.get();
+        Element ul = page.addElement("ul").setDataAttr("role", "listview");
+        for (Enum e : PageType.values())
+        {
+            String n = e.toString();
+            Renderer d = I18n.getLabel(n);
+            Element li = ul.addElement("li");
+            li.addElement("a").setAttr("href", "#").addText(d);
+            li.addElement("a").setAttr("href", Action+"?"+ctx.inputName("pages+"+n));
+        }
+        return page;
     }
-    
+
 }

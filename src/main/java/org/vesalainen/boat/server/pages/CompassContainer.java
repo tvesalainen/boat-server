@@ -16,9 +16,11 @@
  */
 package org.vesalainen.boat.server.pages;
 
+import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.web.servlet.AbstractSSESource;
+import org.vesalainen.web.servlet.bean.Context;
 
 /**
  *
@@ -27,9 +29,9 @@ import org.vesalainen.web.servlet.AbstractSSESource;
 public class CompassContainer extends BaseContainer
 {
 
-    public CompassContainer(JQueryMobileDocument document)
+    public CompassContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
-        super(document);
+        super(threadLocalData);
     }
 
     @Override
@@ -105,7 +107,7 @@ public class CompassContainer extends BaseContainer
                 .setAttr("transform", "rotate(0)")
                 .setAttr(AbstractSSESource.EventSink, "TrueHeading-Degree-InvRotate");
 
-        compass.addElement(new CompassRing(0.6, 43));
+        compass.addContent(new CompassRing(0.6, 43));
         
         view.addElement("path")
                 .setAttr("stroke", "blue")
@@ -113,6 +115,12 @@ public class CompassContainer extends BaseContainer
                 .setAttr("fill", "none")
                 .setAttr("d", "M 0 0 l 0 -50");
         
+    }
+
+    @Override
+    protected void addFormContent(Element form)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

@@ -17,10 +17,11 @@
 package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Id;
-import org.vesalainen.html.DynString;
+import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.web.servlet.AbstractSSESource;
+import org.vesalainen.web.servlet.bean.Context;
 
 /**
  *
@@ -29,9 +30,9 @@ import org.vesalainen.web.servlet.AbstractSSESource;
 public class LocationContainer extends TitleContainer
 {
 
-    public LocationContainer(JQueryMobileDocument document)
+    public LocationContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
-        super(document);
+        super(threadLocalData);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class LocationContainer extends TitleContainer
                 .setAttr("y", "0")
                 .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
-                .setAttr(AbstractSSESource.EventSink, new DynString("Latitude-", wrap(Id.SelectedUnit), "-Latitude"))
+                //.setAttr(AbstractSSESource.EventSink, new DynString("Latitude-", wrap(Id.SelectedUnit), "-Latitude"))
                 .setAttr("style", "font-size: 2em");
         
         svg.addElement("text")
@@ -50,8 +51,14 @@ public class LocationContainer extends TitleContainer
                 .setAttr("y", "26")
                 .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
-                .setAttr(AbstractSSESource.EventSink, new DynString("Longitude-", wrap(Id.SelectedUnit), "-Longitude"))
+                //.setAttr(AbstractSSESource.EventSink, new DynString("Longitude-", wrap(Id.SelectedUnit), "-Longitude"))
                 .setAttr("style", "font-size: 2em");
+    }
+
+    @Override
+    protected void addFormContent(Element form)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

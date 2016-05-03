@@ -16,11 +16,28 @@
  */
 package org.vesalainen.boat.server;
 
+import java.io.IOException;
+import org.vesalainen.html.RendererSupport;
+import org.vesalainen.web.servlet.bean.Context;
+import org.vesalainen.web.servlet.bean.ThreadLocalContent;
+
 /**
  *
  * @author tkv
  */
-public enum PageType
+public class PagesContent extends ThreadLocalContent<Model>
 {
-    Page12;
+
+    public PagesContent(ThreadLocal<org.vesalainen.web.servlet.bean.Context<Model>> local)
+    {
+        super(local);
+    }
+
+    @Override
+    public void append(Appendable out) throws IOException
+    {
+        Context<Model> ctx = threadLocalModel.get();
+        RendererSupport.render(ctx.getModel(), out);
+    }
+    
 }

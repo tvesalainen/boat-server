@@ -16,9 +16,11 @@
  */
 package org.vesalainen.boat.server.pages;
 
+import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.web.servlet.AbstractSSESource;
+import org.vesalainen.web.servlet.bean.Context;
 
 /**
  *
@@ -27,9 +29,9 @@ import org.vesalainen.web.servlet.AbstractSSESource;
 public class TackticalContainer extends BaseContainer
 {
 
-    public TackticalContainer(JQueryMobileDocument document)
+    public TackticalContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
-        super(document);
+        super(threadLocalData);
     }
 
     @Override
@@ -47,7 +49,7 @@ public class TackticalContainer extends BaseContainer
                 .setAttr("orient", "auto")
                 .setAttr("d", "M 0 0 L 10 5 L 0 10 z");
 
-        svg.addElement(new CompassRing(0.5, 45));
+        svg.addContent(new CompassRing(0.5, 45));
         
         Element route1 = svg.addElement("g")
                 .setAttr("style", "display: none;")
@@ -128,6 +130,12 @@ public class TackticalContainer extends BaseContainer
                 .setAttr("d", "M 0 0 l 0 -40")
                 .setAttr("marker-end", "url(#triangle)");   // TODO
         
+    }
+
+    @Override
+    protected void addFormContent(Element form)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

@@ -17,10 +17,11 @@
 package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Id;
-import org.vesalainen.html.DynString;
+import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.web.servlet.AbstractSSESource;
+import org.vesalainen.web.servlet.bean.Context;
 
 /**
  *
@@ -29,15 +30,15 @@ import org.vesalainen.web.servlet.AbstractSSESource;
 public class StatsContainer extends BaseContainer
 {
 
-    public StatsContainer(JQueryMobileDocument document)
+    public StatsContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
-        super(document, "0 0 0 0");
+        super(threadLocalData, "0 0 0 0");
     }
 
     @Override
     protected void addSVGContent(Element svg)
     {
-        svg.setAttr(AbstractSSESource.EventSink, new DynString(wrap(Id.Prop1), "-ViewBox-", wrap(Id.TimeSpan), "-Last"));
+        //svg.setAttr(AbstractSSESource.EventSink, new DynString(wrap(Id.Prop1), "-ViewBox-", wrap(Id.TimeSpan), "-Last"));
         Element g = svg.addElement("g");
         g.addElement("use")
             .setAttr("xlink:href", "/defs.svg#vertical-scale");
@@ -55,6 +56,12 @@ public class StatsContainer extends BaseContainer
             .setAttr("stroke-width", 0.3/50);
 
 
+    }
+
+    @Override
+    protected void addFormContent(Element form)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

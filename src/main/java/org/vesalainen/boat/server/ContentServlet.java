@@ -16,94 +16,68 @@
  */
 package org.vesalainen.boat.server;
 
-import java.util.List;
 import org.vesalainen.boat.server.pages.MeterPage;
+import org.vesalainen.boat.server.pages.Page12;
+import org.vesalainen.boat.server.pages.PageType;
 import org.vesalainen.html.Element;
+import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
-import org.vesalainen.http.Query;
-import org.vesalainen.math.UnitType;
-import org.vesalainen.util.TreeMapList;
+import org.vesalainen.web.I18nResourceBundle;
 
 /**
  *
  * @author tkv
  */
-public class ContentServlet extends JQueryMobileServlet<ContentDocument,Context>
+public class ContentServlet extends JQueryMobileServlet<JQueryMobileDocument,Model>
 {
     public static final String Action = "/con";
 
-    @Override
-    protected ContentDocument createDocument()
+    public ContentServlet()
     {
-        ContentDocument doc = new ContentDocument(threadLocalData);
+        this.i18nSupport = new I18nResourceBundle("text");
+    }
+
+    @Override
+    protected JQueryMobileDocument createDocument()
+    {
+        JQueryMobileDocument doc = new JQueryMobileDocument(threadLocalData);
         doc.setAjax(false);
         Element head = doc.getHead();
         Element sse = head.addElement("script")
                 .setAttr("src", "/sse.js");
         Element script = head.addElement("script");
-        //script.addContent(DataSource.getInstance().createScript());
-        script.addContent(new DynamicScripts(doc, threadLocalData));
-        doc.getBody().addContent(new DynamicPages(doc, threadLocalData));
+        doc.getRawBody().addRenderer(new PagesContent(threadLocalData));
         return doc;
     }
     
     @Override
-    protected void onSubmit(Context ctx, String field, Query query)
+    protected void onSubmit(Model ctx, String field)
     {
-        if (field != null)
-        {
-            switch (field)
-            {
-                case "addPage":
-                    addPage(ctx);
-                    break;
-                case "addMeter":
-                    addMeter(ctx, query);
-                    break;
-                case "setUnit":
-                    setUnit(ctx, query);
-                    break;
-            }
-        }
     }
     
-    private void addPage(Context ctx)
+    @Override
+    protected Model createData()
     {
-        PageType pageType = ctx.pageType;
-        if (pageType != null)
-        {
-            int page = ctx.nextId();
-            ctx.typeMap.put(page, pageType);
-            MeterPage mp = document.getMeterPage(pageType);
-            ctx.gridMap.addAll(page, mp.createInitList());
-        }
-    }
-    
-    private void addMeter(Context ctx, Query query)
-    {
-        MeterChoice meter = ctx.meter;
-        int pageId = Integer.parseInt(query.get("pageId").get(0));
-        int gridNo = Integer.parseInt(query.get("gridNo").get(0));
-        TreeMapList<Integer, MeterData> gridMap = ctx.gridMap;
-        List<MeterData> lst = gridMap.get(pageId);
-        lst.set(gridNo, new MeterData(meter));
-    }
-    
-    private void setUnit(Context ctx, Query query)
-    {
-        UnitType unit = ctx.unit;
-        int pageId = Integer.parseInt(query.get("pageId").get(0));
-        int gridNo = Integer.parseInt(query.get("gridNo").get(0));
-        TreeMapList<Integer, MeterData> gridMap = ctx.gridMap;
-        List<MeterData> lst = gridMap.get(pageId);
-        MeterData md = lst.get(gridNo);
-        md.setUnit(unit);
+        return new Model(threadLocalData);
     }
 
     @Override
-    protected Context createData()
+    protected <T> T createObject(org.vesalainen.boat.server.Model data, String field, Class<T> cls, String hint)
     {
-        return new Context();
+        if (hint == null || hint.isEmpty())
+        {
+            return super.createObject(data, field, cls, hint);
+        }
+        if (MeterPage.class.equals(cls))
+        {
+            PageType pageType = PageType.valueOf(hint);
+            switch (pageType)
+            {
+                case Page12:
+                    return (T) new Page12(threadLocalData);
+            }
+        }
+        return null;
     }
 
 }

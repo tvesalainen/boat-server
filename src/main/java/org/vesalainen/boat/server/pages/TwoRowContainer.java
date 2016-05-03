@@ -17,9 +17,11 @@
 package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Id;
+import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.web.servlet.AbstractSSESource;
+import org.vesalainen.web.servlet.bean.Context;
 
 /**
  *
@@ -28,9 +30,9 @@ import org.vesalainen.web.servlet.AbstractSSESource;
 public class TwoRowContainer extends TitleContainer
 {
 
-    public TwoRowContainer(JQueryMobileDocument document)
+    public TwoRowContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
-        super(document);
+        super(threadLocalData);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class TwoRowContainer extends TitleContainer
                 .setAttr("y", "0")
                 .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
-                .setAttr(AbstractSSESource.EventSink, wrap(Id.Prop1))
+//                .setAttr(AbstractSSESource.EventSink, wrap(Id.Prop1))
                 .setAttr("style", "font-size: 2em");
         
         svg.addElement("text")
@@ -49,8 +51,14 @@ public class TwoRowContainer extends TitleContainer
                 .setAttr("y", "26")
                 .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
-                .setAttr(AbstractSSESource.EventSink, wrap(Id.Prop2))
+  //              .setAttr(AbstractSSESource.EventSink, wrap(Id.Prop2))
                 .setAttr("style", "font-size: 2em");
+    }
+
+    @Override
+    protected void addFormContent(Element form)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

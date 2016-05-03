@@ -16,82 +16,66 @@
  */
 package org.vesalainen.boat.server.pages;
 
-import java.io.IOException;
-import org.vesalainen.boat.server.GridContext;
-import org.vesalainen.boat.server.Id;
-import org.vesalainen.html.DynString;
+import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.EnumDynContent;
-import org.vesalainen.html.EnumDynContentSupport;
-import org.vesalainen.html.Placeholder;
+import org.vesalainen.html.Renderer;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.web.I18n;
+import org.vesalainen.web.servlet.bean.Context;
+import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 
 /**
  *
  * @author tkv
  */
-public abstract class BaseContainer extends Element implements EnumDynContent<GridContext,Id>
+public abstract class BaseContainer extends ThreadLocalBeanRenderer<Model>
 {
-    private final EnumDynContent<GridContext,Id> dynContent = new EnumDynContentSupport<>(Id.class);
-    private final JQueryMobileDocument document;
-    private final Element meterPanel;
-    private final Element meterDiv;
+    private Element meterPanel;
+    private Element meterDiv;
+    private String viewBox;
 
-    public BaseContainer(JQueryMobileDocument document)
+    public BaseContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
-        this(document, "-50,-50,100,100");
+        this(threadLocalData, "-50,-50,100,100");
     }
-    public BaseContainer(JQueryMobileDocument document, String viewBox)
+    public BaseContainer(ThreadLocal<Context<Model>> threadLocalData, String viewBox)
     {
-        super("div");
-        this.document = document;
-        meterDiv = addElement("div");
+        super(threadLocalData);
+        this.viewBox = viewBox;
+    }
+
+    @Override
+    protected Renderer create()
+    {
+        Element div = new Element("div");
+        meterDiv = div.addElement("div");
         
         Element header = meterDiv.addElement("span");
         header.addElement("a")
-                .setAttr("href", new DynString("#", wrap(Id.UnitPage)))
+                .setAttr("href", "#"+getFormId())
                 .addClasses("ui-btn", "ui-icon-gear", "ui-btn-icon-left", "ui-btn-icon-notext")
-                .addText(I18n.getLabel("changeUnit"));
+                .addText(I18n.getLabel("change"));
         
-        meterPanel = meterDiv.addElement("div")
-                .setAttr("id", wrap(Id.Meter));
+        meterPanel = meterDiv.addElement("div");
         Element svg = meterPanel.addElement("svg")
                 .setAttr("viewBox", viewBox);
 
         addSVGContent(svg);
-    }
-
-    @Override
-    public void append(GridContext param, Appendable out) throws IOException
-    {
-        append(out);
-    }
-
-    @Override
-    public final Placeholder wrap(Id key)
-    {
-        return dynContent.wrap(key);
-    }
-
-    @Override
-    public Placeholder<Object> wrap(Id key, Object comp)
-    {
-        return dynContent.wrap(key, comp);
-    }
-
-    @Override
-    public void provision(GridContext param)
-    {
-        dynContent.provision(param);
+        
+        Element formDiv = div.addElement("div").setDataAttr("role", "popup").setAttr("id", getFormId()).addClasses("ui-content");
+        Element form = formDiv.addElement("form").setAttr("method", "post");
+        addFormContent(form);
+        form.addElement("input").setAttr("type", "submit");
+        return div;
     }
     
-    @Override
-    public void attach(Id key, Placeholder wrap)
+    protected String getFormId()
     {
-        dynContent.attach(key, wrap);
+        return getWebPattern()+"form";
     }
 
     protected abstract void addSVGContent(Element svg);
+
+    protected abstract void addFormContent(Element form);
     
 }

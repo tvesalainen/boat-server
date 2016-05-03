@@ -47,16 +47,16 @@ public class GenDefs
             double cy = 0;
             Element cs1 = new Arc(r, cx, cy, 1, 0.1);
             cs1.setAttr("id", "compass-scale-1");
-            defs.addElement(cs1);
+            defs.addContent(cs1);
             Element cs5 = new Arc(r, cx, cy, 5, 0.15);
             cs5.setAttr("id", "compass-scale-5");
-            defs.addElement(cs5);
+            defs.addContent(cs5);
             Element cs10 = new Arc(r, cx, cy, 10, 0.2);
             cs10.setAttr("id", "compass-scale-10");
-            defs.addElement(cs10);
+            defs.addContent(cs10);
             Element cs = new CircleScale();
             cs.setAttr("id", "compass-scale");
-            svg.addElement(cs);
+            svg.addContent(cs);
             // stats
             int minx = -100;
             int miny = -1000;
@@ -64,25 +64,25 @@ public class GenDefs
             int maxy = 0;
             Scale vScale = new Scale(minx, maxx, 1, true);
             vScale.setAttr("id", "vertical-scale");
-            svg.addElement(vScale);
+            svg.addContent(vScale);
             Grid vGrid1 = new Grid(miny, maxy, minx, maxx, 1, false);
             vGrid1.setAttr("id", "vertical-grid-1");
-            svg.addElement(vGrid1);
+            svg.addContent(vGrid1);
             Grid vGrid5 = new Grid(miny, maxy, minx, maxx, 5, false);
             vGrid5.setAttr("id", "vertical-grid-5");
-            svg.addElement(vGrid5);
+            svg.addContent(vGrid5);
             Grid vGrid10 = new Grid(miny, maxy, minx, maxx, 10, false);
             vGrid10.setAttr("id", "vertical-grid-10");
-            svg.addElement(vGrid10);
+            svg.addContent(vGrid10);
             Grid hGrid1 = new Grid(minx, maxx, miny, maxy, 1, true);
             hGrid1.setAttr("id", "horizontal-grid-1");
-            svg.addElement(hGrid1);
+            svg.addContent(hGrid1);
             Grid hGrid5 = new Grid(minx, maxx, miny, maxy, 5, true);
             hGrid5.setAttr("id", "horizontal-grid-5");
-            svg.addElement(hGrid5);
+            svg.addContent(hGrid5);
             Grid hGrid10 = new Grid(minx, maxx, miny, maxy, 10, true);
             hGrid10.setAttr("id", "horizontal-grid-10");
-            svg.addElement(hGrid10);
+            svg.addContent(hGrid10);
             svg.write(fos);
             
         }

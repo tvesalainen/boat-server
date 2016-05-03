@@ -16,40 +16,39 @@
  */
 package org.vesalainen.boat.server;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import org.vesalainen.boat.server.pages.AddPage;
 import org.vesalainen.boat.server.pages.MeterPage;
-import org.vesalainen.boat.server.pages.Page12;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
+import org.vesalainen.web.servlet.bean.Context;
 
 /**
  *
  * @author tkv
  */
-public class ContentDocument extends JQueryMobileDocument
+public class Model
 {
-    private final Map<PageType,MeterPage> pageMap = new HashMap<>();
-    
+    private List<MeterPage> pages = new ArrayList<>();
+    private AddPage addPage = new AddPage(null);
 
-    public ContentDocument(ThreadLocal threadLocalData)
+    public Model(ThreadLocal<Context<Model>> threadLocalData)
     {
-        super(threadLocalData);
-    }
-    
-    protected MeterPage getMeterPage(PageType pageType)
-    {
-        MeterPage mp = pageMap.get(pageType);
-        if (mp == null)
-        {
-            switch (pageType)
-            {
-                case Page12:
-                    mp = new Page12(this);
-                    break;
-            }
-            pageMap.put(pageType, mp);
-        }
-        return mp;
+        addPage = new AddPage(threadLocalData);
     }
 
+    public AddPage getAddPage()
+    {
+        return addPage;
+    }
+
+    public void setAddPage(AddPage addPage)
+    {
+        this.addPage = addPage;
+    }
+
+    public List<MeterPage> getPages()
+    {
+        return pages;
+    }
+    
 }

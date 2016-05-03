@@ -16,64 +16,59 @@
  */
 package org.vesalainen.boat.server.pages;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.vesalainen.boat.server.GridContext;
-import org.vesalainen.boat.server.Id;
+import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.boat.server.MeterData;
-import org.vesalainen.html.DynString;
-import org.vesalainen.html.ParamContent;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
+import org.vesalainen.boat.server.Model;
+import org.vesalainen.html.Content;
+import org.vesalainen.html.Renderer;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
-import org.vesalainen.util.Wrap;
+import org.vesalainen.web.servlet.bean.Context;
+import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 
 /**
  *
  * @author tkv
  */
-public class MeterPage extends JQueryMobilePage
+public abstract class MeterPage extends ThreadLocalBeanRenderer<Model>
 {
-    protected ParamContent<GridContext,Id>[] grid;
-    private Wrap<Integer> pageId;
+    protected BaseContainer[] grid;
+    protected int pageId;
  
-    public MeterPage(JQueryMobileDocument document, int gridCount)
+    public MeterPage(ThreadLocal<Context<Model>> threadLocalData, int gridCount)
     {
-        this(document, gridCount, new Wrap<Integer>());
-    }
-    
-    private MeterPage(JQueryMobileDocument document, int gridCount, Wrap<Integer> pageId)
-    {
-        super(new DynString("page", pageId), document);
-        this.pageId = pageId;
-        this.grid = new ParamContent[gridCount];
+        super(threadLocalData);
+        this.grid = new BaseContainer[gridCount];
         for (int ii=0;ii<gridCount;ii++)
         {
-            grid[ii] = new ParamContent<>(new GridContext(-1, ii));
+            grid[ii] = new MeterChooser(threadLocalData);
         }
     }
 
-    public List<MeterData> createInitList()
+    @Override
+    public void append(Appendable out) throws IOException
     {
-        List<MeterData> list = new ArrayList<>();
-        for (int ii=0;ii<grid.length;ii++)
-        {
-            list.add(null);
-        }
-        return list;
+        String pattern = getPattern();
+        String suffix = BeanHelper.suffix(pattern);
+        pageId = Integer.parseInt(suffix);
+        super.append(out);
     }
-    public int getGridCount()
+
+    public BaseContainer[] getGrid()
     {
-        return grid.length;
+        return grid;
     }
-    
-    public void setPageId(int pageid)
+
+    public int getPageId()
     {
-        pageId.setValue(pageid);
+        return pageId;
     }
-    
-    public ParamContent<GridContext,Id> getGrid(int index)
+
+    public void setPageId(int pageId)
     {
-        return grid[index];
+        this.pageId = pageId;
     }
-    
+
 }

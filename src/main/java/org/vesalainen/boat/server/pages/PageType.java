@@ -16,29 +16,11 @@
  */
 package org.vesalainen.boat.server.pages;
 
-import java.io.IOException;
-import org.vesalainen.boat.server.Id;
-import org.vesalainen.html.Element;
-import org.vesalainen.html.Placeholder;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.web.I18n;
-
 /**
  *
  * @author tkv
  */
-public class AddMeterContent extends Element
+public enum PageType
 {
-    private MeterChooser form;
-    
-    public AddMeterContent(JQueryMobileDocument document)
-    {
-        super("div");
-        setDataAttr("role", "collapsible");
-        addElement("h1")
-                .addText(I18n.getLabel("setMeterType"));
-//        form = new MeterChooser(document);
-  //      addContent(form);
-    }
-
+    Page12;
 }
