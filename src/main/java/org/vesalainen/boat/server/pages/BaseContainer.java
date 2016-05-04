@@ -71,7 +71,7 @@ public abstract class BaseContainer extends ThreadLocalBeanRenderer<Model>
     
     protected String getFormId()
     {
-        return getWebPattern()+"form";
+        return getWebPattern()+"-form";
     }
 
     protected abstract void addSVGContent(Element svg);

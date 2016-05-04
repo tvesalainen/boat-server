@@ -30,7 +30,7 @@ import org.vesalainen.web.I18nResourceBundle;
  */
 public class ContentServlet extends JQueryMobileServlet<JQueryMobileDocument,Model>
 {
-    public static final String Action = "/con";
+    public static final String Action = "/boatserver";
 
     public ContentServlet()
     {
@@ -43,9 +43,8 @@ public class ContentServlet extends JQueryMobileServlet<JQueryMobileDocument,Mod
         JQueryMobileDocument doc = new JQueryMobileDocument(threadLocalData);
         doc.setAjax(false);
         Element head = doc.getHead();
-        Element sse = head.addElement("script")
-                .setAttr("src", "/sse.js");
-        Element script = head.addElement("script");
+        head.addElement("script").setAttr("src", "/sse.js");
+        head.addElement("script").setAttr("src", "/page-control.js");
         doc.getRawBody().addRenderer(new PagesContent(threadLocalData));
         return doc;
     }

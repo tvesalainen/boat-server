@@ -17,14 +17,8 @@
 package org.vesalainen.boat.server.pages;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.vesalainen.bean.BeanHelper;
-import org.vesalainen.boat.server.MeterData;
 import org.vesalainen.boat.server.Model;
-import org.vesalainen.html.Content;
-import org.vesalainen.html.Renderer;
-import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.web.servlet.bean.Context;
 import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 
@@ -35,7 +29,7 @@ import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 public abstract class MeterPage extends ThreadLocalBeanRenderer<Model>
 {
     protected BaseContainer[] grid;
-    protected int pageId;
+    protected String pageId;
  
     public MeterPage(ThreadLocal<Context<Model>> threadLocalData, int gridCount)
     {
@@ -50,9 +44,7 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model>
     @Override
     public void append(Appendable out) throws IOException
     {
-        String pattern = getPattern();
-        String suffix = BeanHelper.suffix(pattern);
-        pageId = Integer.parseInt(suffix);
+        pageId = getWebPattern();
         super.append(out);
     }
 
@@ -61,12 +53,12 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model>
         return grid;
     }
 
-    public int getPageId()
+    public String getPageId()
     {
         return pageId;
     }
 
-    public void setPageId(int pageId)
+    public void setPageId(String pageId)
     {
         this.pageId = pageId;
     }

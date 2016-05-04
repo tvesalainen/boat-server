@@ -53,7 +53,7 @@ public class AddPage extends ThreadLocalBeanRenderer<Model>
             Renderer d = I18n.getLabel(n);
             Element li = ul.addElement("li");
             li.addElement("a").setAttr("href", "#").addText(d);
-            li.addElement("a").setAttr("href", Action+"?"+ctx.inputName("pages+"+n));
+            li.addElement("a").setAttr("href", "#").setDataAttr("pattern", ctx.inputName("pages+"+n)).addClasses("add-page");
         }
         return page;
     }
