@@ -18,8 +18,6 @@ package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.Renderer;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.web.servlet.bean.Context;
 
@@ -36,9 +34,9 @@ public class Page12 extends MeterPage
     }
 
     @Override
-    protected Renderer create()
+    protected JQueryMobilePage create()
     {
-        JQueryMobilePage page = new JQueryMobilePage(null, "${pageId}", threadLocalModel);
+        JQueryMobilePage page = createPage("${pageId}", threadLocalModel);
         Element main = page.getMain();
         Element gridSolo = main.addElement("div")
                 .setAttr("style", "max-width: 500px;margin: auto")

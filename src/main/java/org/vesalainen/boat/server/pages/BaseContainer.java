@@ -18,8 +18,6 @@ package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.Renderer;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.web.I18n;
 import org.vesalainen.web.servlet.bean.Context;
 import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
@@ -28,7 +26,7 @@ import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
  *
  * @author tkv
  */
-public abstract class BaseContainer extends ThreadLocalBeanRenderer<Model>
+public abstract class BaseContainer extends ThreadLocalBeanRenderer<Model,Element>
 {
     private Element meterPanel;
     private Element meterDiv;
@@ -45,14 +43,14 @@ public abstract class BaseContainer extends ThreadLocalBeanRenderer<Model>
     }
 
     @Override
-    protected Renderer create()
+    protected Element create()
     {
         Element div = new Element("div");
         meterDiv = div.addElement("div");
         
         Element header = meterDiv.addElement("span");
         header.addElement("a")
-                .setAttr("href", "#"+getFormId())
+                .setAttr("href", "#${formId}")
                 .addClasses("ui-btn", "ui-icon-gear", "ui-btn-icon-left", "ui-btn-icon-notext")
                 .addText(I18n.getLabel("change"));
         
@@ -62,14 +60,14 @@ public abstract class BaseContainer extends ThreadLocalBeanRenderer<Model>
 
         addSVGContent(svg);
         
-        Element formDiv = div.addElement("div").setDataAttr("role", "popup").setAttr("id", getFormId()).addClasses("ui-content");
+        Element formDiv = div.addElement("div").setDataAttr("role", "popup").setAttr("id", "${formId}").addClasses("ui-content");
         Element form = formDiv.addElement("form").setAttr("method", "post");
         addFormContent(form);
         form.addElement("input").setAttr("type", "submit");
         return div;
     }
     
-    protected String getFormId()
+    public String getFormId()
     {
         return getWebPattern()+"-form";
     }

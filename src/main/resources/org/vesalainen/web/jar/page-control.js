@@ -21,42 +21,68 @@ $(document).ready(function () {
   
     $(".add-page").click(function(){
         var pattern = $(this).attr("data-pattern");
-        $.post("/boatserver/add="+pattern, {pattern: pattern, sendFragment: "true"}, function(data, status){
+        var base = window.location.pathname;
+        $.post(base+"/add="+pattern, {pattern: pattern, sendFragment: "true"}, function(data, status){
             if (status === "success")
             {
-                var last = lastPage();
-                if (!last)
-                {
-                    $("html").prepend(data);
-                }
-                else
-                {
-                    $("#"+last).after(data);
-                }
-                last = lastPage();
-                $("body").pagecontainer("change", "#"+last);
+                $("body").append(data);
+                $("body").pagecontainer("change", "#"+lastPage());
             }
         });
     });
 });
 
+function nextPage(e)
+{
+    var p = pages();
+    var id = thisPageId(e);
+    if (id)
+    {
+        var index = p.indexOf(id);
+        if (index !== -1)
+        {
+            return p[(index+1)%p.length];
+        }
+    }
+}
+function prevPage(e)
+{
+    var p = pages();
+    var id = thisPageId(e);
+    if (id)
+    {
+        var index = p.indexOf(id);
+        if (index !== -1)
+        {
+            return p[(index-1+p.length)%p.length];
+        }
+    }
+}
+function thisPageId(e)
+{
+    while (e)
+    {
+        var role = e.attr("data-role");
+        if (role === "page")
+        {
+            return e.attr("id");
+        }
+        e = e.parent();
+    }
+    return undefined;
+}
 function lastPage()
 {
-    var res;
+    var p = pages();
+    return p.pop();
+}
+function pages()
+{
+    var res = [];
     $("[data-role='page'").each(function(){
         var id = $(this).attr("id");
-        switch (id)
-        {
-            case "addPage":
-            case "defPage":
-                break;
-            default:
-                if (!res || id > res)
-                {
-                    res = id;
-                }
-                break;
-        }
+        res.push(id);
     });
+    res.sort();
     return res;
 }

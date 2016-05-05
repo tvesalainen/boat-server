@@ -16,31 +16,29 @@
  */
 package org.vesalainen.boat.server.pages;
 
-import static org.vesalainen.boat.server.ContentServlet.Action;
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.Renderer;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.web.I18n;
 import org.vesalainen.web.servlet.bean.Context;
-import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 
 /**
  *
  * @author tkv
  */
-public class AddPage extends ThreadLocalBeanRenderer<Model>
+public class AddPage extends MeterPage
 {
 
     public AddPage(ThreadLocal<Context<Model>> threadLocalModel)
     {
-        super(threadLocalModel);
+        super(threadLocalModel, 0);
     }
 
     @Override
-    protected Renderer create()
+    protected JQueryMobilePage create()
     {
-        JQueryMobilePage page = new JQueryMobilePage(null, "addPage", threadLocalModel);
+        JQueryMobilePage page = createPage("addPage", threadLocalModel);
         Element header = page.getHeader();
         header.addElement("h1")
                 .addText(I18n.getLabel("Add new meter page"));

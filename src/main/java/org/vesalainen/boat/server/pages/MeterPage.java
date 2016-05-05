@@ -19,6 +19,8 @@ package org.vesalainen.boat.server.pages;
 import java.io.IOException;
 import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.boat.server.Model;
+import org.vesalainen.boat.server.PageScript;
+import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.web.servlet.bean.Context;
 import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 
@@ -26,7 +28,7 @@ import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
  *
  * @author tkv
  */
-public abstract class MeterPage extends ThreadLocalBeanRenderer<Model>
+public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobilePage>
 {
     protected BaseContainer[] grid;
     protected String pageId;
@@ -41,6 +43,13 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model>
         }
     }
 
+    protected JQueryMobilePage createPage(String pageId, ThreadLocal<Context<Model>> threadLocalModel)
+    {
+        JQueryMobilePage page = new JQueryMobilePage(null, pageId, threadLocalModel);
+        page.getScriptContainer().addScript(new PageScript());
+        return page;
+    }
+    
     @Override
     public void append(Appendable out) throws IOException
     {
