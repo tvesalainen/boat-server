@@ -16,8 +16,6 @@
  */
 package org.vesalainen.boat.server;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
 import org.vesalainen.web.servlet.AbstractSSEServlet;
 
 /**
@@ -27,18 +25,9 @@ import org.vesalainen.web.servlet.AbstractSSEServlet;
 public class DataServlet extends AbstractSSEServlet
 {
 
-    @Override
-    public void init() throws ServletException
+    public DataServlet(DataSource source)
     {
-        super.init();
-        try
-        {
-            source = DataSource.getInstance();
-        }
-        catch (IOException ex)
-        {
-            throw new ServletException(ex);
-        }
+        this.source = source;
     }
-    
+
 }

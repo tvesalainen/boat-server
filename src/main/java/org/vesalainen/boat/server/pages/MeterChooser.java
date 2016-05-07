@@ -53,10 +53,6 @@ public class MeterChooser extends BaseContainer
     protected void addSVGContent(Element svg)
     {
     }
-    @Override
-    protected void addFormContent(Element form)
-    {
-    }
 /*
     public MeterChooser(JQueryMobileDocument document)
     {

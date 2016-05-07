@@ -36,7 +36,7 @@ public class Page12 extends MeterPage
     @Override
     protected JQueryMobilePage create()
     {
-        JQueryMobilePage page = createPage("${pageId}", threadLocalModel);
+        JQueryMobilePage page = createPage(threadLocalModel);
         Element main = page.getMain();
         Element gridSolo = main.addElement("div")
                 .setAttr("style", "max-width: 500px;margin: auto")

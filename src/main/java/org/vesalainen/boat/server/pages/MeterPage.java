@@ -20,7 +20,14 @@ import java.io.IOException;
 import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.boat.server.PageScript;
+import org.vesalainen.html.BooleanAttribute;
+import org.vesalainen.html.ContainerContent;
+import org.vesalainen.html.Element;
+import org.vesalainen.html.Renderer;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
+import org.vesalainen.math.UnitCategory;
+import org.vesalainen.math.UnitType;
+import org.vesalainen.web.I18n;
 import org.vesalainen.web.servlet.bean.Context;
 import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 
@@ -30,24 +37,58 @@ import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
  */
 public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobilePage>
 {
-    protected BaseContainer[] grid;
+    protected GridContainer[] grid;
     protected String pageId;
  
     public MeterPage(ThreadLocal<Context<Model>> threadLocalData, int gridCount)
     {
         super(threadLocalData);
-        this.grid = new BaseContainer[gridCount];
+        this.grid = new GridContainer[gridCount];
         for (int ii=0;ii<gridCount;ii++)
         {
-            grid[ii] = new MeterChooser(threadLocalData);
+            grid[ii] = new GridContainer(threadLocalData);
         }
     }
 
+    protected JQueryMobilePage createPage(ThreadLocal<Context<Model>> threadLocalModel)
+    {
+        return createPage("${pageId}", threadLocalModel);
+    }
     protected JQueryMobilePage createPage(String pageId, ThreadLocal<Context<Model>> threadLocalModel)
     {
         JQueryMobilePage page = new JQueryMobilePage(null, pageId, threadLocalModel);
         page.getScriptContainer().addScript(new PageScript());
+        Element popup = page.getMain().addElement("div").setDataAttr("role", "popup").setAttr("id", "${pageId}-popup");
+        popup.add(createMeterChooser());
         return page;
+    }
+    private Renderer createMeterChooser()
+    {
+        ContainerContent container = new ContainerContent();
+        Element div = container.addElement("div").setDataAttr("role", "collapsible");
+        div.addElement("h4").addText(I18n.getLabel("location"));
+        Element ul = div.addElement("ul").setDataAttr("role", "listview");
+        Element form = ul.addElement("form").setAttr("id", "${pageId}-popup-form").setAttr("method", "post").setAttr("action", "location");
+        form.addRenderer(getUnitChooser(UnitCategory.Coordinate));
+        form.addElement("a").setAttr("href", "#").addText(I18n.getLabel("submit")).addClasses("post-grid");
+        return container;
+    }
+    
+    private Renderer getUnitChooser(UnitCategory category)
+    {
+        Element fieldSet = new Element("fieldset");
+        fieldSet.addElement("label").setAttr("for", "${pageId}-popup-unit").addText(category.name());
+        Element select = fieldSet.addElement("select").setAttr("name", "unit").setAttr("id", "${pageId}-popup-unit");
+        for (UnitType e : UnitType.values())
+        {
+            if (category.equals(e.getCategory()))
+            {
+                String n = e.toString();
+                Renderer d = I18n.getLabel(n);
+                Element option = select.addElement("option").setAttr("value", n).addText(d);
+            }
+        }
+        return fieldSet;
     }
     
     @Override
@@ -55,11 +96,6 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
     {
         pageId = getWebPattern();
         super.append(out);
-    }
-
-    public BaseContainer[] getGrid()
-    {
-        return grid;
     }
 
     public String getPageId()
@@ -70,6 +106,11 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
     public void setPageId(String pageId)
     {
         this.pageId = pageId;
+    }
+
+    public GridContainer[] getGrid()
+    {
+        return grid;
     }
 
 }

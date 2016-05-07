@@ -16,11 +16,8 @@
  */
 package org.vesalainen.boat.server.pages;
 
-import org.vesalainen.boat.server.Id;
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.web.servlet.AbstractSSESource;
 import org.vesalainen.web.servlet.bean.Context;
 
 /**
@@ -47,10 +44,4 @@ public class OneRowContainer extends TitleContainer
                 .setAttr("style", "font-size: 2em");
     }
 
-    @Override
-    protected void addFormContent(Element form)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

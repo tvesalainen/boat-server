@@ -19,7 +19,30 @@
 
 $(document).ready(function () {
   
-    $(".add-page").click(function(){
+    $("body").on("click", ".post-grid", function(){
+        var form = $(this).parent();
+        var action = form.attr("action");
+        var array = form.serializeArray();
+        $.post(action, array, function(data, status){
+            if (status === "success")
+            {
+            }
+        });
+    });
+    
+    $("body").on("click", ".set-grid", function(){
+        var gridId = $(this).attr("data-grid-id");
+        var href = $(this).attr("href");
+        var base = window.location.pathname;
+        $(href).find("form").each(function(){
+            replaceAttr($(this), "action", base+"?assign="+gridId);
+        });
+        $(href).find("[name]").each(function(){
+            replaceAttr($(this), "name", gridId);
+        });
+    });
+    
+    $(".add-page").on("click", function(){
         var pattern = $(this).attr("data-pattern");
         var base = window.location.pathname;
         $.post(base+"/add="+pattern, {pattern: pattern, sendFragment: "true"}, function(data, status){
@@ -32,6 +55,16 @@ $(document).ready(function () {
     });
 });
 
+function replaceAttr(e, at, prefix)
+{
+    var text = e.attr(at);
+    var idx = text.lastIndexOf("-");
+    if (idx !== -1)
+    {
+        text = text.slice(idx+1);
+    }
+    e.attr(at, prefix+"-"+text);
+}
 function nextPage(e)
 {
     var p = pages();

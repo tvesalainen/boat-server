@@ -20,40 +20,47 @@ import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.web.I18n;
 import org.vesalainen.web.servlet.bean.Context;
+import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 
 /**
  *
  * @author tkv
  */
-public abstract class BaseContainer extends GridContainer
+public class GridContainer extends ThreadLocalBeanRenderer<Model,Element>
 {
-    protected Element meterPanel;
-    protected String viewBox;
+    protected Element meterDiv;
 
-    public BaseContainer(ThreadLocal<Context<Model>> threadLocalData)
-    {
-        this(threadLocalData, "-50,-50,100,100");
-    }
-    public BaseContainer(ThreadLocal<Context<Model>> threadLocalData, String viewBox)
+    public GridContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
         super(threadLocalData);
-        this.viewBox = viewBox;
     }
 
     @Override
     protected Element create()
     {
-        Element div = super.create();
+        Element div = new Element("div").setAttr("id", "${gridId}");
+        meterDiv = div.addElement("div");
         
-        meterPanel = meterDiv.addElement("div");
-        Element svg = meterPanel.addElement("svg")
-                .setAttr("viewBox", viewBox);
-
-        addSVGContent(svg);
+        Element header = meterDiv.addElement("span");
+        header.addElement("a")
+                .setAttr("href", "#${pageId}-popup")
+                .setDataAttr("rel", "popup")
+                .setDataAttr("grid-id", "${gridId}")
+                .addClasses("set-grid", "ui-btn", "ui-icon-gear", "ui-btn-icon-left", "ui-btn-icon-notext")
+                .addText(I18n.getLabel("change"));
         
         return div;
     }
-    
-    protected abstract void addSVGContent(Element svg);
-    
+
+    public String getGridId()
+    {
+        return getWebPattern();
+    }
+
+    public String getPageId()
+    {
+        String gridId = getWebPattern();
+        int idx = gridId.indexOf("-grid");
+        return gridId.substring(0, idx);
+    }
 }

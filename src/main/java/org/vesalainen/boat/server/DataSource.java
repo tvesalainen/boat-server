@@ -19,8 +19,10 @@ package org.vesalainen.boat.server;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 import org.vesalainen.code.PropertySetter;
-import org.vesalainen.math.sliding.TimeoutSlidingAngleAverage;
+import org.vesalainen.code.TimeToLivePropertySetter;
 import org.vesalainen.math.sliding.TimeoutStatsService;
 import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.parsers.nmea.NMEAService;
@@ -43,11 +45,13 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     private final MapList<String,Event> propertyMapList = new HashMapList<>();
     private final FloatMap<String> valueMap = new FloatMap();
     private final TimeoutStatsService statsService;
+    private final TimeToLivePropertySetter freshProperties = new TimeToLivePropertySetter(1, TimeUnit.HOURS);
 
     public DataSource() throws IOException
     {
         super(Action);
         service = new NMEAService("224.0.0.3", 10110);
+        NmeaProperties.stream().forEach((s)->service.addNMEAObserver(freshProperties, s));
         service.start();
         statsService = new TimeoutStatsService(service.getDispatcher(), "boat-server");
     }
@@ -59,6 +63,11 @@ public class DataSource extends AbstractSSESource implements PropertySetter
             source = new DataSource();
         }
         return source;
+    }
+    
+    public Stream<String> getFreshProperties()
+    {
+        return freshProperties.stream();
     }
     /*
     protected Event createEvent(String eventString)

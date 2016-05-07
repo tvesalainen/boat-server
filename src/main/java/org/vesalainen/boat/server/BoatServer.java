@@ -16,6 +16,7 @@
  */
 package org.vesalainen.boat.server;
 
+import java.io.IOException;
 import org.vesalainen.web.server.EmbeddedServer;
 
 /**
@@ -24,12 +25,15 @@ import org.vesalainen.web.server.EmbeddedServer;
  */
 public class BoatServer extends EmbeddedServer
 {
-
-    public BoatServer(int port)
+    
+    public BoatServer(int port) throws IOException
     {
         super(port);
-        addServlet(ContentServlet.class, ContentServlet.Action+"/*");
-        addServlet(DataServlet.class, DataSource.Action);
+        DataSource source = DataSource.getInstance();
+        ContentServlet contentServlet = new ContentServlet(source);
+        addServlet(contentServlet, ContentServlet.Action+"/*");
+        DataServlet dataServlet = new DataServlet(source);
+        addServlet(dataServlet, DataSource.Action);
     }
 
     public static void main(String... args)
