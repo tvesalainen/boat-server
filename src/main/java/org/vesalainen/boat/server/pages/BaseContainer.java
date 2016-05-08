@@ -18,7 +18,7 @@ package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
-import org.vesalainen.web.I18n;
+import org.vesalainen.math.UnitType;
 import org.vesalainen.web.servlet.bean.Context;
 
 /**
@@ -29,6 +29,7 @@ public abstract class BaseContainer extends GridContainer
 {
     protected Element meterPanel;
     protected String viewBox;
+    protected UnitType unit;
 
     public BaseContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
@@ -55,5 +56,15 @@ public abstract class BaseContainer extends GridContainer
     }
     
     protected abstract void addSVGContent(Element svg);
+
+    public UnitType getUnit()
+    {
+        return unit;
+    }
+
+    public void setUnit(UnitType unit)
+    {
+        this.unit = unit;
+    }
     
 }

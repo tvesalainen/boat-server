@@ -18,6 +18,7 @@ package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
+import org.vesalainen.web.servlet.AbstractSSESource;
 import org.vesalainen.web.servlet.bean.Context;
 
 /**
@@ -40,7 +41,7 @@ public class LocationContainer extends TitleContainer
                 .setAttr("y", "0")
                 .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
-                //.setAttr(AbstractSSESource.EventSink, new DynString("Latitude-", wrap(Id.SelectedUnit), "-Latitude"))
+                .setAttr(AbstractSSESource.EventSink, "Latitude-${unit}-Latitude")
                 .setAttr("style", "font-size: 2em");
         
         svg.addElement("text")
@@ -48,7 +49,7 @@ public class LocationContainer extends TitleContainer
                 .setAttr("y", "26")
                 .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
-                //.setAttr(AbstractSSESource.EventSink, new DynString("Longitude-", wrap(Id.SelectedUnit), "-Longitude"))
+                .setAttr(AbstractSSESource.EventSink, "Longitude-${unit}-Longitude")
                 .setAttr("style", "font-size: 2em");
     }
 

@@ -17,6 +17,7 @@
 package org.vesalainen.boat.server;
 
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,16 +27,9 @@ import org.vesalainen.boat.server.pages.LocationContainer;
 import org.vesalainen.boat.server.pages.MeterPage;
 import org.vesalainen.boat.server.pages.Page12;
 import org.vesalainen.boat.server.pages.PageType;
-import org.vesalainen.html.BooleanAttribute;
-import org.vesalainen.html.ContainerContent;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.Renderer;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
-import org.vesalainen.html.jquery.mobile.JQueryMobileForm;
 import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
-import org.vesalainen.math.UnitCategory;
-import org.vesalainen.math.UnitType;
-import org.vesalainen.web.I18n;
 import org.vesalainen.web.I18nResourceBundle;
 import org.vesalainen.web.servlet.bean.Context;
 
@@ -67,19 +61,21 @@ public class ContentServlet extends JQueryMobileServlet<JQueryMobileDocument,Mod
     }
 
     @Override
-    protected void onService(HttpServletRequest req, HttpServletResponse resp, Context<Model> context, Model model) throws ServletException, IOException
+    protected void onService(HttpServletRequest req, HttpServletResponse resp, Parameters parameters, Context<Model> context, Model model) throws ServletException, IOException
     {
-        String assign = req.getParameter("assign");
+        String assign = parameters.getParameter("assign");
         if (assign == null)
         {
-            super.onService(req, resp, context, model);
+            super.onService(req, resp, parameters, context, model);
         }
         else
         {
+            parameters.remove("assign");
             String pattern = assign.replace('-', '.');
             String field = BeanHelper.prefix(pattern)+'='+BeanHelper.suffix(pattern);
-            BeanHelper.applyList(model, field, (Class<Object> c, String h)->{return createObject(model, field, c, h);});
-            super.onService(req, resp, context, model);
+            parameters.put(field, "");
+            parameters.put("sendFragment", "");
+            super.onService(req, resp, parameters, context, model);
         }
     }
     

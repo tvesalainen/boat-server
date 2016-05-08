@@ -21,11 +21,14 @@ $(document).ready(function () {
   
     $("body").on("click", ".post-grid", function(){
         var form = $(this).parent();
+        var gridId = form.attr("data-grid-id");
         var action = form.attr("action");
         var array = form.serializeArray();
         $.post(action, array, function(data, status){
             if (status === "success")
             {
+                $("#"+gridId).parent().html(data);
+                window.history.back();
             }
         });
     });
@@ -35,6 +38,7 @@ $(document).ready(function () {
         var href = $(this).attr("href");
         var base = window.location.pathname;
         $(href).find("form").each(function(){
+            $(this).attr("data-grid-id", gridId);
             replaceAttr($(this), "action", base+"?assign="+gridId);
         });
         $(href).find("[name]").each(function(){

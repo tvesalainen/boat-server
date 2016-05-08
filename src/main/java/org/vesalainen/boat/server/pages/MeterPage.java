@@ -17,10 +17,8 @@
 package org.vesalainen.boat.server.pages;
 
 import java.io.IOException;
-import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.boat.server.PageScript;
-import org.vesalainen.html.BooleanAttribute;
 import org.vesalainen.html.ContainerContent;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.Renderer;

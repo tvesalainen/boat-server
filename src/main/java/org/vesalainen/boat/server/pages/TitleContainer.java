@@ -16,10 +16,8 @@
  */
 package org.vesalainen.boat.server.pages;
 
-import org.vesalainen.boat.server.Id;
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
-import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.web.servlet.bean.Context;
 
 /**
@@ -28,7 +26,8 @@ import org.vesalainen.web.servlet.bean.Context;
  */
 public abstract class TitleContainer extends BaseContainer
 {
-
+    protected String title;
+    
     public TitleContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
         super(threadLocalData);
@@ -40,12 +39,23 @@ public abstract class TitleContainer extends BaseContainer
         svg.addElement("text")
                 .setAttr("x", "-45")
                 .setAttr("y", "-35")
-  //              .addText(wrap(Id.MeterName))
+                .addText("${title}")
                 .setAttr("style", "font-size: 0.5em");
         addRows(svg);
         
     }
 
     protected abstract void addRows(Element svg);
+
+    public String getTitle()
+    {
+        return title;
+    }
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+    
     
 }
