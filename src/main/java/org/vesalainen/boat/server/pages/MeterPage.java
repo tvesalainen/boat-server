@@ -17,9 +17,16 @@
 package org.vesalainen.boat.server.pages;
 
 import java.io.IOException;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.vesalainen.boat.server.DataSource;
+import org.vesalainen.boat.server.Layout;
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.boat.server.PageScript;
+import org.vesalainen.code.TimeToLivePropertySetter;
+import org.vesalainen.html.BooleanAttribute;
 import org.vesalainen.html.ContainerContent;
+import org.vesalainen.html.Content;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.Renderer;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
@@ -62,16 +69,44 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
     }
     private Renderer createMeterChooser()
     {
+        DataSource source = DataSource.getInstance();
+        TimeToLivePropertySetter freshProperties = source.getFreshProperties();
         ContainerContent container = new ContainerContent();
-        Element div = container.addElement("div").setDataAttr("role", "collapsible");
-        div.addElement("h4").addText(I18n.getLabel("location"));
-        Element ul = div.addElement("ul").setDataAttr("role", "listview");
-        Element form = ul.addElement("form").setAttr("id", "${pageId}-popup-form").setAttr("method", "post").setAttr("action", "location");
-        form.addRenderer(getUnitChooser(UnitCategory.Coordinate));
-        form.addElement("a").setAttr("href", "#").addText(I18n.getLabel("submit")).addClasses("post-grid");
+        Set<String> freshSet = freshProperties.stream().collect(Collectors.toSet());
+        for (Layout layout : Layout.values())
+        {
+            if (HasProperty.class.isAssignableFrom(layout.getType()))
+            {
+                
+            }
+            String[] properties = layout.getProperties();
+            
+        }
+        if (freshProperties.isAlive("latitude"))
+        {
+            container.addContent(getOption(Layout.Location, UnitCategory.Coordinate));
+        }
         return container;
     }
     
+    private Content getOption(Layout layout, UnitCategory unitCategory, String property)
+    {
+        Element div = new Element("div").setDataAttr("role", "collapsible");
+        div.addElement("h4").addText(I18n.getLabel(property));
+        Element ul = div.addElement("ul").setDataAttr("role", "listview");
+        Element form = ul.addElement("form").setAttr("id", "${pageId}-popup-form").setAttr("method", "post").setAttr("action", layout);
+        if (HasProperty.class.isAssignableFrom(layout.getType()))
+        {
+            form.addElement("input").setAttr("type", "text").setAttr("name", "property").setAttr("value", property).setAttr(new BooleanAttribute("hidden", true));
+        }
+        if (HasUnit.class.isAssignableFrom(layout.getType()))
+        {
+            form.addRenderer(getUnitChooser(unitCategory));
+        }
+        form.addElement("a").setAttr("href", "#").addText(I18n.getLabel("submit")).addClasses("post-grid");
+        return div;
+    }
+
     private Renderer getUnitChooser(UnitCategory category)
     {
         Element fieldSet = new Element("fieldset");

@@ -17,15 +17,15 @@
 package org.vesalainen.boat.server;
 
 import java.io.IOException;
-import java.util.Map;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.vesalainen.bean.BeanHelper;
+import org.vesalainen.boat.server.pages.BaseContainer;
 import org.vesalainen.boat.server.pages.GridContainer;
-import org.vesalainen.boat.server.pages.LocationContainer;
 import org.vesalainen.boat.server.pages.MeterPage;
-import org.vesalainen.boat.server.pages.Page12;
 import org.vesalainen.boat.server.pages.PageType;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
@@ -97,28 +97,28 @@ public class ContentServlet extends JQueryMobileServlet<JQueryMobileDocument,Mod
         {
             return super.createObject(data, field, cls, hint);
         }
-        if (GridContainer.class.equals(cls))
+        try
         {
-            switch (hint)
+            if (GridContainer.class.equals(cls))
             {
-                case "location":
-                    return (T) new LocationContainer(threadLocalModel);
-                default:
-                    throw new UnsupportedOperationException(hint+ "not supported");
+                Layout layout = Layout.valueOf(hint);
+                Class<? extends BaseContainer> type = layout.getType();
+                Constructor<? extends BaseContainer> constructor = type.getConstructor(ThreadLocal.class);
+                return (T) constructor.newInstance(threadLocalModel);
             }
+            if (MeterPage.class.equals(cls))
+            {
+                PageType pageType = PageType.valueOf(hint);
+                Class<? extends MeterPage> type = pageType.getType();
+                Constructor<? extends MeterPage> constructor = type.getConstructor(ThreadLocal.class);
+                return (T) constructor.newInstance(threadLocalModel);
+            }
+            throw new IllegalArgumentException("no objectFactory for "+field+" "+cls+" "+hint);
         }
-        if (MeterPage.class.equals(cls))
+        catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
         {
-            PageType pageType = PageType.valueOf(hint);
-            switch (pageType)
-            {
-                case Page12:
-                    return (T) new Page12(threadLocalModel);
-                default:
-                    throw new UnsupportedOperationException(pageType+ "not supported");
-            }
+            throw new IllegalArgumentException(ex);
         }
-        return null;
     }
 
 }

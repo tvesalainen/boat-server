@@ -29,6 +29,7 @@ public abstract class BaseContainer extends GridContainer
 {
     protected Element meterPanel;
     protected String viewBox;
+    protected String property;
     protected UnitType unit;
 
     public BaseContainer(ThreadLocal<Context<Model>> threadLocalData)
@@ -56,6 +57,16 @@ public abstract class BaseContainer extends GridContainer
     }
     
     protected abstract void addSVGContent(Element svg);
+
+    public String getProperty()
+    {
+        return property;
+    }
+
+    public void setProperty(String property)
+    {
+        this.property = property;
+    }
 
     public UnitType getUnit()
     {

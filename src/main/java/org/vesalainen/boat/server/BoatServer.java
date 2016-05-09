@@ -30,6 +30,7 @@ public class BoatServer extends EmbeddedServer
     {
         super(port);
         DataSource source = DataSource.getInstance();
+        source.start();
         ContentServlet contentServlet = new ContentServlet(source);
         addServlet(contentServlet, ContentServlet.Action+"/*");
         DataServlet dataServlet = new DataServlet(source);

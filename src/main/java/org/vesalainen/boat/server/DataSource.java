@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 import org.vesalainen.code.PropertySetter;
 import org.vesalainen.code.TimeToLivePropertySetter;
 import org.vesalainen.math.sliding.TimeoutStatsService;
@@ -47,16 +46,23 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     private final TimeoutStatsService statsService;
     private final TimeToLivePropertySetter freshProperties = new TimeToLivePropertySetter(1, TimeUnit.HOURS);
 
-    public DataSource() throws IOException
+    public DataSource()
     {
         super(Action);
-        service = new NMEAService("224.0.0.3", 10110);
-        NmeaProperties.stream().forEach((s)->service.addNMEAObserver(freshProperties, s));
-        service.start();
-        statsService = new TimeoutStatsService(service.getDispatcher(), "boat-server");
+        try
+        {
+            service = new NMEAService("224.0.0.3", 10110);
+            NmeaProperties.stream().forEach((s)->service.addNMEAObserver(freshProperties, s));
+            service.start();
+            statsService = new TimeoutStatsService(service.getDispatcher(), "boat-server");
+        }
+        catch (IOException ex)
+        {
+            throw new IllegalArgumentException(ex);
+        }
     }
 
-    public static DataSource getInstance() throws IOException
+    public static DataSource getInstance()
     {
         if (source == null)
         {
@@ -65,9 +71,9 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         return source;
     }
     
-    public Stream<String> getFreshProperties()
+    public TimeToLivePropertySetter getFreshProperties()
     {
-        return freshProperties.stream();
+        return freshProperties;
     }
     /*
     protected Event createEvent(String eventString)

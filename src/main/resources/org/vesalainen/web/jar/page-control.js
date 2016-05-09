@@ -29,6 +29,7 @@ $(document).ready(function () {
             {
                 $("#"+gridId).parent().html(data);
                 window.history.back();
+                register($("#"+gridId));
             }
         });
     });

@@ -22,5 +22,19 @@ package org.vesalainen.boat.server.pages;
  */
 public enum PageType
 {
-    Page12;
+    Page12(Page12.class)
+    ;
+    
+    private Class<? extends MeterPage> type;
+
+    private PageType(Class<? extends MeterPage> type)
+    {
+        this.type = type;
+    }
+
+    public Class<? extends MeterPage> getType()
+    {
+        return type;
+    }
+    
 }

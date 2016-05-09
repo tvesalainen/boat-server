@@ -16,16 +16,41 @@
  */
 package org.vesalainen.boat.server;
 
+import org.vesalainen.boat.server.pages.BaseContainer;
+import org.vesalainen.boat.server.pages.CompassContainer;
+import org.vesalainen.boat.server.pages.LocationContainer;
+import org.vesalainen.boat.server.pages.OneRowContainer;
+import org.vesalainen.boat.server.pages.StatsContainer;
+import org.vesalainen.boat.server.pages.TackticalContainer;
+
 /**
  *
  * @author tkv
  */
 public enum Layout
 {
-    CompassFullScreen,
-    TackticalFullScreen,
-    StatsContainer,
-    OneRow,
-    TwoRow,
-    Location
+    Compass(CompassContainer.class, "trueHeading"),
+    Tacktical(TackticalContainer.class, "trueHeading"),
+    Stats(StatsContainer.class),
+    OneRow(OneRowContainer.class),
+    Location(LocationContainer.class, "latitude", "longitude")
+    ;
+    private Class<? extends BaseContainer> type;
+    private String[] properties;
+    private Layout(Class<? extends BaseContainer> type, String... properties)
+    {
+        this.type = type;
+        this.properties = properties;
+    }
+
+    public Class<? extends BaseContainer> getType()
+    {
+        return type;
+    }
+
+    public String[] getProperties()
+    {
+        return properties;
+    }
+    
 }

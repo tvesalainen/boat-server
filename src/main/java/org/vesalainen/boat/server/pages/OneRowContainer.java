@@ -18,13 +18,14 @@ package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
+import org.vesalainen.web.servlet.AbstractSSESource;
 import org.vesalainen.web.servlet.bean.Context;
 
 /**
  *
  * @author tkv
  */
-public class OneRowContainer extends TitleContainer
+public class OneRowContainer extends TitleContainer implements HasProperty, HasUnit
 {
 
     public OneRowContainer(ThreadLocal<Context<Model>> threadLocalData)
@@ -40,7 +41,7 @@ public class OneRowContainer extends TitleContainer
                 .setAttr("y", "16")
                 .setAttr("textLength", "90")
                 .setAttr("lengthAdjust", "spacingAndGlyphs")
-                //.setAttr(AbstractSSESource.EventSink, wrap(Id.Event))
+                .setAttr(AbstractSSESource.EventSink, "${property}-${unit}")
                 .setAttr("style", "font-size: 2em");
     }
 
