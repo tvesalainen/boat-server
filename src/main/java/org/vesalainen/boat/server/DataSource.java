@@ -75,85 +75,6 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     {
         return freshProperties;
     }
-    /*
-    protected Event createEvent(String eventString)
-    {
-        String[] evs = eventString.split("-");
-        UnitType currentUnit = null;
-        UnitType propertyUnit = null;
-        MeterChoice meterChoice;
-        String property;
-        EventAction transform = null;
-        String ext = null;
-        switch (evs.length)
-        {
-            case 4:
-                ext = evs[3];
-            case 3:
-                transform = Action.valueOf(evs[2]);
-            case 2:
-                currentUnit = UnitType.valueOf(evs[1]);
-            case 1:
-                meterChoice = MeterChoice.valueOf(evs[0]);
-                property = BeanHelper.field(evs[0]);
-                propertyUnit = NmeaProperties.getType(property);
-                break;
-            default:
-                throw new IllegalArgumentException(eventString+" illegal");
-        }
-        if (transform != null)
-        {
-            switch (transform)
-            {
-                case COMPASS:
-                    switch (meterChoice)
-                    {
-                        case TrueHeading:
-                            return new CompassRotateEvent(source, eventString, property, transform, "rotate(%.1f)");
-                        case Pitch:
-                            return new CompassPitchEvent(source, eventString, property, currentUnit, propertyUnit);
-                        case Roll:
-                            if (ext == null)
-                            {
-                                return new CompassRollEvent(source, eventString, property, transform);
-                            }
-                            else
-                            {
-                                return new CompassRollBoundEvent(source, eventString, property, ext);
-                            }
-                    }
-                case ROUTE:
-                    return new RouteEvent(source, eventString, currentUnit, propertyUnit);
-                case ROTATE:
-                    if (
-                            MeterChoice.TrueHeading.equals(meterChoice) ||
-                            MeterChoice.TrackMadeGood.equals(meterChoice)
-                            )
-                    {
-                        return new RotateEvent(source, eventString, property, transform);
-                    }
-                    else
-                    {
-                        return new BoatRelativeEvent(source, eventString, property, transform);
-                    }
-                default:
-                    throw new UnsupportedOperationException(transform+" not supported");
-            }
-        }
-        else
-        {
-            switch (meterChoice)
-            {
-                case Latitude:
-                    return new CoordinateEvent(source, eventString, property, currentUnit, propertyUnit, 'N', 'S');
-                case Longitude:
-                    return new CoordinateEvent(source, eventString, property, currentUnit, propertyUnit, 'E', 'W');
-                default:
-                    return new Event(source, eventString, new String[] {property}, currentUnit, propertyUnit);
-            }
-        }
-    }
-    */
 
     public NMEAService getService()
     {
@@ -209,31 +130,31 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     @Override
     public void set(String property, byte arg)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        set(property, (float)arg);
     }
 
     @Override
     public void set(String property, char arg)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        set(property, (float)arg);
     }
 
     @Override
     public void set(String property, short arg)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        set(property, (float)arg);
     }
 
     @Override
     public void set(String property, int arg)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        set(property, (float)arg);
     }
 
     @Override
     public void set(String property, long arg)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        set(property, (float)arg);
     }
 
     @Override
@@ -252,10 +173,10 @@ public class DataSource extends AbstractSSESource implements PropertySetter
 
     private void fireAll(String property, double arg)
     {
-        for (Event ev : propertyMapList.get(property))
+        propertyMapList.get(property).stream().forEach((ev) ->
         {
             ev.fire(property, arg);
-        }
+        });
     }
     
     @Override

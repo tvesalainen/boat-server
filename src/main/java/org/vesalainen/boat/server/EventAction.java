@@ -18,6 +18,7 @@ package org.vesalainen.boat.server;
 
 import java.util.Locale;
 import static org.vesalainen.boat.server.Constants.*;
+import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.navi.CoordinateFormat;
 import org.vesalainen.util.FloatMap;
@@ -50,25 +51,42 @@ public enum EventAction
                 s.getMax()-s.getMin()
                 );
     }, EventAction::same),
-
+    Visible("refresh", "", EventAction::same, EventAction::same)
 ;
 
     private final String action;
     private final EventFormat format;
     private final EventFunction func;
+    private final EventConversion conv;
+
+    private EventAction(String action, String format, EventFunction func)
+    {
+        this(
+            action, 
+            (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, I18n.getLocale(), format, c.getValue(), c.getUnit().getUnit()),
+            func);
+    }
 
     private EventAction(String action, EventFormat format, EventFunction func)
+    {
+        this(action, format, func, EventAction::conv);
+    }
+    
+    private EventAction(String action, String format, EventFunction func, EventConversion conv)
+    {
+        this(
+            action, 
+            (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, I18n.getLocale(), format, c.getValue(), c.getUnit().getUnit()),
+            func, 
+            conv);
+    }
+    
+    private EventAction(String action, EventFormat format, EventFunction func, EventConversion conv)
     {
         this.action = action;
         this.format = format;
         this.func = func;
-    }
-
-    private EventAction(String action, String format, EventFunction func)
-    {
-        this.action = action;
-        this.format = (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, I18n.getLocale(), format, c.getValue(), c.getUnit().getUnit());
-        this.func = func;
+        this.conv = conv;
     }
 
     public String getAction()
@@ -86,8 +104,28 @@ public enum EventAction
         return func;
     }
 
+    public EventConversion getConv()
+    {
+        return conv;
+    }
+
     private static double same(double value, FloatMap map)
     {
         return value;
+    }
+    private static double same(UnitType from, UnitType to, double value)
+    {
+        return value;
+    }
+    private static double conv(UnitType from, UnitType to, double value)
+    {
+        if (from != null)
+        {
+            return from.convertTo(value, to);
+        }
+        else
+        {
+            return value;
+        }
     }
 }

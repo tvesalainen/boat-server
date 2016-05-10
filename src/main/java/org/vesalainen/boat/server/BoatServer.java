@@ -34,7 +34,7 @@ public class BoatServer extends EmbeddedServer
         ContentServlet contentServlet = new ContentServlet(source);
         addServlet(contentServlet, ContentServlet.Action+"/*");
         DataServlet dataServlet = new DataServlet(source);
-        addServlet(dataServlet, DataSource.Action);
+        addServlet(dataServlet, DataSource.Action+"/*");
     }
 
     public static void main(String... args)

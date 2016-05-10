@@ -17,6 +17,8 @@
 package org.vesalainen.boat.server.pages;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.vesalainen.boat.server.DataSource;
@@ -32,7 +34,9 @@ import org.vesalainen.html.Renderer;
 import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
 import org.vesalainen.math.UnitCategory;
 import org.vesalainen.math.UnitType;
+import org.vesalainen.parsers.nmea.NMEACategory;
 import org.vesalainen.web.I18n;
+import org.vesalainen.web.servlet.AbstractSSESource;
 import org.vesalainen.web.servlet.bean.Context;
 import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 
@@ -69,22 +73,52 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
     }
     private Renderer createMeterChooser()
     {
-        DataSource source = DataSource.getInstance();
-        TimeToLivePropertySetter freshProperties = source.getFreshProperties();
         ContainerContent container = new ContainerContent();
-        Set<String> freshSet = freshProperties.stream().collect(Collectors.toSet());
+        Set<String> set = DataSource.NmeaProperties.stream().collect(Collectors.toSet());
+        Map<NMEACategory, List<String>> map = DataSource.NmeaProperties.stream().collect(Collectors.groupingBy((s)->{return DataSource.NmeaProperties.getCategory(s);}));
         for (Layout layout : Layout.values())
         {
-            if (HasProperty.class.isAssignableFrom(layout.getType()))
+            String required = null;
+            if (!layout.getRequired().isEmpty())
             {
-                
+                required = layout.getRequired().get(0);
             }
-            String[] properties = layout.getProperties();
+            Element div = container.addElement("div");
+            if (required != null)
+            {
+                div.setAttr("style", "display: none;").setAttr(AbstractSSESource.EventSink, required+"-Unitless-Visible");;
+            }
+            if (set.containsAll(layout.getRequired()))
+            {
+                if (HasProperty.class.isAssignableFrom(layout.getType()))
+                {
+                    Element div1 = div.addElement("div").setDataAttr("role", "collapsible");
+                    div1.addElement("h4").addText(I18n.getLabel(layout));
+                    for (NMEACategory cat : map.keySet())
+                    {
+                        Element div2 = div1.addElement("div").setDataAttr("role", "collapsible");
+                        div2.addElement("h4").addText(I18n.getLabel(cat));
+                        Element ul = div2.addElement("ul").setDataAttr("role", "listview");
+                        map.get(cat).stream().forEach((property) ->
+                        {
+                            Element li = ul.addElement("li").setAttr("style", "display: none;").setAttr(AbstractSSESource.EventSink, property+"-Unitless-Visible");;
+                            UnitType unit = DataSource.NmeaProperties.getType(property);
+                            li.addContent(getOption(layout, unit.getCategory(), property));
+                        });
+                    }
+                }
+                else
+                {
+                    UnitCategory unitCategory = null;
+                    if (required != null)
+                    {
+                        UnitType unit = DataSource.NmeaProperties.getType(required);
+                        unitCategory = unit.getCategory();
+                    }
+                    container.addContent(getOption(layout, unitCategory, layout.name()));
+                }
+            }
             
-        }
-        if (freshProperties.isAlive("latitude"))
-        {
-            container.addContent(getOption(Layout.Location, UnitCategory.Coordinate));
         }
         return container;
     }

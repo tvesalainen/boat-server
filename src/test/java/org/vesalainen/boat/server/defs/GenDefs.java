@@ -38,7 +38,7 @@ public class GenDefs
     @Test
     public void generate()
     {
-        try (FileOutputStream fos = new FileOutputStream("src/main/resources/defs.svg"))
+        try (FileOutputStream fos = new FileOutputStream("src/main/resources/org/vesalainen/web/jar/defs.svg"))
         {
             SVGDocument svg = new SVGDocument();
             Element defs = svg.addElement("defs");

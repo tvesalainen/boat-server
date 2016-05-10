@@ -64,17 +64,17 @@ public class ContentServlet extends JQueryMobileServlet<JQueryMobileDocument,Mod
     protected void onService(HttpServletRequest req, HttpServletResponse resp, Parameters parameters, Context<Model> context, Model model) throws ServletException, IOException
     {
         String assign = parameters.getParameter("assign");
-        if (assign == null)
-        {
-            super.onService(req, resp, parameters, context, model);
-        }
-        else
+        if (assign != null)
         {
             parameters.remove("assign");
             String pattern = assign.replace('-', '.');
             String field = BeanHelper.prefix(pattern)+'='+BeanHelper.suffix(pattern);
             parameters.put(field, "");
             parameters.put("sendFragment", "");
+            super.onService(req, resp, parameters, context, model);
+        }
+        else
+        {
             super.onService(req, resp, parameters, context, model);
         }
     }

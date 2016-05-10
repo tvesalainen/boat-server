@@ -18,6 +18,7 @@ package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
+import org.vesalainen.web.I18n;
 import org.vesalainen.web.servlet.bean.Context;
 
 /**
@@ -49,12 +50,11 @@ public abstract class TitleContainer extends BaseContainer
 
     public String getTitle()
     {
-        return title;
+        return I18n.getLabel(property).toString();
     }
 
     public void setTitle(String title)
     {
-        this.title = title;
     }
     
     

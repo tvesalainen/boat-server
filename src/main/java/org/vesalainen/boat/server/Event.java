@@ -40,6 +40,7 @@ public class Event
     protected final String action;
     protected final EventFormat format;
     protected final EventFunction func;
+    protected final EventConversion conv;
     protected StringBuilder json = new StringBuilder();
     protected StringBuilder prev = new StringBuilder();
     protected long lastFire;
@@ -55,6 +56,7 @@ public class Event
         this.action = action.getAction();
         this.format = action.getFormat();
         this.func = action.getFunc();
+        this.conv = action.getConv();
         ec = new EventContext();
         ec.setUnit(currentUnit);
     }
@@ -115,7 +117,7 @@ public class Event
     
     public void fire(String property, double value)
     {
-        value = convert(value);
+        value = conv.apply(propertyUnit, currentUnit, value);
         value = (double) func.apply(value, source.getValueMap());
         ec.setValue(value);
         fire(ec);
@@ -137,28 +139,6 @@ public class Event
             prev.append(json);
             lastFire = now;
         }
-    }
-    
-    protected double convert(double value)
-    {
-        if (propertyUnit != null)
-        {
-            return propertyUnit.convertTo(value, currentUnit);
-        }
-        else
-        {
-            return value;
-        }
-    }
-    
-    protected void populate(JSONObject jo, String property, double value)
-    {
-        throw new UnsupportedOperationException("not supported");
-    }
-    
-    protected String format(double value)
-    {
-        throw new UnsupportedOperationException("not supported");
     }
     
     public String getProperty()

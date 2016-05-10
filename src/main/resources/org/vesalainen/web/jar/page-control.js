@@ -54,7 +54,9 @@ $(document).ready(function () {
             if (status === "success")
             {
                 $("body").append(data);
-                $("body").pagecontainer("change", "#"+lastPage());
+                var lp = "#"+lastPage();
+                register($(lp));
+                $("body").pagecontainer("change", lp);
             }
         });
     });

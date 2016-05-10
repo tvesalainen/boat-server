@@ -16,12 +16,16 @@
  */
 package org.vesalainen.boat.server;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import org.vesalainen.boat.server.pages.BaseContainer;
 import org.vesalainen.boat.server.pages.CompassContainer;
 import org.vesalainen.boat.server.pages.LocationContainer;
 import org.vesalainen.boat.server.pages.OneRowContainer;
 import org.vesalainen.boat.server.pages.StatsContainer;
 import org.vesalainen.boat.server.pages.TackticalContainer;
+import org.vesalainen.util.Lists;
 
 /**
  *
@@ -36,21 +40,31 @@ public enum Layout
     Location(LocationContainer.class, "latitude", "longitude")
     ;
     private Class<? extends BaseContainer> type;
-    private String[] properties;
-    private Layout(Class<? extends BaseContainer> type, String... properties)
+    private List<String> required;
+    private Layout(Class<? extends BaseContainer> type, String... required)
     {
         this.type = type;
-        this.properties = properties;
+        if (required.length > 0)
+        {
+            this.required = Collections.unmodifiableList(Lists.create(required));
+        }
+        else
+        {
+            this.required = Collections.EMPTY_LIST;
+        }
     }
 
     public Class<? extends BaseContainer> getType()
     {
         return type;
     }
-
-    public String[] getProperties()
+    /**
+     * Returns required properties. First property tells the unit and unit-category.
+     * @return 
+     */
+    public List<String> getRequired()
     {
-        return properties;
+        return required;
     }
-    
+
 }
