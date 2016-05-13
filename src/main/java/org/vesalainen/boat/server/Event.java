@@ -16,13 +16,13 @@
  */
 package org.vesalainen.boat.server;
 
-import org.json.JSONObject;
 import org.vesalainen.bean.BeanHelper;
 import static org.vesalainen.boat.server.DataSource.NmeaProperties;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.StatsSupplier;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.math.sliding.TimeoutStatsService.StatsObserver;
+import org.vesalainen.util.CharSequences;
 
 /**
  *
@@ -132,8 +132,9 @@ public class Event
         format.format(json, ec);
         json.append("\"}");
         long now = System.currentTimeMillis();
-        if (!json.equals(prev) || now-lastFire > RefreshLimit)
+        if (CharSequences.compare(json, prev) != 0 || now-lastFire > RefreshLimit)
         {
+            System.err.println(eventString+" "+json+" "+prev);
             source.fireEvent(eventString, json);
             prev.setLength(0);
             prev.append(json);

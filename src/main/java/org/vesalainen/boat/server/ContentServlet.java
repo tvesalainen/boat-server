@@ -19,6 +19,7 @@ package org.vesalainen.boat.server;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,7 @@ import org.vesalainen.boat.server.pages.BaseContainer;
 import org.vesalainen.boat.server.pages.GridContainer;
 import org.vesalainen.boat.server.pages.MeterPage;
 import org.vesalainen.boat.server.pages.PageType;
+import org.vesalainen.code.TimeToLivePropertySetter;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.jquery.mobile.JQueryMobileDocument;
 import org.vesalainen.html.jquery.mobile.JQueryMobileServlet;
@@ -75,7 +77,21 @@ public class ContentServlet extends JQueryMobileServlet<JQueryMobileDocument,Mod
         }
         else
         {
-            super.onService(req, resp, parameters, context, model);
+            String refresh = parameters.getParameter("refresh");
+            if (refresh != null)
+            {
+                DataSource source = DataSource.getInstance();
+                TimeToLivePropertySetter freshProperties = source.getFreshProperties();
+                resp.setContentType("application/json");
+                String json = freshProperties.stream().collect(Collectors.joining("\",\"", "{\"refresh\":[\"", "\"]}"));
+                resp.setContentLength(json.length());
+                resp.getWriter().print(json);
+                resp.flushBuffer();
+            }
+            else
+            {
+                super.onService(req, resp, parameters, context, model);
+            }
         }
     }
     

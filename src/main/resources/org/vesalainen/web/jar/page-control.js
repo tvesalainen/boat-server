@@ -38,9 +38,33 @@ $(document).ready(function () {
         var gridId = $(this).attr("data-grid-id");
         var href = $(this).attr("href");
         var base = window.location.pathname;
+        $.post(base, {refresh: ""}, function(data, status){
+            if (status === "success")
+            {
+                var arr = data.refresh;
+                $(href).find("[data-property]").each(function(){
+                    var property = $(this).attr("data-property");
+                    var idx = arr.indexOf(property);
+                    if (idx !== -1)
+                    {
+                        $(this).show();
+                    }
+                    else
+                    {
+                        $(this).hide();
+                    }
+                });
+            }
+        });
         $(href).find("form").each(function(){
             $(this).attr("data-grid-id", gridId);
             replaceAttr($(this), "action", base+"?assign="+gridId);
+        });
+        $(href).find("[id]").each(function(){
+            replaceAttr($(this), "id", gridId);
+        });
+        $(href).find("[for]").each(function(){
+            replaceAttr($(this), "for", gridId);
         });
         $(href).find("[name]").each(function(){
             replaceAttr($(this), "name", gridId);

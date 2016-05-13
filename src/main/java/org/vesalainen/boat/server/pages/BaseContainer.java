@@ -31,6 +31,7 @@ public abstract class BaseContainer extends GridContainer
     protected String viewBox;
     protected String property;
     protected UnitType unit;
+    protected int seconds;
 
     public BaseContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
@@ -76,6 +77,16 @@ public abstract class BaseContainer extends GridContainer
     public void setUnit(UnitType unit)
     {
         this.unit = unit;
+    }
+
+    public int getSeconds()
+    {
+        return seconds;
+    }
+
+    public void setSeconds(int seconds)
+    {
+        this.seconds = seconds;
     }
     
 }

@@ -25,7 +25,7 @@ import org.vesalainen.web.servlet.bean.Context;
  *
  * @author tkv
  */
-public class CompassContainer extends BaseContainer
+public class CompassContainer extends BaseContainer implements HasSeconds
 {
 
     public CompassContainer(ThreadLocal<Context<Model>> threadLocalData)
@@ -77,7 +77,7 @@ public class CompassContainer extends BaseContainer
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
                 .setAttr("d", "M 0 50 l 0 -10")
-                .setAttr(AbstractSSESource.EventSink, "Roll-Degree-InvRotate-500-Min");
+                .setAttr(AbstractSSESource.EventSink, "Roll-Degree-InvRotate-${seconds}-Min");
         
         svg.addElement("path")
                 .setAttr("style", "display: none;")
@@ -86,11 +86,11 @@ public class CompassContainer extends BaseContainer
                 .setAttr("stroke-width", "1")
                 .setAttr("fill", "none")
                 .setAttr("d", "M 0 50 l 0 -10")
-                .setAttr(AbstractSSESource.EventSink, "Roll-Degree-InvRotate-500-Max");
+                .setAttr(AbstractSSESource.EventSink, "Roll-Degree-InvRotate-${seconds}-Max");
         
         Element view = svg.addElement("g")
                 .setAttr("transform", "rotate(0)")
-                .setAttr(AbstractSSESource.EventSink, "Roll-Degree-InvRotate-500-Last");
+                .setAttr(AbstractSSESource.EventSink, "Roll-Degree-InvRotate-${seconds}-Last");
         
         view.addElement("path")
                 .setAttr("stroke", "blue")

@@ -25,7 +25,6 @@ import org.vesalainen.boat.server.DataSource;
 import org.vesalainen.boat.server.Layout;
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.boat.server.PageScript;
-import org.vesalainen.code.TimeToLivePropertySetter;
 import org.vesalainen.html.BooleanAttribute;
 import org.vesalainen.html.ContainerContent;
 import org.vesalainen.html.Content;
@@ -86,7 +85,7 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
             Element div = container.addElement("div");
             if (required != null)
             {
-                div.setAttr("style", "display: none;").setAttr(AbstractSSESource.EventSink, required+"-Unitless-Visible");;
+                div.setAttr("style", "display: none;").setDataAttr("property", required);
             }
             if (set.containsAll(layout.getRequired()))
             {
@@ -101,7 +100,7 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
                         Element ul = div2.addElement("ul").setDataAttr("role", "listview");
                         map.get(cat).stream().forEach((property) ->
                         {
-                            Element li = ul.addElement("li").setAttr("style", "display: none;").setAttr(AbstractSSESource.EventSink, property+"-Unitless-Visible");;
+                            Element li = ul.addElement("li").setAttr("style", "display: none;").setDataAttr("property", property);
                             UnitType unit = DataSource.NmeaProperties.getType(property);
                             li.addContent(getOption(layout, unit.getCategory(), property));
                         });
@@ -128,24 +127,29 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
         Element div = new Element("div").setDataAttr("role", "collapsible");
         div.addElement("h4").addText(I18n.getLabel(property));
         Element ul = div.addElement("ul").setDataAttr("role", "listview");
-        Element form = ul.addElement("form").setAttr("id", "${pageId}-popup-form").setAttr("method", "post").setAttr("action", layout);
+        Element form = ul.addElement("form").setAttr("id", property+"_form").setAttr("method", "post").setAttr("action", layout);
         if (HasProperty.class.isAssignableFrom(layout.getType()))
         {
             form.addElement("input").setAttr("type", "text").setAttr("name", "property").setAttr("value", property).setAttr(new BooleanAttribute("hidden", true));
         }
+        if (HasSeconds.class.isAssignableFrom(layout.getType()))
+        {
+            form.addElement("label").setAttr("for", property+"_seconds").addText(I18n.getLabel("seconds"));
+            form.addElement("input").setAttr("type", "range").setAttr("name", "seconds").setAttr("min", "1").setAttr("max", "1000").setAttr("id", property+"_seconds");
+        }
         if (HasUnit.class.isAssignableFrom(layout.getType()))
         {
-            form.addRenderer(getUnitChooser(unitCategory));
+            form.addRenderer(getUnitChooser(unitCategory, property));
         }
-        form.addElement("a").setAttr("href", "#").addText(I18n.getLabel("submit")).addClasses("post-grid");
+        form.addElement("a").setAttr("href", "#").addText(I18n.getLabel("submit")).addClasses("post-grid", "ui-btn");
         return div;
     }
 
-    private Renderer getUnitChooser(UnitCategory category)
+    private Renderer getUnitChooser(UnitCategory category, String property)
     {
         Element fieldSet = new Element("fieldset");
-        fieldSet.addElement("label").setAttr("for", "${pageId}-popup-unit").addText(category.name());
-        Element select = fieldSet.addElement("select").setAttr("name", "unit").setAttr("id", "${pageId}-popup-unit");
+        fieldSet.addElement("label").setAttr("for", property+"_unit").addText(category.name());
+        Element select = fieldSet.addElement("select").setAttr("name", "unit").setAttr("id", property+"_unit");
         for (UnitType e : UnitType.values())
         {
             if (category.equals(e.getCategory()))
