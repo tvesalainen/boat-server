@@ -28,6 +28,7 @@ public class EventContext
     private double value;
     private UnitType unit;
     private TimeoutStats stats;
+    private int count;
 
     public double getValue()
     {
@@ -37,6 +38,7 @@ public class EventContext
     public void setValue(double value)
     {
         this.value = value;
+        count++;
     }
 
     public UnitType getUnit()
@@ -57,6 +59,11 @@ public class EventContext
     public void setStats(TimeoutStats stats)
     {
         this.stats = stats;
+        count++;
     }
-    
+
+    public boolean isFirstFire()
+    {
+        return count == 1;
+    }
 }

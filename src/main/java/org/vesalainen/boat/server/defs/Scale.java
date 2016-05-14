@@ -17,7 +17,6 @@
 package org.vesalainen.boat.server.defs;
 
 import org.vesalainen.html.Element;
-import org.vesalainen.util.Lists;
 
 /**
  *

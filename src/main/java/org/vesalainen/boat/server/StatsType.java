@@ -31,7 +31,8 @@ public enum StatsType
     Last(TimeoutStats::last),
     Prev(TimeoutStats::previous),
     LastTime(TimeoutStats::lastTime),
-    PrevTime(TimeoutStats::previousTime)
+    PrevTime(TimeoutStats::previousTime),
+    FirstTime(TimeoutStats::firstTime)
     ;
     
     private final StatsSupplier func;

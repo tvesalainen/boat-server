@@ -18,13 +18,14 @@ package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
+import org.vesalainen.web.servlet.AbstractSSESource;
 import org.vesalainen.web.servlet.bean.Context;
 
 /**
  *
  * @author tkv
  */
-public class StatsContainer extends BaseContainer
+public class StatsContainer extends BaseContainer implements HasProperty, HasSeconds, HasUnit
 {
 
     public StatsContainer(ThreadLocal<Context<Model>> threadLocalData)
@@ -35,8 +36,9 @@ public class StatsContainer extends BaseContainer
     @Override
     protected void addSVGContent(Element svg)
     {
-        //svg.setAttr(AbstractSSESource.EventSink, new DynString(wrap(Id.Prop1), "-ViewBox-", wrap(Id.TimeSpan), "-Last"));
-        Element g = svg.addElement("g");
+        svg.removeAttr("viewBox");
+        svg.setAttr(AbstractSSESource.EventSink, "${property}-${unit}-ViewBox-${seconds}-Last");
+        Element g = svg.addElement("g").setAttr(AbstractSSESource.EventSink, "${property}-${unit}-Scale-${seconds}-Last");
         g.addElement("use")
             .setAttr("xlink:href", "/defs.svg#vertical-scale");
         g.addElement("use")

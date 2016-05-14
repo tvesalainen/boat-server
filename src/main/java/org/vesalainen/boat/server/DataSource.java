@@ -17,6 +17,9 @@
 package org.vesalainen.boat.server;
 
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +57,9 @@ public class DataSource extends AbstractSSESource implements PropertySetter
             service = new NMEAService("224.0.0.3", 10110);
             NmeaProperties.stream().forEach((s)->service.addNMEAObserver(freshProperties, s));
             service.start();
-            statsService = new TimeoutStatsService(service.getDispatcher(), "boat-server");
+            // we use EPOCH times to get shorter numbers in SVG
+            Clock clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), Instant.EPOCH));
+            statsService = new TimeoutStatsService(clock, service.getDispatcher(), "boat-server");
         }
         catch (IOException ex)
         {

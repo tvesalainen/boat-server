@@ -17,11 +17,13 @@
 package org.vesalainen.boat.server.defs;
 
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.Test;
 import org.vesalainen.html.Element;
+import org.vesalainen.html.PrettyPrinter;
 import org.vesalainen.svg.SVGDocument;
 
 /**
@@ -38,7 +40,7 @@ public class GenDefs
     @Test
     public void generate()
     {
-        try (FileOutputStream fos = new FileOutputStream("src/main/resources/org/vesalainen/web/jar/defs.svg"))
+        try (FileWriter fw = new FileWriter("src/main/resources/org/vesalainen/web/jar/defs.svg"))
         {
             SVGDocument svg = new SVGDocument();
             Element defs = svg.addElement("defs");
@@ -56,7 +58,7 @@ public class GenDefs
             defs.addContent(cs10);
             Element cs = new CircleScale();
             cs.setAttr("id", "compass-scale");
-            svg.addContent(cs);
+            defs.addContent(cs);
             // stats
             int minx = -100;
             int miny = -1000;
@@ -64,26 +66,27 @@ public class GenDefs
             int maxy = 0;
             Scale vScale = new Scale(minx, maxx, 1, true);
             vScale.setAttr("id", "vertical-scale");
-            svg.addContent(vScale);
+            defs.addContent(vScale);
             Grid vGrid1 = new Grid(miny, maxy, minx, maxx, 1, false);
             vGrid1.setAttr("id", "vertical-grid-1");
-            svg.addContent(vGrid1);
+            defs.addContent(vGrid1);
             Grid vGrid5 = new Grid(miny, maxy, minx, maxx, 5, false);
             vGrid5.setAttr("id", "vertical-grid-5");
-            svg.addContent(vGrid5);
+            defs.addContent(vGrid5);
             Grid vGrid10 = new Grid(miny, maxy, minx, maxx, 10, false);
             vGrid10.setAttr("id", "vertical-grid-10");
-            svg.addContent(vGrid10);
+            defs.addContent(vGrid10);
             Grid hGrid1 = new Grid(minx, maxx, miny, maxy, 1, true);
             hGrid1.setAttr("id", "horizontal-grid-1");
-            svg.addContent(hGrid1);
+            defs.addContent(hGrid1);
             Grid hGrid5 = new Grid(minx, maxx, miny, maxy, 5, true);
             hGrid5.setAttr("id", "horizontal-grid-5");
-            svg.addContent(hGrid5);
+            defs.addContent(hGrid5);
             Grid hGrid10 = new Grid(minx, maxx, miny, maxy, 10, true);
             hGrid10.setAttr("id", "horizontal-grid-10");
-            svg.addContent(hGrid10);
-            svg.write(fos);
+            defs.addContent(hGrid10);
+            PrettyPrinter pp = new PrettyPrinter(fw);
+            svg.append(pp);
             
         }
         catch (IOException ex)

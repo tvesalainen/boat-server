@@ -46,11 +46,12 @@ public enum EventAction
         TimeoutStats s = c.getStats();
         ThreadLocalFormatter.format(o, Locale.US, "%d %.1f %d %.1f", 
                 s.firstTime(),
-                -s.getMin(),
+                -s.getMax(),
                 s.lastTime()-s.firstTime(),
                 s.getMax()-s.getMin()
                 );
     }, EventAction::same),
+    Scale("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%d)", c.getStats().firstTime()), EventAction::same),
     Visible("refresh", "", EventAction::same, EventAction::same)
 ;
 
