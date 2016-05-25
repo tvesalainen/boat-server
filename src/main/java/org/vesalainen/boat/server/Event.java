@@ -42,6 +42,7 @@ public class Event
     protected final EventFormat format;
     protected final EventFunction func;
     protected final EventConversion conv;
+    protected final boolean isObject;
     protected StringBuilder json = new StringBuilder();
     protected StringBuilder prev = new StringBuilder();
     protected long lastFire;
@@ -58,6 +59,7 @@ public class Event
         this.format = action.getFormat();
         this.func = action.getFunc();
         this.conv = action.getConv();
+        this.isObject = action.isObject();
         ec = new EventContext();
         ec.setUnit(currentUnit);
     }
@@ -129,9 +131,17 @@ public class Event
         json.setLength(0);
         json.append("{\"");
         json.append(action);
-        json.append("\":\"");
+        json.append("\":");
+        if (!isObject)
+        {
+            json.append("\"");
+        }
         format.format(json, ec);
-        json.append("\"}");
+        if (!isObject)
+        {
+            json.append("\"");
+        }
+        json.append("}");
         long now = System.currentTimeMillis();
         if (CharSequences.compare(json, prev) != 0 || now-lastFire > RefreshLimit)
         {

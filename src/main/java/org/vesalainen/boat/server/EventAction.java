@@ -44,21 +44,22 @@ public enum EventAction
     Route3("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, FloatMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
     ViewBox("viewBox", (Appendable o, EventContext c)->{
         TimeoutStats s = c.getStats();
-        ThreadLocalFormatter.format(o, Locale.US, "%d %.1f %d %.1f", 
+        ThreadLocalFormatter.format(o, Locale.US, "{\"baseVal\":{\"x\":%d, \"y\":%.1f, \"width\":%d, \"height\":%.1f}}", 
                 s.firstTime(),
                 -s.getMax(),
                 s.lastTime()-s.firstTime(),
                 s.getMax()-s.getMin()
                 );
-    }, EventAction::same),
+    }, EventAction::same, EventAction::same, true),
     Scale("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%d)", c.getStats().firstTime()), EventAction::same),
-    Visible("refresh", "", EventAction::same, EventAction::same)
+    Visible("refresh", "", EventAction::same)
 ;
 
     private final String action;
     private final EventFormat format;
     private final EventFunction func;
     private final EventConversion conv;
+    private final boolean isObject; // is the event data string or object
 
     private EventAction(String action, String format, EventFunction func)
     {
@@ -70,24 +71,26 @@ public enum EventAction
 
     private EventAction(String action, EventFormat format, EventFunction func)
     {
-        this(action, format, func, EventAction::conv);
+        this(action, format, func, EventAction::conv, false);
     }
     
-    private EventAction(String action, String format, EventFunction func, EventConversion conv)
+    private EventAction(String action, String format, EventFunction func, EventConversion conv, boolean isObject)
     {
         this(
             action, 
             (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, I18n.getLocale(), format, c.getValue(), c.getUnit().getUnit()),
             func, 
-            conv);
+            conv,
+            isObject);
     }
     
-    private EventAction(String action, EventFormat format, EventFunction func, EventConversion conv)
+    private EventAction(String action, EventFormat format, EventFunction func, EventConversion conv, boolean isObject)
     {
         this.action = action;
         this.format = format;
         this.func = func;
         this.conv = conv;
+        this.isObject = isObject;
     }
 
     public String getAction()
@@ -108,6 +111,11 @@ public enum EventAction
     public EventConversion getConv()
     {
         return conv;
+    }
+
+    public boolean isObject()
+    {
+        return isObject;
     }
 
     private static double same(double value, FloatMap map)
