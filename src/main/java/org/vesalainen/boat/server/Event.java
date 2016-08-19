@@ -22,7 +22,6 @@ import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.StatsSupplier;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.math.sliding.TimeoutStatsService.StatsObserver;
-import org.vesalainen.time.RelativeMillis;
 import org.vesalainen.util.CharSequences;
 
 /**
