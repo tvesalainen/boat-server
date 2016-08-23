@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.vesalainen.code.PropertySetter;
 import org.vesalainen.code.TimeToLivePropertySetter;
+import org.vesalainen.dev.DevMeter;
 import org.vesalainen.math.sliding.TimeoutStatsService;
 import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.parsers.nmea.NMEAService;
@@ -48,18 +49,20 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     private final FloatMap<String> valueMap = new FloatMap();
     private final TimeoutStatsService statsService;
     private final TimeToLivePropertySetter freshProperties = new TimeToLivePropertySetter(1, TimeUnit.HOURS);
-
+    private final DevMeter meterService;
+    
     public DataSource()
     {
         super(Action);
         try
         {
-            service = new NMEAService("224.0.0.3", 10110);
+            service = new NMEAService(Config.getNmeaMulticastAddress(), Config.getNmeaUDPPort());
             NmeaProperties.stream().forEach((s)->service.addNMEAObserver(freshProperties, s));
             service.start();
             // we use EPOCH times to get shorter numbers in SVG
             Clock clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), Instant.EPOCH));
             statsService = new TimeoutStatsService(clock, service.getDispatcher(), "boat-server");
+            meterService = new DevMeter(Config.getDevConfigFile());
         }
         catch (IOException ex)
         {
@@ -89,6 +92,11 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     public TimeoutStatsService getStatsService()
     {
         return statsService;
+    }
+
+    public DevMeter getMeterService()
+    {
+        return meterService;
     }
     
     @Override

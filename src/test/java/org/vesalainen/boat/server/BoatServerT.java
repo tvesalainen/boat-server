@@ -37,8 +37,7 @@ public class BoatServerT
     {
         try
         {
-            BoatServer bs = new BoatServer(8080);
-            bs.startAndWait();
+            Main.main("src/test/resources/boat-server.xml");
         }
         catch (Exception ex)
         {

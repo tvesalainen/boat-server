@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<boat-server xmlns="http://vesalainen.org/schema/boat-server"
+    httpPort="80"
+>
+    
+</boat-server>

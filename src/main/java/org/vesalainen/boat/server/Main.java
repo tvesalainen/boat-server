@@ -16,25 +16,33 @@
  */
 package org.vesalainen.boat.server;
 
-import java.io.IOException;
-import org.vesalainen.web.server.EmbeddedServer;
+import org.vesalainen.util.JAXBCommandLine;
 
 /**
  *
  * @author tkv
  */
-public class BoatServer extends EmbeddedServer
+public class Main extends JAXBCommandLine
 {
     
-    public BoatServer(int port) throws IOException
+    public Main()
     {
-        super(port);
-        DataSource source = DataSource.getInstance();
-        source.start();
-        ContentServlet contentServlet = new ContentServlet(source);
-        addServlet(contentServlet, ContentServlet.Action+"/*");
-        DataServlet dataServlet = new DataServlet(source);
-        addServlet(dataServlet, DataSource.Action+"/*");
+        super("org.vesalainen.web.boat.server.jaxb", true);
     }
-
+    
+    public static void main(String... args)
+    {
+        Main cmdLine = new Main();
+        cmdLine.command(args);
+        cmdLine.attachStatic(Config.class);
+        try
+        {
+            BoatServer server = new BoatServer(Config.getHttpPort());
+            server.startAndWait();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
 }

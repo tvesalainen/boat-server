@@ -23,10 +23,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         elementFormDefault="qualified">
     <xsd:element name="boat-server">
         <xsd:complexType>
+            <xsd:attribute name="devConfigFile" type="xsd:string" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Device Config filename.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="devMeterPeriod" type="xsd:unsignedLong" default="1000">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Device metering period in milli seconds.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
             <xsd:attribute name="httpPort" type="xsd:unsignedShort" default="80">
                 <xsd:annotation>
                     <xsd:documentation>
                         HTTP listening port.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="nmeaMulticastAddress" type="xsd:string" default="224.0.0.3">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        NMEA multicast address.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="nmeaUDPPort" type="xsd:unsignedShort" default="10110">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        NMEA port.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>

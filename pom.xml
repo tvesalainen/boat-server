@@ -39,13 +39,29 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>org.vesalainen.boat.server.BoatServer</mainClass>
+                                    <mainClass>org.vesalainen.boat.server.Main</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <packageName>org.vesalainen.web.boat.server.jaxb</packageName> <!-- The name of your generated source package -->
+                </configuration>
+            </plugin>        
         </plugins>
     </build>
     <dependencies>
@@ -56,6 +72,10 @@
         <dependency>
             <groupId>org.vesalainen.nmea</groupId>
             <artifactId>parser</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.vesalainen</groupId>
+            <artifactId>dev</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

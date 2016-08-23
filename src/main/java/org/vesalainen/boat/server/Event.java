@@ -16,12 +16,14 @@
  */
 package org.vesalainen.boat.server;
 
+import java.util.concurrent.TimeUnit;
 import org.vesalainen.bean.BeanHelper;
 import static org.vesalainen.boat.server.DataSource.NmeaProperties;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.StatsSupplier;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.math.sliding.TimeoutStatsService.StatsObserver;
+import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.util.CharSequences;
 
 /**
@@ -109,12 +111,26 @@ public class Event
     
     public void register()
     {
-        source.getService().addNMEAObserver(source, property);
+        if (NMEAProperties.getInstance().isProperty(property))
+        {
+            source.getService().addNMEAObserver(source, property);
+        }
+        else
+        {
+            source.getMeterService().register(source, property, Config.getDevMeterPeriod(), TimeUnit.MILLISECONDS);
+        }
     }
     
     public void unregister()
     {
-        source.getService().removeNMEAObserver(source, property);
+        if (NMEAProperties.getInstance().isProperty(property))
+        {
+            source.getService().removeNMEAObserver(source, property);
+        }
+        else
+        {
+            source.getMeterService().unregister(source, property);
+        }
     }
     
     public void fire(String property, double value)
