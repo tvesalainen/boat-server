@@ -18,7 +18,6 @@ package org.vesalainen.boat.server;
 
 import java.util.concurrent.TimeUnit;
 import org.vesalainen.bean.BeanHelper;
-import static org.vesalainen.boat.server.DataSource.NmeaProperties;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.StatsSupplier;
 import org.vesalainen.math.sliding.TimeoutStats;
@@ -88,7 +87,7 @@ public class Event
                     currentUnit = UnitType.valueOf(evs[1]);
                 case 1:
                     property = BeanHelper.property(evs[0]);
-                    propertyUnit = NmeaProperties.getType(property);
+                    propertyUnit = DataSource.getInstance().nmeaProperties.getType(property);
                     break;
                 default:
                     throw new IllegalArgumentException(eventString+" illegal");
@@ -111,7 +110,7 @@ public class Event
     
     public void register()
     {
-        if (NMEAProperties.getInstance().isProperty(property))
+        if (DataSource.getInstance().nmeaProperties.isProperty(property))
         {
             source.getService().addNMEAObserver(source, property);
         }
@@ -123,7 +122,7 @@ public class Event
     
     public void unregister()
     {
-        if (NMEAProperties.getInstance().isProperty(property))
+        if (DataSource.getInstance().nmeaProperties.isProperty(property))
         {
             source.getService().removeNMEAObserver(source, property);
         }

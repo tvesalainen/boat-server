@@ -73,8 +73,8 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
     private Renderer createMeterChooser()
     {
         ContainerContent container = new ContainerContent();
-        Set<String> set = DataSource.NmeaProperties.stream().collect(Collectors.toSet());
-        Map<NMEACategory, List<String>> map = DataSource.NmeaProperties.stream().collect(Collectors.groupingBy((s)->{return DataSource.NmeaProperties.getCategory(s);}));
+        Set<String> set = DataSource.getInstance().getAllProperties();
+        Map<NMEACategory, List<String>> map = set.stream().collect(Collectors.groupingBy((s)->{return DataSource.getInstance().nmeaProperties.getCategory(s);}));
         for (Layout layout : Layout.values())
         {
             String required = null;
@@ -101,7 +101,7 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
                         map.get(cat).stream().forEach((property) ->
                         {
                             Element li = ul.addElement("li").setAttr("style", "display: none;").setDataAttr("property", property);
-                            UnitType unit = DataSource.NmeaProperties.getType(property);
+                            UnitType unit = DataSource.getInstance().getUnit(property);
                             li.addContent(getOption(layout, unit.getCategory(), property));
                         });
                     }
@@ -111,7 +111,7 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
                     UnitCategory unitCategory = null;
                     if (required != null)
                     {
-                        UnitType unit = DataSource.NmeaProperties.getType(required);
+                        UnitType unit = DataSource.getInstance().nmeaProperties.getType(required);
                         unitCategory = unit.getCategory();
                     }
                     container.addContent(getOption(layout, unitCategory, layout.name()));

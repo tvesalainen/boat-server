@@ -21,14 +21,19 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.vesalainen.code.PropertySetter;
 import org.vesalainen.code.TimeToLivePropertySetter;
+import org.vesalainen.dev.AbstractMeter;
 import org.vesalainen.dev.DevMeter;
+import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.TimeoutStatsService;
 import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.parsers.nmea.NMEAService;
+import org.vesalainen.util.DoubleMap;
 import org.vesalainen.util.FloatMap;
 import org.vesalainen.util.HashMapList;
 import org.vesalainen.util.MapList;
@@ -41,28 +46,31 @@ import org.vesalainen.web.servlet.AbstractSSESource;
 public class DataSource extends AbstractSSESource implements PropertySetter
 {
     public static final String Action = "/sse";
-    public static final NMEAProperties NmeaProperties = NMEAProperties.getInstance();
     private static DataSource source;
+    public final NMEAProperties nmeaProperties = NMEAProperties.getInstance();
+    private final Set<String> allProperties = new HashSet<>();
+    private AbstractMeter meterService;
     private final NMEAService service;
     private final Map<String,Event> eventMap = new HashMap<>();
     private final MapList<String,Event> propertyMapList = new HashMapList<>();
-    private final FloatMap<String> valueMap = new FloatMap();
+    private final DoubleMap<String> valueMap = new DoubleMap();
     private final TimeoutStatsService statsService;
     private final TimeToLivePropertySetter freshProperties = new TimeToLivePropertySetter(1, TimeUnit.HOURS);
-    private final DevMeter meterService;
     
-    public DataSource()
+    private DataSource()
     {
         super(Action);
         try
         {
             service = new NMEAService(Config.getNmeaMulticastAddress(), Config.getNmeaUDPPort());
-            NmeaProperties.stream().forEach((s)->service.addNMEAObserver(freshProperties, s));
+            nmeaProperties.stream().forEach((s)->service.addNMEAObserver(freshProperties, s));
+            allProperties.addAll(nmeaProperties.getAllProperties());
             service.start();
             // we use EPOCH times to get shorter numbers in SVG
             Clock clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), Instant.EPOCH));
             statsService = new TimeoutStatsService(clock, service.getDispatcher(), "boat-server");
-            meterService = new DevMeter(Config.getDevConfigFile());
+            meterService = DevMeter.getInstance(Config.getDevConfigFile());
+            allProperties.addAll(meterService.getNames());
         }
         catch (IOException ex)
         {
@@ -70,6 +78,23 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         }
     }
 
+    public Set<String> getAllProperties()
+    {
+        return allProperties;
+    }
+
+    public UnitType getUnit(String property)
+    {
+        if (nmeaProperties.isProperty(property))
+        {
+            return nmeaProperties.getType(property);
+        }
+        else
+        {
+            return meterService.getUnit(property);
+        }
+    }
+    
     public static DataSource getInstance()
     {
         if (source == null)
@@ -79,9 +104,12 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         return source;
     }
     
-    public TimeToLivePropertySetter getFreshProperties()
+    public Set<String> getFreshProperties()
     {
-        return freshProperties;
+        Set<String> set = new HashSet<>();
+        freshProperties.forEach((p)->set.add(p));
+        set.addAll(meterService.getNames());
+        return set;
     }
 
     public NMEAService getService()
@@ -94,7 +122,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         return statsService;
     }
 
-    public DevMeter getMeterService()
+    public AbstractMeter getMeterService()
     {
         return meterService;
     }
@@ -123,7 +151,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         }
     }
 
-    public FloatMap<String> getValueMap()
+    public DoubleMap<String> getValueMap()
     {
         return valueMap;
     }
@@ -195,7 +223,15 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     @Override
     public void set(String property, double arg)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        valueMap.put(property, arg);
+        try
+        {
+            fireAll(property, arg);
+        }
+        catch (Exception ex)
+        {
+            System.err.println(ex.getMessage());
+        }
     }
 
     @Override

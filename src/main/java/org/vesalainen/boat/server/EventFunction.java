@@ -16,7 +16,7 @@
  */
 package org.vesalainen.boat.server;
 
-import org.vesalainen.util.FloatMap;
+import org.vesalainen.util.DoubleMap;
 
 /**
  *
@@ -25,5 +25,5 @@ import org.vesalainen.util.FloatMap;
 @FunctionalInterface
 public interface EventFunction
 {
-    double apply(double value, FloatMap map);
+    double apply(double value, DoubleMap map);
 }

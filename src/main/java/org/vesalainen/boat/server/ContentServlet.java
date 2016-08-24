@@ -19,6 +19,7 @@ package org.vesalainen.boat.server;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -81,7 +82,7 @@ public class ContentServlet extends JQueryMobileServlet<JQueryMobileDocument,Mod
             if (refresh != null)
             {
                 DataSource source = DataSource.getInstance();
-                TimeToLivePropertySetter freshProperties = source.getFreshProperties();
+                Set<String> freshProperties = source.getFreshProperties();
                 resp.setContentType("application/json");
                 String json = freshProperties.stream().collect(Collectors.joining("\",\"", "{\"refresh\":[\"", "\"]}"));
                 resp.setContentLength(json.length());

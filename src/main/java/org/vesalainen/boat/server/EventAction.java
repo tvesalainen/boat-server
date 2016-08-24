@@ -21,7 +21,7 @@ import static org.vesalainen.boat.server.Constants.*;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.navi.CoordinateFormat;
-import org.vesalainen.util.FloatMap;
+import org.vesalainen.util.DoubleMap;
 import org.vesalainen.util.ThreadLocalFormatter;
 import org.vesalainen.web.I18n;
 
@@ -34,14 +34,14 @@ public enum EventAction
 
     Default("text", "%.1f%s", EventAction::same),
     Rotate("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), EventAction::same),
-    InvRotate("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), (double v, FloatMap m)->{return 360-v;}),
-    BoatRelativeRotate("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), (double v, FloatMap m)->{return (m.getFloat("trueHeading")+v) % 360;}),
+    InvRotate("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), (double v, DoubleMap m)->{return 360-v;}),
+    BoatRelativeRotate("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), (double v, DoubleMap m)->{return (m.getDouble("trueHeading")+v) % 360;}),
     Latitude("text", (Appendable o, EventContext c)->CoordinateFormat.formatLatitude(o, I18n.getLocale(), c.getValue(), c.getUnit()), EventAction::same),
     Longitude("text", (Appendable o, EventContext c)->CoordinateFormat.formatLatitude(o, I18n.getLocale(), c.getValue(), c.getUnit()), EventAction::same),
-    CompassPitch("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "scale(1,%.3f)", c.getValue()), (double v, FloatMap m)->{ return Math.cos(Math.toRadians(90-ViewAngle-v));}),
+    CompassPitch("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "scale(1,%.3f)", c.getValue()), (double v, DoubleMap m)->{ return Math.cos(Math.toRadians(90-ViewAngle-v));}),
     Route1("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.0f)", c.getValue()), EventAction::same),
-    Route2("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, FloatMap m)->{return 1.0/Math.pow(A, Math.abs(v));}),
-    Route3("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, FloatMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
+    Route2("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, DoubleMap m)->{return 1.0/Math.pow(A, Math.abs(v));}),
+    Route3("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, DoubleMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
     ViewBox("viewBox", (Appendable o, EventContext c)->{
         TimeoutStats s = c.getStats();
         ThreadLocalFormatter.format(o, Locale.US, "{\"baseVal\":{\"x\":%d, \"y\":%.1f, \"width\":%d, \"height\":%.1f}}", 
@@ -118,7 +118,7 @@ public enum EventAction
         return isObject;
     }
 
-    private static double same(double value, FloatMap map)
+    private static double same(double value, DoubleMap map)
     {
         return value;
     }
