@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import static java.util.logging.Level.SEVERE;
 import org.vesalainen.code.PropertySetter;
 import org.vesalainen.code.TimeToLivePropertySetter;
 import org.vesalainen.dev.AbstractMeter;
@@ -34,7 +35,6 @@ import org.vesalainen.math.sliding.TimeoutStatsService;
 import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.parsers.nmea.NMEAService;
 import org.vesalainen.util.DoubleMap;
-import org.vesalainen.util.FloatMap;
 import org.vesalainen.util.HashMapList;
 import org.vesalainen.util.MapList;
 import org.vesalainen.web.servlet.AbstractSSESource;
@@ -62,13 +62,16 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         super(Action);
         try
         {
+            config("starting NMEAService");
             service = new NMEAService(Config.getNmeaMulticastAddress(), Config.getNmeaUDPPort());
             nmeaProperties.stream().forEach((s)->service.addNMEAObserver(freshProperties, s));
             allProperties.addAll(nmeaProperties.getAllProperties());
             service.start();
             // we use EPOCH times to get shorter numbers in SVG
             Clock clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), Instant.EPOCH));
+            config("starting TimeoutStatsService");
             statsService = new TimeoutStatsService(clock, service.getDispatcher(), "boat-server");
+            config("starting DevMeter");
             meterService = DevMeter.getInstance(Config.getDevConfigFile());
             allProperties.addAll(meterService.getNames());
         }
@@ -130,7 +133,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     @Override
     protected void addEvent(String eventString)
     {
-        System.err.println(eventString);
+        fine("add event %s", eventString);
         Event event = Event.create(this, eventString);
         eventMap.put(eventString, event);
         String property = event.getProperty();
@@ -208,7 +211,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         }
         catch (Exception ex)
         {
-            System.err.println(ex.getMessage());
+            log(SEVERE, ex, "set(%s, %f) -> %s", property, arg, ex.getMessage());
         }
     }
 
@@ -230,7 +233,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         }
         catch (Exception ex)
         {
-            System.err.println(ex.getMessage());
+            log(SEVERE, ex, "set(%s, %f) -> %s", property, arg, ex.getMessage());
         }
     }
 

@@ -111,7 +111,7 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
                     UnitCategory unitCategory = null;
                     if (required != null)
                     {
-                        UnitType unit = DataSource.getInstance().nmeaProperties.getType(required);
+                        UnitType unit = DataSource.getInstance().getUnit(required);
                         unitCategory = unit.getCategory();
                     }
                     container.addContent(getOption(layout, unitCategory, layout.name()));

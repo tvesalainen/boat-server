@@ -17,19 +17,20 @@
 package org.vesalainen.boat.server;
 
 import java.util.concurrent.TimeUnit;
+import static java.util.logging.Level.SEVERE;
 import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.StatsSupplier;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.math.sliding.TimeoutStatsService.StatsObserver;
-import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.util.CharSequences;
+import org.vesalainen.util.logging.JavaLogging;
 
 /**
  *
  * @author tkv
  */
-public class Event
+public class Event extends JavaLogging
 {
     private static final long RefreshLimit = 5000;
     
@@ -50,6 +51,7 @@ public class Event
 
     public Event(DataSource source, String eventString, String property, UnitType currentUnit, UnitType propertyUnit, EventAction action)
     {
+        super(Event.class);
         this.source = source;
         this.eventString = eventString;
         this.property = property;
@@ -66,6 +68,7 @@ public class Event
 
     public static Event create(DataSource source, String eventString)
     {
+        JavaLogging.getLogger(Event.class).fine("create event %s", eventString);
         String[] evs = eventString.split("-");
         UnitType currentUnit = null;
         UnitType propertyUnit = null;
@@ -95,7 +98,7 @@ public class Event
         }
         catch (Exception ex)
         {
-            System.err.println(eventString);
+            JavaLogging.getLogger(Event.class).log(SEVERE, ex, "event %s -> %s", eventString, ex);
             throw ex;
         }
         if (statsType == null)
@@ -112,10 +115,12 @@ public class Event
     {
         if (DataSource.getInstance().nmeaProperties.isProperty(property))
         {
+            fine("register %s to nmea service", property);
             source.getService().addNMEAObserver(source, property);
         }
         else
         {
+            fine("register %s to meter service", property);
             source.getMeterService().register(source, property, Config.getDevMeterPeriod(), TimeUnit.MILLISECONDS);
         }
     }
@@ -124,10 +129,12 @@ public class Event
     {
         if (DataSource.getInstance().nmeaProperties.isProperty(property))
         {
+            fine("unregister %s from nmea service", property);
             source.getService().removeNMEAObserver(source, property);
         }
         else
         {
+            fine("unregister %s from meter service", property);
             source.getMeterService().unregister(source, property);
         }
     }

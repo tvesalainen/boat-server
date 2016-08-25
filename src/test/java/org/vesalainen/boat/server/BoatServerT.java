@@ -37,7 +37,7 @@ public class BoatServerT
     {
         try
         {
-            Main.main("src/test/resources/boat-server.xml");
+            Main.main("-lx", "src/test/resources/log.xml", "src/test/resources/boat-server.xml");
         }
         catch (Exception ex)
         {

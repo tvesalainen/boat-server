@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java-logging-config xmlns="http://vesalainen.org/schema/java-logging-config">
+    <logger name="org.vesalainen" level="finest" useParentHandlers="false">
+        <memoryHandler
+            size="1024"
+            level="finest"
+            pushLevel="finest"
+            formatter="org.vesalainen.util.logging.MinimalFormatter">
+            <target>
+                <fileHandler
+                    level="finest"
+                    pattern="%t/boat-server%g.log"
+                    formatter="org.vesalainen.util.logging.MinimalFormatter"/>
+            </target>
+        </memoryHandler>
+    </logger>
+</java-logging-config>
