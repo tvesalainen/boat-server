@@ -144,6 +144,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     @Override
     protected void removeEvent(String eventString)
     {
+        fine("remove event %s", eventString);
         Event event = eventMap.get(eventString);
         if (event != null)
         {
