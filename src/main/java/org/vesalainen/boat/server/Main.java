@@ -16,6 +16,8 @@
  */
 package org.vesalainen.boat.server;
 
+import java.util.Arrays;
+import java.util.logging.Level;
 import org.vesalainen.util.JAXBCommandLine;
 
 /**
@@ -42,7 +44,7 @@ public class Main extends JAXBCommandLine
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            cmdLine.log(Level.SEVERE, ex, "args: %s", Arrays.toString(args));
         }
     }
 }
