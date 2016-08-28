@@ -88,14 +88,18 @@ public class DataSource extends AbstractSSESource implements PropertySetter
 
     public UnitType getUnit(String property)
     {
+        UnitType unit;
         if (nmeaProperties.isProperty(property))
         {
-            return nmeaProperties.getType(property);
+            unit = nmeaProperties.getType(property);
+            fine("nmea property %s has type %s", property, unit);
         }
         else
         {
-            return meterService.getUnit(property);
+            unit = meterService.getUnit(property);
+            fine("meter property %s has type %s", property, unit);
         }
+        return unit;
     }
     
     public static DataSource getInstance()

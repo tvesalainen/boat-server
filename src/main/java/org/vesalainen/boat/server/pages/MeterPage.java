@@ -35,7 +35,6 @@ import org.vesalainen.math.UnitCategory;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.parsers.nmea.NMEACategory;
 import org.vesalainen.web.I18n;
-import org.vesalainen.web.servlet.AbstractSSESource;
 import org.vesalainen.web.servlet.bean.Context;
 import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
 
