@@ -16,8 +16,10 @@
  */
 package org.vesalainen.boat.server;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.vesalainen.boat.server.pages.AddPage;
 import org.vesalainen.boat.server.pages.MeterPage;
 import org.vesalainen.web.servlet.bean.Context;
@@ -26,10 +28,11 @@ import org.vesalainen.web.servlet.bean.Context;
  *
  * @author tkv
  */
-public class Model
+public class Model implements Serializable
 {
+    private static final long serialVersionUID = 1L;
     private List<MeterPage> pages = new ArrayList<>();
-    private AddPage addPage = new AddPage(null);
+    private AddPage addPage;
 
     public Model(ThreadLocal<Context<Model>> threadLocalData)
     {
@@ -49,6 +52,42 @@ public class Model
     public List<MeterPage> getPages()
     {
         return pages;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 5;
+        hash = 71 * hash + Objects.hashCode(this.pages);
+        hash = 71 * hash + Objects.hashCode(this.addPage);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final Model other = (Model) obj;
+        if (!Objects.equals(this.pages, other.pages))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.addPage, other.addPage))
+        {
+            return false;
+        }
+        return true;
     }
     
 }

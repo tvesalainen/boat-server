@@ -26,10 +26,22 @@ import org.vesalainen.util.AbstractProvisioner.Setting;
 public class Config
 {
     private static int httpPort;
+    private static File sessionStoreDirectory;
     private static int nmeaUDPPort;
     private static String nmeaMulticastAddress;
     private static File devConfigFile;
     private static long devMeterPeriod;
+
+    public static File getSessionStoreDirectory()
+    {
+        return sessionStoreDirectory;
+    }
+
+    @Setting("sessionStoreDirectory")
+    public static void setSessionStoreDirectory(File sessionStoreDirectory)
+    {
+        Config.sessionStoreDirectory = sessionStoreDirectory;
+    }
 
     public static long getDevMeterPeriod()
     {

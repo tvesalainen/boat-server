@@ -40,6 +40,7 @@ public class Main extends JAXBCommandLine
         try
         {
             BoatServer server = new BoatServer(Config.getHttpPort());
+            server.setSessionStoreDirectory(Config.getSessionStoreDirectory());
             server.startAndWait();
         }
         catch (Exception ex)

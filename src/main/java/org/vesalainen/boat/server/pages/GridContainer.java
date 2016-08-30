@@ -16,6 +16,8 @@
  */
 package org.vesalainen.boat.server.pages;
 
+import java.io.Serializable;
+import java.util.Objects;
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.web.I18n;
@@ -26,8 +28,9 @@ import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
  *
  * @author tkv
  */
-public class GridContainer extends ThreadLocalBeanRenderer<Model,Element>
+public class GridContainer extends ThreadLocalBeanRenderer<Model,Element> implements Serializable
 {
+    private static final long serialVersionUID = 1L;
     protected Element meterDiv;
 
     public GridContainer(ThreadLocal<Context<Model>> threadLocalData)
@@ -62,5 +65,36 @@ public class GridContainer extends ThreadLocalBeanRenderer<Model,Element>
         String gridId = getWebPattern();
         int idx = gridId.indexOf("-grid");
         return gridId.substring(0, idx);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 59 * hash + Objects.hashCode(this.meterDiv);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final GridContainer other = (GridContainer) obj;
+        if (!Objects.equals(this.meterDiv, other.meterDiv))
+        {
+            return false;
+        }
+        return true;
     }
 }

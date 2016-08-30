@@ -17,8 +17,11 @@
 package org.vesalainen.boat.server.pages;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.vesalainen.boat.server.DataSource;
@@ -44,9 +47,10 @@ import org.vesalainen.web.servlet.bean.ThreadLocalBeanRenderer;
  */
 public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobilePage>
 {
+    private static final long serialVersionUID = 1L;
     protected GridContainer[] grid;
     protected String pageId;
- 
+
     public MeterPage(ThreadLocal<Context<Model>> threadLocalData, int gridCount)
     {
         super(threadLocalData);
@@ -181,6 +185,42 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
     public GridContainer[] getGrid()
     {
         return grid;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 67 * hash + Arrays.deepHashCode(this.grid);
+        hash = 67 * hash + Objects.hashCode(this.pageId);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final MeterPage other = (MeterPage) obj;
+        if (!Objects.equals(this.pageId, other.pageId))
+        {
+            return false;
+        }
+        if (!Arrays.deepEquals(this.grid, other.grid))
+        {
+            return false;
+        }
+        return true;
     }
 
 }
