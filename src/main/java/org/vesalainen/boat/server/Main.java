@@ -45,6 +45,7 @@ public class Main extends JAXBCommandLine
         }
         catch (Exception ex)
         {
+            ex.printStackTrace();
             cmdLine.log(Level.SEVERE, ex, "args: %s", Arrays.toString(args));
         }
     }

@@ -31,6 +31,18 @@ public class Config
     private static String nmeaMulticastAddress;
     private static File devConfigFile;
     private static long devMeterPeriod;
+    private static long sseAsyncTimeout;
+
+    public static long getSseAsyncTimeout()
+    {
+        return sseAsyncTimeout;
+    }
+
+    @Setting("sseAsyncTimeout")
+    public static void setSseAsyncTimeout(long sseAsyncTimeout)
+    {
+        Config.sseAsyncTimeout = sseAsyncTimeout;
+    }
 
     public static File getSessionStoreDirectory()
     {

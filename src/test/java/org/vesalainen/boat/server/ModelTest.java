@@ -42,16 +42,20 @@ public class ModelTest
     {
         ThreadLocal<Context<Model>> threadLocal = new ThreadLocal<>();
         Model model = new Model(threadLocal);
+        Context<Model> ctx = new Context(threadLocal, model);
         model.getPages().add(new Page12(threadLocal));
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(model);
+        oos.writeObject(ctx);
         
         ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
         ObjectInputStream ois = new ObjectInputStream(bais);
-        Model model2 = (Model) ois.readObject();
+        Context<Model> ctx2 = (Context<Model>) ois.readObject();
+        Model model2 = ctx2.getModel();
         
         assertEquals(model, model2);
+        assertEquals(ctx2, ctx2.getThreadLocalModel().get());
+        assertEquals(model2.getAddPage().getThreadLocalModel(), model2.getPages().get(0).getThreadLocalModel());
     }
     
 }

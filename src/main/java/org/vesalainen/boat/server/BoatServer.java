@@ -34,6 +34,7 @@ public class BoatServer extends EmbeddedServer
         ContentServlet contentServlet = new ContentServlet(source);
         addServlet(contentServlet, ContentServlet.Action+"/*");
         DataServlet dataServlet = new DataServlet(source);
+        dataServlet.setAsyncTimeout(Config.getSseAsyncTimeout());
         addServlet(dataServlet, DataSource.Action+"/*");
     }
 
