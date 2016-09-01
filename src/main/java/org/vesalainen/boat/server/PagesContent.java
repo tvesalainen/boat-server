@@ -28,7 +28,7 @@ import org.vesalainen.web.servlet.bean.ThreadLocalContent;
 public class PagesContent extends ThreadLocalContent<Model>
 {
 
-    public PagesContent(ThreadLocal<org.vesalainen.web.servlet.bean.Context<Model>> local)
+    public PagesContent(ThreadLocal<Context<Model>> local)
     {
         super(local);
     }

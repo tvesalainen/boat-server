@@ -18,6 +18,8 @@ package org.vesalainen.boat.server;
 
 import java.io.IOException;
 import org.vesalainen.web.server.EmbeddedServer;
+import org.vesalainen.web.servlet.CtrlSSEServlet;
+import org.vesalainen.web.servlet.SSEServlet;
 
 /**
  *
@@ -33,9 +35,11 @@ public class BoatServer extends EmbeddedServer
         source.start();
         ContentServlet contentServlet = new ContentServlet(source);
         addServlet(contentServlet, ContentServlet.Action+"/*");
-        DataServlet dataServlet = new DataServlet(source);
-        dataServlet.setAsyncTimeout(Config.getSseAsyncTimeout());
-        addServlet(dataServlet, DataSource.Action+"/*");
+        SSEServlet sseServlet = new SSEServlet(source);
+        sseServlet.setAsyncTimeout(Config.getSseAsyncTimeout());
+        addServlet(sseServlet, SSEServlet.Path+"/*");
+        CtrlSSEServlet ctrlSseServlet = new CtrlSSEServlet(source);
+        addServlet(ctrlSseServlet, CtrlSSEServlet.Path+"/*");
     }
 
 }
