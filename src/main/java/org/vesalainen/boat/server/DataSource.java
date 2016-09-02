@@ -37,7 +37,7 @@ import org.vesalainen.parsers.nmea.NMEAService;
 import org.vesalainen.util.DoubleMap;
 import org.vesalainen.util.HashMapList;
 import org.vesalainen.util.MapList;
-import org.vesalainen.web.servlet.AbstractSSESource;
+import org.vesalainen.web.servlet.sse.AbstractSSESource;
 
 /**
  *

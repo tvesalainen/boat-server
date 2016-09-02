@@ -18,8 +18,8 @@ package org.vesalainen.boat.server;
 
 import java.io.IOException;
 import org.vesalainen.web.server.EmbeddedServer;
-import org.vesalainen.web.servlet.CtrlSSEServlet;
-import org.vesalainen.web.servlet.SSEServlet;
+import org.vesalainen.web.servlet.sse.CtrlSSEServlet;
+import org.vesalainen.web.servlet.sse.SSEServlet;
 
 /**
  *

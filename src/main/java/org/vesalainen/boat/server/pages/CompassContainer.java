@@ -18,7 +18,7 @@ package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
-import org.vesalainen.web.servlet.AbstractSSESource;
+import org.vesalainen.web.servlet.sse.AbstractSSESource;
 import org.vesalainen.web.servlet.bean.Context;
 
 /**
