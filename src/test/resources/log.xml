@@ -14,4 +14,10 @@
             </target>
         </memoryHandler>
     </logger>
+    <logger name="org.eclipse.jetty" level="info" useParentHandlers="false">
+        <fileHandler
+            level="info"
+            pattern="%t/jetty%g.log"
+            formatter="org.vesalainen.util.logging.MinimalFormatter"/>
+    </logger>
 </java-logging-config>
