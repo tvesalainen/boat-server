@@ -45,9 +45,9 @@ public enum EventAction
     ViewBox("viewBox", (Appendable o, EventContext c)->{
         TimeoutStats s = c.getStats();
         ThreadLocalFormatter.format(o, Locale.US, "{\"baseVal\":{\"x\":%d, \"y\":%.1f, \"width\":%d, \"height\":%.1f}}", 
-                s.firstTime(),
+                -s.maxDuration(),
                 -s.getMax(),
-                s.lastTime()-s.firstTime(),
+                s.maxDuration(),
                 s.getMax()-s.getMin()
                 );
     }, EventAction::same, EventAction::same, true),

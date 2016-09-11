@@ -56,6 +56,7 @@ public class ModelTest
         assertEquals(model, model2);
         assertEquals(ctx2, ctx2.getThreadLocalModel().get());
         assertEquals(model2.getAddPage().getThreadLocalModel(), model2.getPages().get(0).getThreadLocalModel());
+        assertEquals("addPage", model2.getAddPage().getWebPattern());
     }
     
 }

@@ -38,7 +38,7 @@ public class StatsContainer extends BaseContainer implements HasProperty, HasSec
     {
         svg.removeAttr("viewBox");
         svg.setAttr(AbstractSSESource.EventSink, "${property}-${unit}-ViewBox-${seconds}-Last");
-        Element g = svg.addElement("g").setAttr(AbstractSSESource.EventSink, "${property}-${unit}-Scale-${seconds}-Last");
+        Element g = svg.addElement("g");//.setAttr(AbstractSSESource.EventSink, "${property}-${unit}-Scale-${seconds}-Last");
         g.addElement("use")
             .setAttr("xlink:href", "/defs.svg#vertical-scale");
         g.addElement("use")

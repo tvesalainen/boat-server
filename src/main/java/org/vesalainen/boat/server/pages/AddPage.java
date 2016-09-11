@@ -34,7 +34,7 @@ public class AddPage extends MeterPage
     {
         super(threadLocalModel, 0);
     }
-
+    
     @Override
     protected JQueryMobilePage create()
     {
