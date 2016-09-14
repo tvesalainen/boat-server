@@ -16,7 +16,6 @@
  */
 package org.vesalainen.boat.server.defs;
 
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -60,10 +59,10 @@ public class GenDefs
             cs.setAttr("id", "compass-scale");
             defs.addContent(cs);
             // stats
-            int minx = -100;
+            int minx = -1000;
             int miny = -1000;
-            int maxx = 100;
-            int maxy = 0;
+            int maxx = 1000;
+            int maxy = 1000;
             Scale vScale = new Scale(minx, maxx, 1, true);
             vScale.setAttr("id", "vertical-scale");
             defs.addContent(vScale);

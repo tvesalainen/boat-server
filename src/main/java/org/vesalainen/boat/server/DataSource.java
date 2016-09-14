@@ -25,25 +25,24 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import static java.util.logging.Level.SEVERE;
 import org.vesalainen.code.PropertySetter;
+import org.vesalainen.code.SimplePropertySetterDispatcher;
 import org.vesalainen.code.TimeToLivePropertySetter;
 import org.vesalainen.dev.AbstractMeter;
 import org.vesalainen.dev.DevMeter;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.TimeoutStatsService;
+import org.vesalainen.math.sliding.TimeoutStatsService.StatsObserver;
 import org.vesalainen.parsers.nmea.NMEAProperties;
 import org.vesalainen.parsers.nmea.NMEAService;
 import org.vesalainen.util.DoubleMap;
-import org.vesalainen.util.HashMapList;
-import org.vesalainen.util.MapList;
 import org.vesalainen.web.servlet.sse.AbstractSSESource;
 
 /**
  *
  * @author tkv
  */
-public class DataSource extends AbstractSSESource implements PropertySetter
+public class DataSource extends AbstractSSESource
 {
     public static final String Action = "/sse";
     private static DataSource source;
@@ -52,7 +51,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
     private AbstractMeter meterService;
     private final NMEAService service;
     private final Map<String,Event> eventMap = new HashMap<>();
-    private final MapList<String,Event> propertyMapList = new HashMapList<>();
+    private final Dispatcher dispatcher = new Dispatcher();
     private final DoubleMap<String> valueMap = new DoubleMap();
     private final TimeoutStatsService statsService;
     private final TimeToLivePropertySetter freshProperties = new TimeToLivePropertySetter(1, TimeUnit.HOURS);
@@ -69,10 +68,10 @@ public class DataSource extends AbstractSSESource implements PropertySetter
             service.start();
             // we use EPOCH times to get shorter numbers in SVG
             Clock clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), Instant.EPOCH));
-            config("starting TimeoutStatsService");
-            statsService = new TimeoutStatsService(clock, service.getDispatcher(), "boat-server");
             config("starting DevMeter");
             meterService = DevMeter.getInstance(Config.getDevConfigFile());
+            config("starting TimeoutStatsService");
+            statsService = new TimeoutStatsService(clock, dispatcher, "boat-server");
             allProperties.addAll(meterService.getNames());
         }
         catch (IOException ex)
@@ -100,6 +99,38 @@ public class DataSource extends AbstractSSESource implements PropertySetter
             fine("meter property %s has type %s", property, unit);
         }
         return unit;
+    }
+    
+    public double getMin(String property)
+    {
+        double min;
+        if (nmeaProperties.isProperty(property))
+        {
+            min = nmeaProperties.getMin(property);
+            fine("nmea property %s has min %f", property, min);
+        }
+        else
+        {
+            min = meterService.getMin(property);
+            fine("meter property %s has min %f", property, min);
+        }
+        return min;
+    }
+    
+    public double getMax(String property)
+    {
+        double max;
+        if (nmeaProperties.isProperty(property))
+        {
+            max = nmeaProperties.getMax(property);
+            fine("nmea property %s has max %f", property, max);
+        }
+        else
+        {
+            max = meterService.getMax(property);
+            fine("meter property %s has max %f", property, max);
+        }
+        return max;
     }
     
     public static DataSource getInstance()
@@ -141,7 +172,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         Event event = Event.create(this, eventString);
         eventMap.put(eventString, event);
         String property = event.getProperty();
-        propertyMapList.add(property, event);
+        dispatcher.addObserver(property, event);
         event.register();
     }
 
@@ -154,7 +185,7 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         {
             eventMap.remove(eventString);
             String property = event.getProperty();
-            propertyMapList.remove(property);
+            dispatcher.removeObserver(property, event);
             event.unregister();
         }
     }
@@ -164,88 +195,72 @@ public class DataSource extends AbstractSSESource implements PropertySetter
         return valueMap;
     }
 
-    @Override
-    public String[] getPrefixes()
+    public void register(String property, PropertySetter ps)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        dispatcher.addObserver(property, ps);
     }
-
-    @Override
-    public void set(String property, boolean arg)
+    public void unregister(String property, PropertySetter ps)
     {
-        throw new UnsupportedOperationException("Not supported yet.");
+        dispatcher.removeObserver(property, ps);
     }
-
-    @Override
-    public void set(String property, byte arg)
+    public void registerStatsService(String property, StatsObserver observer, boolean isAngle)
     {
-        set(property, (float)arg);
+        fine("registerStatsService(%s)", property);
+        statsService.addObserver(property, observer, isAngle);
     }
-
-    @Override
-    public void set(String property, char arg)
+    public void unregisterStatsService(String property, StatsObserver observer)
     {
-        set(property, (float)arg);
+        fine("unregisterStatsService(%s)", property);
+        statsService.removeObserver(property, observer);
     }
-
-    @Override
-    public void set(String property, short arg)
+    private class Dispatcher extends SimplePropertySetterDispatcher
     {
-        set(property, (float)arg);
-    }
 
-    @Override
-    public void set(String property, int arg)
-    {
-        set(property, (float)arg);
-    }
-
-    @Override
-    public void set(String property, long arg)
-    {
-        set(property, (float)arg);
-    }
-
-    @Override
-    public void set(String property, float arg)
-    {
-        valueMap.put(property, arg);
-        try
+        @Override
+        public void addObserver(String property, PropertySetter ps)
         {
-            fireAll(property, arg);
+            if (nmeaProperties.isProperty(property))
+            {
+                fine("register %s to nmea service", property);
+                service.addNMEAObserver(this, property);
+            }
+            else
+            {
+                fine("register %s to meter service", property);
+                meterService.register(this, property, Config.getDevMeterPeriod(), TimeUnit.MILLISECONDS);
+            }
+            super.addObserver(property, ps);
         }
-        catch (Exception ex)
-        {
-            log(SEVERE, ex, "set(%s, %f) -> %s", property, arg, ex.getMessage());
-        }
-    }
 
-    private void fireAll(String property, double arg)
-    {
-        propertyMapList.get(property).stream().forEach((ev) ->
+        @Override
+        public void removeObserver(String property, PropertySetter ps)
         {
-            ev.fire(property, arg);
-        });
-    }
-    
-    @Override
-    public void set(String property, double arg)
-    {
-        valueMap.put(property, arg);
-        try
-        {
-            fireAll(property, arg);
+            super.removeObserver(property, ps);
+            if (nmeaProperties.isProperty(property))
+            {
+                fine("unregister %s from nmea service", property);
+                service.removeNMEAObserver(this, property);
+            }
+            else
+            {
+                fine("unregister %s from meter service", property);
+                meterService.unregister(this, property);
+            }
         }
-        catch (Exception ex)
+
+        @Override
+        public void set(String property, double arg)
         {
-            log(SEVERE, ex, "set(%s, %f) -> %s", property, arg, ex.getMessage());
+            valueMap.put(property, arg);
+            super.set(property, arg);
         }
-    }
 
-    @Override
-    public void set(String property, Object arg)
-    {
-        throw new UnsupportedOperationException("Not supported yet.");
+        @Override
+        public void set(String property, float arg)
+        {
+            valueMap.put(property, arg);
+            super.set(property, arg);
+        }
+        
     }
-
 }

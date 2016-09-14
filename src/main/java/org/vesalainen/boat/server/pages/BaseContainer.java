@@ -16,6 +16,7 @@
  */
 package org.vesalainen.boat.server.pages;
 
+import org.vesalainen.boat.server.DataSource;
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.math.UnitType;
@@ -87,6 +88,16 @@ public abstract class BaseContainer extends GridContainer
     public void setSeconds(int seconds)
     {
         this.seconds = seconds;
+    }
+  
+    public double getMin()
+    {
+        return DataSource.getInstance().getMin(property);
+    }
+    
+    public double getMax()
+    {
+        return DataSource.getInstance().getMax(property);
     }
     
 }

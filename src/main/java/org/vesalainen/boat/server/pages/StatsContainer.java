@@ -18,14 +18,13 @@ package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
-import org.vesalainen.web.servlet.sse.AbstractSSESource;
 import org.vesalainen.web.servlet.bean.Context;
 
 /**
  *
  * @author tkv
  */
-public class StatsContainer extends BaseContainer implements HasProperty, HasSeconds, HasUnit
+public class StatsContainer extends BaseContainer implements HasProperty, HasSeconds, HasUnit, HasLimits
 {
 
     public StatsContainer(ThreadLocal<Context<Model>> threadLocalData)
@@ -36,23 +35,31 @@ public class StatsContainer extends BaseContainer implements HasProperty, HasSec
     @Override
     protected void addSVGContent(Element svg)
     {
-        svg.removeAttr("viewBox");
-        svg.setAttr(AbstractSSESource.EventSink, "${property}-${unit}-ViewBox-${seconds}-Last");
-        Element g = svg.addElement("g");//.setAttr(AbstractSSESource.EventSink, "${property}-${unit}-Scale-${seconds}-Last");
+        svg.setAttr("viewBox", "-${seconds} -${max} ${seconds} ${range}");
+        svg.setAttr("preserveAspectRatio", "none");
+        double strokeWidth = 0.1;
+        double range = getRange();
+        Element g = svg.addElement("g").setAttr("transform", "translate(-${seconds})");
         g.addElement("use")
             .setAttr("xlink:href", "/defs.svg#vertical-scale");
-        g.addElement("use")
-            .setAttr("xlink:href", "/defs.svg#vertical-grid-1")
-            .setAttr("stroke", "black")
-            .setAttr("stroke-width", 0.3/50);
-        g.addElement("use")
-            .setAttr("xlink:href", "/defs.svg#vertical-grid-5")
-            .setAttr("stroke", "black")
-            .setAttr("stroke-width", 0.3/50);
+        if (range < 20)
+        {
+            g.addElement("use")
+                .setAttr("xlink:href", "/defs.svg#vertical-grid-1")
+                .setAttr("stroke", "black")
+                .setAttr("stroke-width", strokeWidth);
+        }
+        if (range < 100)
+        {
+            g.addElement("use")
+                .setAttr("xlink:href", "/defs.svg#vertical-grid-5")
+                .setAttr("stroke", "black")
+                .setAttr("stroke-width", strokeWidth);
+        }
         g.addElement("use")
             .setAttr("xlink:href", "/defs.svg#vertical-grid-10")
             .setAttr("stroke", "black")
-            .setAttr("stroke-width", 0.3/50);
+            .setAttr("stroke-width", strokeWidth);
 
 
     }

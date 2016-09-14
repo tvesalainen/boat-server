@@ -19,6 +19,7 @@ package org.vesalainen.boat.server;
 import java.util.concurrent.TimeUnit;
 import static java.util.logging.Level.SEVERE;
 import org.vesalainen.bean.BeanHelper;
+import org.vesalainen.code.DoubleFire;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.StatsSupplier;
 import org.vesalainen.math.sliding.TimeoutStats;
@@ -30,7 +31,7 @@ import org.vesalainen.util.logging.JavaLogging;
  *
  * @author tkv
  */
-public class Event extends JavaLogging
+public class Event extends JavaLogging implements DoubleFire
 {
     private static final long RefreshLimit = 5000;
     
@@ -113,32 +114,15 @@ public class Event extends JavaLogging
     
     public void register()
     {
-        if (DataSource.getInstance().nmeaProperties.isProperty(property))
-        {
-            fine("register %s to nmea service", property);
-            source.getService().addNMEAObserver(source, property);
-        }
-        else
-        {
-            fine("register %s to meter service", property);
-            source.getMeterService().register(source, property, Config.getDevMeterPeriod(), TimeUnit.MILLISECONDS);
-        }
+        source.register(property, this);
     }
     
     public void unregister()
     {
-        if (DataSource.getInstance().nmeaProperties.isProperty(property))
-        {
-            fine("unregister %s from nmea service", property);
-            source.getService().removeNMEAObserver(source, property);
-        }
-        else
-        {
-            fine("unregister %s from meter service", property);
-            source.getMeterService().unregister(source, property);
-        }
+        source.unregister(property, this);
     }
     
+    @Override
     public void fire(String property, double value)
     {
         value = conv.apply(propertyUnit, currentUnit, value);
@@ -199,13 +183,13 @@ public class Event extends JavaLogging
         @Override
         public void register()
         {
-            source.getStatsService().addObserver(property+':'+seconds, this, UnitType.Degree.equals(propertyUnit));
+            source.registerStatsService(property+':'+seconds, this, UnitType.Degree.equals(propertyUnit));
         }
 
         @Override
         public void unregister()
         {
-            source.getStatsService().removeObserver(property+':'+seconds, this);
+            source.unregisterStatsService(property+':'+seconds, this);
         }
 
         @Override

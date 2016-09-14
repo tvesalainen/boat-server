@@ -28,7 +28,9 @@ public class Scale extends Element
     public Scale(int start, int end, int step, boolean vertical)
     {
         super("g");
-        Element text = addElement("text").setAttr("text-anchor", "middle");
+        Element text = addElement("text")
+                .setAttr("x", 0)
+                .setAttr("text-anchor", "middle");
         
         for (int a = start; a <= end; a+=step)
         {

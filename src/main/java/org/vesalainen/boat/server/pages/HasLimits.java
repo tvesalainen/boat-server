@@ -20,8 +20,12 @@ package org.vesalainen.boat.server.pages;
  *
  * @author tkv
  */
-public interface HasSeconds
+public interface HasLimits
 {
-    int getSeconds();
-    void setSeconds(int seconds);
+    double getMin();
+    double getMax();
+    default double getRange()
+    {
+        return getMax() - getMin();
+    }
 }
