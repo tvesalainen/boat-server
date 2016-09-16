@@ -16,6 +16,10 @@
  */
 package org.vesalainen.boat.server.defs;
 
+import org.vesalainen.svg.Grid;
+import org.vesalainen.svg.CircleScale;
+import org.vesalainen.svg.Arc;
+import org.vesalainen.svg.Scale;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -63,9 +67,15 @@ public class GenDefs
             int miny = -1000;
             int maxx = 1000;
             int maxy = 1000;
-            Scale vScale = new Scale(minx, maxx, 1, true);
-            vScale.setAttr("id", "vertical-scale");
-            defs.addContent(vScale);
+            Scale vScale1 = new Scale(minx, maxx, 1, true);
+            vScale1.setAttr("id", "vertical-scale-1");
+            defs.addContent(vScale1);
+            Scale vScale5 = new Scale(minx, maxx, 5, true);
+            vScale5.setAttr("id", "vertical-scale-5");
+            defs.addContent(vScale5);
+            Scale vScale10 = new Scale(minx, maxx, 10, true);
+            vScale10.setAttr("id", "vertical-scale-10");
+            defs.addContent(vScale10);
             Grid vGrid1 = new Grid(miny, maxy, minx, maxx, 1, false);
             vGrid1.setAttr("id", "vertical-grid-1");
             defs.addContent(vGrid1);
