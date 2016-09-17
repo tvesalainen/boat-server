@@ -18,6 +18,7 @@ package org.vesalainen.boat.server.pages;
 
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
+import org.vesalainen.svg.SVGCoordinates;
 import org.vesalainen.web.servlet.bean.Context;
 
 /**
@@ -26,8 +27,6 @@ import org.vesalainen.web.servlet.bean.Context;
  */
 public class StatsContainer extends BaseContainer implements HasProperty, HasSeconds, HasUnit, HasLimits
 {
-    private static final int Limit1 = 20;
-    private static final int Limit2 = 100;
     public StatsContainer(ThreadLocal<Context<Model>> threadLocalData)
     {
         super(threadLocalData, "0 0 0 0");
@@ -38,41 +37,8 @@ public class StatsContainer extends BaseContainer implements HasProperty, HasSec
     {
         svg.setAttr("viewBox", "-${seconds} -${max} ${seconds} ${range}");
         svg.setAttr("preserveAspectRatio", "none");
-        double strokeWidth = 0.1;
-        double range = getRange();
-        Element g = svg.addElement("g").setAttr("transform", "translate(-${seconds})");
-        int fontSize = 10;
-        if (range < Limit1)
-        {
-            fontSize = 1;
-            g.addElement("use")
-                .setAttr("xlink:href", "/defs.svg#vertical-scale-1")
-                .setAttr("font-size", fontSize);
-            g.addElement("use")
-                .setAttr("xlink:href", "/defs.svg#vertical-grid-1")
-                .setAttr("stroke", "black")
-                .setAttr("stroke-width", strokeWidth);
-        }
-        if (range < Limit2)
-        {
-            fontSize = 5;
-            g.addElement("use")
-                .setAttr("xlink:href", "/defs.svg#vertical-scale-5")
-                .setAttr("font-size", fontSize);
-            g.addElement("use")
-                .setAttr("xlink:href", "/defs.svg#vertical-grid-5")
-                .setAttr("stroke", "black")
-                .setAttr("stroke-width", strokeWidth);
-        }
-        g.addElement("use")
-            .setAttr("xlink:href", "/defs.svg#vertical-scale-10")
-            .setAttr("font-size", fontSize);
-        g.addElement("use")
-            .setAttr("xlink:href", "/defs.svg#vertical-grid-10")
-            .setAttr("stroke", "black")
-            .setAttr("stroke-width", strokeWidth);
-
-
+        SVGCoordinates coord = new SVGCoordinates(svg, (double)-getSeconds(), -getMax(), (double)getSeconds(), getRange());
+        svg.addContent(coord);
     }
 
 }
