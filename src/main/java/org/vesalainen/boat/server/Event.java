@@ -16,7 +16,6 @@
  */
 package org.vesalainen.boat.server;
 
-import java.util.concurrent.TimeUnit;
 import static java.util.logging.Level.SEVERE;
 import org.vesalainen.bean.BeanHelper;
 import org.vesalainen.code.DoubleFire;
@@ -65,6 +64,8 @@ public class Event extends JavaLogging implements DoubleFire
         this.isObject = action.isObject();
         ec = new EventContext();
         ec.setUnit(currentUnit);
+        ec.setMin(source.getMin(property));
+        ec.setMax(source.getMax(property));
     }
 
     public static Event create(DataSource source, String eventString)

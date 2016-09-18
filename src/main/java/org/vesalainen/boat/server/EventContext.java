@@ -29,6 +29,28 @@ public class EventContext
     private UnitType unit;
     private TimeoutStats stats;
     private int count;
+    private double min;
+    private double max;
+
+    public double getMin()
+    {
+        return min;
+    }
+
+    public void setMin(double min)
+    {
+        this.min = min;
+    }
+
+    public double getMax()
+    {
+        return max;
+    }
+
+    public void setMax(double max)
+    {
+        this.max = max;
+    }
 
     public double getValue()
     {

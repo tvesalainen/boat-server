@@ -66,12 +66,10 @@ public class DataSource extends AbstractSSESource
             nmeaProperties.stream().forEach((s)->service.addNMEAObserver(freshProperties, s));
             allProperties.addAll(nmeaProperties.getAllProperties());
             service.start();
-            // we use EPOCH times to get shorter numbers in SVG
-            Clock clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), Instant.EPOCH));
             config("starting DevMeter");
             meterService = DevMeter.getInstance(Config.getDevConfigFile());
             config("starting TimeoutStatsService");
-            statsService = new TimeoutStatsService(clock, dispatcher, "boat-server");
+            statsService = new TimeoutStatsService(dispatcher, "boat-server");
             allProperties.addAll(meterService.getNames());
         }
         catch (IOException ex)
@@ -222,12 +220,12 @@ public class DataSource extends AbstractSSESource
             if (nmeaProperties.isProperty(property))
             {
                 fine("register %s to nmea service", property);
-                service.addNMEAObserver(this, property);
+                service.addNMEAObserver(ps, property);
             }
             else
             {
                 fine("register %s to meter service", property);
-                meterService.register(this, property, Config.getDevMeterPeriod(), TimeUnit.MILLISECONDS);
+                meterService.register(ps, property, Config.getDevMeterPeriod(), TimeUnit.MILLISECONDS);
             }
             super.addObserver(property, ps);
         }
@@ -239,12 +237,12 @@ public class DataSource extends AbstractSSESource
             if (nmeaProperties.isProperty(property))
             {
                 fine("unregister %s from nmea service", property);
-                service.removeNMEAObserver(this, property);
+                service.removeNMEAObserver(ps, property);
             }
             else
             {
                 fine("unregister %s from meter service", property);
-                meterService.unregister(this, property);
+                meterService.unregister(ps, property);
             }
         }
 

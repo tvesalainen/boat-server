@@ -51,6 +51,8 @@ public abstract class BaseContainer extends GridContainer
         
         meterPanel = meterDiv.addElement("div");
         Element svg = meterPanel.addElement("svg")
+                .setAttr("xmlns", "http://www.w3.org/2000/svg")
+                .setAttr("xmlns:xlink", "http://www.w3.org/1999/xlink")
                 .setAttr("viewBox", viewBox);
 
         addSVGContent(svg);

@@ -20,6 +20,7 @@ import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.svg.SVGCoordinates;
 import org.vesalainen.web.servlet.bean.Context;
+import org.vesalainen.web.servlet.sse.AbstractSSESource;
 
 /**
  *
@@ -37,8 +38,9 @@ public class StatsContainer extends BaseContainer implements HasProperty, HasSec
     {
         svg.setAttr("viewBox", "-${seconds} -${max} ${seconds} ${range}");
         svg.setAttr("preserveAspectRatio", "none");
-        SVGCoordinates coord = new SVGCoordinates(svg, (double)-getSeconds(), -getMax(), (double)getSeconds(), getRange());
+        SVGCoordinates coord = new SVGCoordinates((double)-getSeconds(), -getMax(), (double)getSeconds(), getRange());
         svg.addContent(coord);
+        svg.setAttr(AbstractSSESource.EventSink, "${property}-${unit}-Graph-${seconds}-Last");
     }
 
 }

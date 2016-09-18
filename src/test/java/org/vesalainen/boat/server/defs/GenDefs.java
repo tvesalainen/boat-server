@@ -62,38 +62,6 @@ public class GenDefs
             Element cs = new CircleScale();
             cs.setAttr("id", "compass-scale");
             defs.addContent(cs);
-            // stats
-            int minx = -1000;
-            int miny = -1000;
-            int maxx = 1000;
-            int maxy = 1000;
-            Scale vScale1 = new Scale(minx, maxx, 1, true);
-            vScale1.setAttr("id", "vertical-scale-1");
-            defs.addContent(vScale1);
-            Scale vScale5 = new Scale(minx, maxx, 5, true);
-            vScale5.setAttr("id", "vertical-scale-5");
-            defs.addContent(vScale5);
-            Scale vScale10 = new Scale(minx, maxx, 10, true);
-            vScale10.setAttr("id", "vertical-scale-10");
-            defs.addContent(vScale10);
-            Grid vGrid1 = new Grid(miny, maxy, minx, maxx, 1, false);
-            vGrid1.setAttr("id", "vertical-grid-1");
-            defs.addContent(vGrid1);
-            Grid vGrid5 = new Grid(miny, maxy, minx, maxx, 5, false);
-            vGrid5.setAttr("id", "vertical-grid-5");
-            defs.addContent(vGrid5);
-            Grid vGrid10 = new Grid(miny, maxy, minx, maxx, 10, false);
-            vGrid10.setAttr("id", "vertical-grid-10");
-            defs.addContent(vGrid10);
-            Grid hGrid1 = new Grid(minx, maxx, miny, maxy, 1, true);
-            hGrid1.setAttr("id", "horizontal-grid-1");
-            defs.addContent(hGrid1);
-            Grid hGrid5 = new Grid(minx, maxx, miny, maxy, 5, true);
-            hGrid5.setAttr("id", "horizontal-grid-5");
-            defs.addContent(hGrid5);
-            Grid hGrid10 = new Grid(minx, maxx, miny, maxy, 10, true);
-            hGrid10.setAttr("id", "horizontal-grid-10");
-            defs.addContent(hGrid10);
             PrettyPrinter pp = new PrettyPrinter(fw);
             svg.append(pp);
             

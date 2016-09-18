@@ -16,11 +16,16 @@
  */
 package org.vesalainen.boat.server;
 
+import java.io.IOException;
 import java.util.Locale;
+import java.util.PrimitiveIterator;
+import java.util.PrimitiveIterator.OfDouble;
+import java.util.PrimitiveIterator.OfLong;
 import static org.vesalainen.boat.server.Constants.*;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.navi.CoordinateFormat;
+import org.vesalainen.svg.SVGPath;
 import org.vesalainen.util.DoubleMap;
 import org.vesalainen.util.ThreadLocalFormatter;
 import org.vesalainen.web.I18n;
@@ -42,16 +47,59 @@ public enum EventAction
     Route1("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.0f)", c.getValue()), EventAction::same),
     Route2("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, DoubleMap m)->{return 1.0/Math.pow(A, Math.abs(v));}),
     Route3("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, DoubleMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
-    ViewBox("viewBox", (Appendable o, EventContext c)->{
+    Graph("append", (Appendable o, EventContext c)->{
         TimeoutStats s = c.getStats();
-        ThreadLocalFormatter.format(o, Locale.US, "{\"baseVal\":{\"x\":%d, \"y\":%.1f, \"width\":%d, \"height\":%.1f}}", 
-                -s.maxDuration(),
-                -s.getMax(),
-                s.maxDuration(),
-                s.getMax()-s.getMin()
-                );
+        if (s.count() > 2)
+        {
+            SVGPath path = new SVGPath();
+            long maxDuration = s.maxDuration()/1000;
+            path.setAttr("ttl", maxDuration);
+            double strokeWidth = (c.getMax()-c.getMin())/200;
+            path.setAttr("stroke-width", strokeWidth);
+            path.addElement("animateTransform")
+                    .setAttr("attributeName", "transform")
+                    .setAttr("type", "translate")
+                    .setAttr("from", 0)
+                    .setAttr("to", -maxDuration)
+                    .setAttr("fill", "freeze");
+            long now = System.currentTimeMillis();
+            if (c.isFirstFire())
+            {
+                OfLong ti = s.timeStream().iterator();
+                OfDouble vi = s.stream().iterator();
+                while (ti.hasNext() && vi.hasNext())
+                {
+                    long time = ti.nextLong();
+                    double value = vi.nextDouble();
+                    if (path.isEmpty())
+                    {
+                        path.moveTo(-(now-time)/1000, value);
+                    }
+                    else
+                    {
+                        path.lineTo(-(now-time)/1000, value);
+                    }
+                }
+            }
+            else
+            {
+                path.moveTo(-(now-s.previousTime())/1000, s.previous());
+                path.lineTo(0, s.last());
+            }
+            try
+            {
+                o.append('"');
+                StringBuilder sb = new StringBuilder();
+                path.append(sb);
+                o.append(sb.toString().replace('"', '\''));
+                o.append('"');
+            }
+            catch (IOException ex)
+            {
+                throw new RuntimeException(ex);
+            }
+        }
     }, EventAction::same, EventAction::same, true),
-    Scale("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%d)", c.getStats().firstTime()), EventAction::same),
     Visible("refresh", "", EventAction::same)
 ;
 
