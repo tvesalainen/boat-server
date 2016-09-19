@@ -15,10 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* global sse */
+
 "use strict";
 
 $(document).ready(function () {
-  
+
+    sse.addHandler("path", function(target, data){
+        var path = $(document.createElementNS("http://www.w3.org/2000/svg", "path"));
+        path.attr("d", data);
+        var sec = target.attr("data-seconds");
+        var anim = $(document.createElementNS("http://www.w3.org/2000/svg", "animateTransform"));
+        anim.attr("attributeType", "XML");
+        anim.attr("attributeName", "transform");
+        anim.attr("type", "translate");
+        anim.attr("from", 0);
+        anim.attr("to", -sec);
+        anim.attr("dur", sec+"s");
+        anim.attr("fill", "freeze");
+        path.append(anim);
+        target.append(path);
+    });
+    
     $("body").on("click", ".post-grid", function(){
         var form = $(this).parent();
         var gridId = form.attr("data-grid-id");

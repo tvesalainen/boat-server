@@ -40,7 +40,11 @@ public class StatsContainer extends BaseContainer implements HasProperty, HasSec
         svg.setAttr("preserveAspectRatio", "none");
         SVGCoordinates coord = new SVGCoordinates((double)-getSeconds(), -getMax(), (double)getSeconds(), getRange());
         svg.addContent(coord);
-        svg.setAttr(AbstractSSESource.EventSink, "${property}-${unit}-Graph-${seconds}-Last");
+        double strokeWidth = getRange()/200;
+        Element g = svg.addElement("g")
+                .setAttr(AbstractSSESource.EventSink, "${property}-${unit}-Graph-${seconds}-Last")
+                .setAttr("stroke-width", strokeWidth)
+                .setDataAttr("seconds", getSeconds());
     }
 
 }

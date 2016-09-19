@@ -21,7 +21,9 @@ import java.util.Locale;
 import java.util.PrimitiveIterator;
 import java.util.PrimitiveIterator.OfDouble;
 import java.util.PrimitiveIterator.OfLong;
+import org.json.JSONObject;
 import static org.vesalainen.boat.server.Constants.*;
+import org.vesalainen.html.Attribute;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.navi.CoordinateFormat;
@@ -47,7 +49,7 @@ public enum EventAction
     Route1("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.0f)", c.getValue()), EventAction::same),
     Route2("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, DoubleMap m)->{return 1.0/Math.pow(A, Math.abs(v));}),
     Route3("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, DoubleMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
-    Graph("append", (Appendable o, EventContext c)->{
+    Graph("function", (Appendable o, EventContext c)->{
         TimeoutStats s = c.getStats();
         if (s.count() > 2)
         {
@@ -88,11 +90,8 @@ public enum EventAction
             }
             try
             {
-                o.append('"');
-                StringBuilder sb = new StringBuilder();
-                path.append(sb);
-                o.append(sb.toString().replace('"', '\''));
-                o.append('"');
+                Attribute attr = path.getAttr("d");
+                o.append("{\"name\":\"path\",\"data\":\""+attr.getValue()+"\"}");
             }
             catch (IOException ex)
             {

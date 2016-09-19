@@ -203,12 +203,12 @@ public class DataSource extends AbstractSSESource
     }
     public void registerStatsService(String property, StatsObserver observer, boolean isAngle)
     {
-        fine("registerStatsService(%s)", property);
+        fine("registerStatsService(%s %s)", property, observer);
         statsService.addObserver(property, observer, isAngle);
     }
     public void unregisterStatsService(String property, StatsObserver observer)
     {
-        fine("unregisterStatsService(%s)", property);
+        fine("unregisterStatsService(%s %s)", property, observer);
         statsService.removeObserver(property, observer);
     }
     private class Dispatcher extends SimplePropertySetterDispatcher
@@ -219,12 +219,12 @@ public class DataSource extends AbstractSSESource
         {
             if (nmeaProperties.isProperty(property))
             {
-                fine("register %s to nmea service", property);
+                fine("register %s %s to nmea service", property, ps);
                 service.addNMEAObserver(ps, property);
             }
             else
             {
-                fine("register %s to meter service", property);
+                fine("register %s %s to meter service", property, ps);
                 meterService.register(ps, property, Config.getDevMeterPeriod(), TimeUnit.MILLISECONDS);
             }
             super.addObserver(property, ps);
