@@ -170,7 +170,7 @@ public class DataSource extends AbstractSSESource
         Event event = Event.create(this, eventString);
         eventMap.put(eventString, event);
         String property = event.getProperty();
-        dispatcher.addObserver(property, event);
+        //dispatcher.addObserver(property, event);
         event.register();
     }
 
@@ -183,7 +183,7 @@ public class DataSource extends AbstractSSESource
         {
             eventMap.remove(eventString);
             String property = event.getProperty();
-            dispatcher.removeObserver(property, event);
+            //dispatcher.removeObserver(property, event);
             event.unregister();
         }
     }

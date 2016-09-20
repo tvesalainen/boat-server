@@ -59,6 +59,7 @@ public class ContentServlet extends JQueryMobileServlet<JQueryMobileDocument,Mod
         Element head = doc.getHead();
         head.addElement("script").setAttr("src", "/sse.js");
         head.addElement("script").setAttr("src", "/page-control.js");
+        head.addElement("script").setAttr("src", "/stats.js");
         doc.getRawBody().addRenderer(new PagesContent(threadLocalModel));
         return doc;
     }

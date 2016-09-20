@@ -21,22 +21,6 @@
 
 $(document).ready(function () {
 
-    sse.addHandler("path", function(target, data){
-        var path = $(document.createElementNS("http://www.w3.org/2000/svg", "path"));
-        path.attr("d", data);
-        var sec = target.attr("data-seconds");
-        var anim = $(document.createElementNS("http://www.w3.org/2000/svg", "animateTransform"));
-        anim.attr("attributeType", "XML");
-        anim.attr("attributeName", "transform");
-        anim.attr("type", "translate");
-        anim.attr("from", 0);
-        anim.attr("to", -sec);
-        anim.attr("dur", sec+"s");
-        anim.attr("fill", "freeze");
-        path.append(anim);
-        target.append(path);
-    });
-    
     $("body").on("click", ".post-grid", function(){
         var form = $(this).parent();
         var gridId = form.attr("data-grid-id");
@@ -47,7 +31,7 @@ $(document).ready(function () {
             {
                 $("#"+gridId).parent().html(data);
                 window.history.back();
-                register($("#"+gridId));
+                sse.register($("#"+gridId));
             }
         });
     });
@@ -97,7 +81,7 @@ $(document).ready(function () {
             {
                 $("body").append(data);
                 var lp = "#"+lastPage();
-                register($(lp));
+                sse.register($(lp));
                 $("body").pagecontainer("change", lp);
             }
         });

@@ -43,8 +43,12 @@ public class StatsContainer extends BaseContainer implements HasProperty, HasSec
         double strokeWidth = getRange()/200;
         Element g = svg.addElement("g")
                 .setAttr(AbstractSSESource.EventSink, "${property}-${unit}-Graph-${seconds}-Last")
+                .setAttr("stroke", "black")
                 .setAttr("stroke-width", strokeWidth)
-                .setDataAttr("seconds", getSeconds());
+                .setDataAttr("seconds", getSeconds())
+                .setDataAttr("moving", true)
+                .setAttr("transform", "translate(0)");
+;
     }
 
 }

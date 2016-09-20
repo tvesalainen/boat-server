@@ -16,26 +16,31 @@
  */
 package org.vesalainen.boat.server.pages;
 
+import org.vesalainen.boat.server.Model;
+import org.vesalainen.html.Element;
+import org.vesalainen.html.jquery.mobile.JQueryMobilePage;
+import org.vesalainen.web.servlet.bean.Context;
+
 /**
  *
  * @author tkv
  */
-public enum PageType
+public class Page1 extends MeterPage
 {
-    Page1(Page1.class),
-    Page12(Page12.class)
-    ;
-    
-    private Class<? extends MeterPage> type;
 
-    private PageType(Class<? extends MeterPage> type)
+    public Page1(ThreadLocal<Context<Model>> threadLocalModel)
     {
-        this.type = type;
+        super(threadLocalModel, 1);
     }
 
-    public Class<? extends MeterPage> getType()
+    @Override
+    protected JQueryMobilePage create()
     {
-        return type;
+        JQueryMobilePage page = createPage(threadLocalModel);
+        Element main = page.getMain();
+        Element div = main.addElement("div");
+        div.add(grid[0]);
+        return page;
     }
     
 }

@@ -54,39 +54,29 @@ public enum EventAction
         if (s.count() > 2)
         {
             SVGPath path = new SVGPath();
-            long maxDuration = s.maxDuration()/1000;
-            path.setAttr("ttl", maxDuration);
-            double strokeWidth = (c.getMax()-c.getMin())/200;
-            path.setAttr("stroke-width", strokeWidth);
-            path.addElement("animateTransform")
-                    .setAttr("attributeName", "transform")
-                    .setAttr("type", "translate")
-                    .setAttr("from", 0)
-                    .setAttr("to", -maxDuration)
-                    .setAttr("fill", "freeze");
-            long now = System.currentTimeMillis();
+            double now = System.currentTimeMillis();
             if (c.isFirstFire())
             {
                 OfLong ti = s.timeStream().iterator();
                 OfDouble vi = s.stream().iterator();
                 while (ti.hasNext() && vi.hasNext())
                 {
-                    long time = ti.nextLong();
+                    double time = ti.nextLong();
                     double value = vi.nextDouble();
                     if (path.isEmpty())
                     {
-                        path.moveTo(-(now-time)/1000, value);
+                        path.moveTo(-(now-time)/1000, -value);
                     }
                     else
                     {
-                        path.lineTo(-(now-time)/1000, value);
+                        path.lineTo(-(now-time)/1000, -value);
                     }
                 }
             }
             else
             {
-                path.moveTo(-(now-s.previousTime())/1000, s.previous());
-                path.lineTo(0, s.last());
+                path.moveTo(-(now-s.previousTime())/1000, -s.previous());
+                path.lineTo(0, -s.last());
             }
             try
             {
