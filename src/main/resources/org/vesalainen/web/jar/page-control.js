@@ -19,72 +19,101 @@
 
 "use strict";
 
+var pending = false;
+
 $(document).ready(function () {
 
     $("body").on("click", ".post-grid", function(){
-        var form = $(this).parent();
-        var gridId = form.attr("data-grid-id");
-        var action = form.attr("action");
-        var array = form.serializeArray();
-        $.post(action, array, function(data, status){
-            if (status === "success")
-            {
-                $("#"+gridId).parent().html(data);
-                window.history.back();
-                sse.register($("#"+gridId));
-            }
-        });
+        if (!pending)
+        {
+            pending = true;
+            var form = $(this).parent();
+            var gridId = form.attr("data-grid-id");
+            var action = form.attr("action");
+            var array = form.serializeArray();
+            $.post(action, array, function(data, status){
+                if (status === "success")
+                {
+                    $("#"+gridId).parent().html(data);
+                    window.history.back();
+                    sse.register($("#"+gridId));
+                }
+                else
+                {
+                    throw status;
+                }
+                pending = false;
+            });
+        }
     });
     
     $("body").on("click", ".set-grid", function(){
-        var gridId = $(this).attr("data-grid-id");
-        var href = $(this).attr("href");
-        var base = window.location.pathname;
-        $.post(base, {refresh: ""}, function(data, status){
-            if (status === "success")
-            {
-                var arr = data.refresh;
-                $(href).find("[data-property]").each(function(){
-                    var property = $(this).attr("data-property");
-                    var idx = arr.indexOf(property);
-                    if (idx !== -1)
-                    {
-                        $(this).show();
-                    }
-                    else
-                    {
-                        $(this).hide();
-                    }
-                });
-            }
-        });
-        $(href).find("form").each(function(){
-            $(this).attr("data-grid-id", gridId);
-            replaceAttr($(this), "action", base+"?assign="+gridId);
-        });
-        $(href).find("[id]").each(function(){
-            replaceAttr($(this), "id", gridId);
-        });
-        $(href).find("[for]").each(function(){
-            replaceAttr($(this), "for", gridId);
-        });
-        $(href).find("[name]").each(function(){
-            replaceAttr($(this), "name", gridId);
-        });
+        if (!pending)
+        {
+            pending = true;
+            var gridId = $(this).attr("data-grid-id");
+            var href = $(this).attr("href");
+            var base = window.location.pathname;
+            $.post(base, {refresh: ""}, function(data, status){
+                if (status === "success")
+                {
+                    var arr = data.refresh;
+                    $(href).find("[data-property]").each(function(){
+                        var property = $(this).attr("data-property");
+                        var idx = arr.indexOf(property);
+                        if (idx !== -1)
+                        {
+                            $(this).show();
+                        }
+                        else
+                        {
+                            $(this).hide();
+                        }
+                    });
+                }
+                else
+                {
+                    throw status;
+                }
+                pending = false;
+            });
+            $(href).find("form").each(function(){
+                $(this).attr("data-grid-id", gridId);
+                replaceAttr($(this), "action", base+"?assign="+gridId);
+            });
+            $(href).find("[id]").each(function(){
+                replaceAttr($(this), "id", gridId);
+            });
+            $(href).find("[for]").each(function(){
+                replaceAttr($(this), "for", gridId);
+            });
+            $(href).find("[name]").each(function(){
+                replaceAttr($(this), "name", gridId);
+            });
+        }
     });
     
     $(".add-page").on("click", function(){
-        var pattern = $(this).attr("data-pattern");
-        var base = window.location.pathname;
-        $.post(base+"/add="+pattern, {pattern: pattern, sendFragment: "true"}, function(data, status){
-            if (status === "success")
-            {
-                $("body").append(data);
-                var lp = "#"+lastPage();
-                sse.register($(lp));
-                $("body").pagecontainer("change", lp);
-            }
-        });
+        if (!pending)
+        {
+            pending = true;
+            var pattern = $(this).attr("data-pattern");
+            var base = window.location.pathname;
+            $.post(base+"/add="+pattern, {pattern: pattern, sendFragment: "true"}, function(data, status){
+                if (status === "success")
+                {
+                    $("body").append(data);
+                    var lp = "#"+lastPage();
+                    sse.register($(lp));
+                    $("body").pagecontainer("change", lp);
+                }
+                else
+                {
+                    throw status;
+                }
+                pending = false;
+            });
+        }
     });
 });
 

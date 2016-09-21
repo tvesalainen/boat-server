@@ -136,8 +136,7 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
         }
         if (HasSeconds.class.isAssignableFrom(layout.getType()))
         {
-            form.addElement("label").setAttr("for", property+"_seconds").addText(I18n.getLabel("seconds"));
-            form.addElement("input").setAttr("type", "range").setAttr("name", "seconds").setAttr("min", "1").setAttr("max", "1000").setAttr("id", property+"_seconds");
+            form.addRenderer(getSecondsChooser(property));
         }
         if (HasUnit.class.isAssignableFrom(layout.getType()))
         {
@@ -161,6 +160,24 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
                 Element option = select.addElement("option").setAttr("value", n).addText(d);
             }
         }
+        return fieldSet;
+    }
+    
+    private Renderer getSecondsChooser(String property)
+    {
+        Element fieldSet = new Element("fieldset");
+        fieldSet.addElement("label").setAttr("for", property+"_seconds").addText(I18n.getLabel("seconds"));
+        Element select = fieldSet.addElement("select").setAttr("name", "seconds").setAttr("id", property+"_seconds");
+        select.addElement("option").setAttr("value", 60).addText("1 Minute");
+        select.addElement("option").setAttr("value", 5*60).addText("5 Minutes");
+        select.addElement("option").setAttr("value", 10*60).addText("10 Minutes");
+        select.addElement("option").setAttr("value", 30*60).addText("30 Minutes");
+        select.addElement("option").setAttr("value", 60*60).addText("1 Hour");
+        select.addElement("option").setAttr("value", 2*60*60).addText("2 Hours");
+        select.addElement("option").setAttr("value", 6*60*60).addText("6 Hours");
+        select.addElement("option").setAttr("value", 12*60*60).addText("12 Hours");
+        select.addElement("option").setAttr("value", 24*60*60).addText("1 Day");
+        select.addElement("option").setAttr("value", 2*24*60*60).addText("2 Days");
         return fieldSet;
     }
     
