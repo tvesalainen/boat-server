@@ -23,5 +23,5 @@ package org.vesalainen.boat.server;
 @FunctionalInterface
 public interface EventFormat
 {
-    void format(Appendable o, EventContext c);
+    void format(StringBuilder o, EventContext c);
 }

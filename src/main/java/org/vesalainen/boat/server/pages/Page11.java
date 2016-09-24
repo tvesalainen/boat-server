@@ -38,9 +38,11 @@ public class Page11 extends MeterPage
     {
         JQueryMobilePage page = createPage(threadLocalModel);
         Element main = page.getMain();
-        Element div1 = main.addElement("div");
+        Element div1 = main.addElement("div")
+                .setAttr("style", "height:50%");
         div1.add(grid[0]);
-        Element div2 = main.addElement("div");
+        Element div2 = main.addElement("div")
+                .setAttr("style", "height:50%");
         div2.add(grid[1]);
         return page;
     }

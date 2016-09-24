@@ -21,24 +21,42 @@
 
 $(document).ready(function () {
 
-    sse.addHandler("path", function(target, data){
-        var sec = target.attr("data-seconds");
-        var path = $(document.createElementNS("http://www.w3.org/2000/svg", "path"));
-        path.attr("d", data);
-        path.attr("data-ttl", sec);
-        var tr = target.attr("transform");
-        if (tr)
+    sse.addHandler("graph", function(target, array){
+        var x2;
+        var y2;
+        var lastLine = target.children("line").last();
+        if (lastLine.length > 0)
         {
-            var mov = Number(/[\-0-9]+/.exec(tr));
-            mov = -mov;
-            path.attr("transform", "translate("+mov+")");
+            var x2 = lastLine.attr("x2");
+            var y2 = lastLine.attr("y2");
         }
         else
         {
-            path.attr("transform", "translate(0)");
+            var browserNow = new Date().getTime()/1000;
+            var serverNow = array[array.length-2];
+            var offset = serverNow - browserNow;
+            target.attr("data-offset", offset);
         }
-        sse.register(path);
-        target.append(path);
+        var i;
+        for (i=0;i<array.length;i+=2)
+        {
+            var x = array[i];
+            var y = array[i+1];
+            if (!x2)
+            {
+                x2 = x;
+                y2 = y;
+            }
+            var line = $(document.createElementNS("http://www.w3.org/2000/svg", "line"));
+            line.attr("x1", x2);
+            line.attr("y1", y2);
+            line.attr("x2", x);
+            line.attr("y2", y);
+            sse.register(line);
+            target.append(line);
+            x2 = x;
+            y2 = y;
+        }
     });
 
     var moveId = setInterval(move, 1000);
@@ -48,12 +66,12 @@ $(document).ready(function () {
 function move()
 {
     $("[data-moving]").each(function(){
-        var tr = $(this).attr("transform");
-        if (tr)
+        var offset = Number($(this).attr("data-offset"));
+        if (offset)
         {
-            var mov = Number(/[\-0-9]+/.exec(tr));
-            mov--;
-            $(this).attr("transform", "translate("+mov+")");
+            var browserNow = new Date().getTime()/1000;
+            var tr = -(browserNow + offset);
+            $(this).attr("transform", "translate("+tr+")");
         }
     });
     

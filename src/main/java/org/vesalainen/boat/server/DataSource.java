@@ -69,7 +69,9 @@ public class DataSource extends AbstractSSESource
             config("starting DevMeter");
             meterService = DevMeter.getInstance(Config.getDevConfigFile());
             config("starting TimeoutStatsService");
-            statsService = new TimeoutStatsService(dispatcher, "boat-server");
+            // we use EPOCH times to get shorter numbers in SVG
+            Clock clock = Clock.offset(Clock.systemUTC(), Duration.between(Instant.now(), Instant.EPOCH));
+            statsService = new TimeoutStatsService(clock, dispatcher, "boat-server");
             allProperties.addAll(meterService.getNames());
         }
         catch (IOException ex)

@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.PrimitiveIterator;
 import java.util.PrimitiveIterator.OfDouble;
 import java.util.PrimitiveIterator.OfLong;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import static org.vesalainen.boat.server.Constants.*;
 import org.vesalainen.html.Attribute;
@@ -28,6 +29,7 @@ import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.navi.CoordinateFormat;
 import org.vesalainen.svg.SVGPath;
+import org.vesalainen.text.FormatUtil;
 import org.vesalainen.util.DoubleMap;
 import org.vesalainen.util.ThreadLocalFormatter;
 import org.vesalainen.web.I18n;
@@ -40,53 +42,46 @@ public enum EventAction
 {
 
     Default("text", "%.1f%s", EventAction::same),
-    Rotate("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), EventAction::same),
-    InvRotate("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), (double v, DoubleMap m)->{return 360-v;}),
-    BoatRelativeRotate("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), (double v, DoubleMap m)->{return (m.getDouble("trueHeading")+v) % 360;}),
-    Latitude("text", (Appendable o, EventContext c)->CoordinateFormat.formatLatitude(o, I18n.getLocale(), c.getValue(), c.getUnit()), EventAction::same),
-    Longitude("text", (Appendable o, EventContext c)->CoordinateFormat.formatLatitude(o, I18n.getLocale(), c.getValue(), c.getUnit()), EventAction::same),
-    CompassPitch("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "scale(1,%.3f)", c.getValue()), (double v, DoubleMap m)->{ return Math.cos(Math.toRadians(90-ViewAngle-v));}),
-    Route1("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.0f)", c.getValue()), EventAction::same),
-    Route2("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, DoubleMap m)->{return 1.0/Math.pow(A, Math.abs(v));}),
-    Route3("transform", (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, DoubleMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
-    Graph("function", (Appendable o, EventContext c)->{
+    Rotate("transform", (StringBuilder o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), EventAction::same),
+    InvRotate("transform", (StringBuilder o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), (double v, DoubleMap m)->{return 360-v;}),
+    BoatRelativeRotate("transform", (StringBuilder o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.1f)", c.getValue()), (double v, DoubleMap m)->{return (m.getDouble("trueHeading")+v) % 360;}),
+    Latitude("text", (StringBuilder o, EventContext c)->CoordinateFormat.formatLatitude(o, I18n.getLocale(), c.getValue(), c.getUnit()), EventAction::same),
+    Longitude("text", (StringBuilder o, EventContext c)->CoordinateFormat.formatLatitude(o, I18n.getLocale(), c.getValue(), c.getUnit()), EventAction::same),
+    CompassPitch("transform", (StringBuilder o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "scale(1,%.3f)", c.getValue()), (double v, DoubleMap m)->{ return Math.cos(Math.toRadians(90-ViewAngle-v));}),
+    Route1("transform", (StringBuilder o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "rotate(%.0f)", c.getValue()), EventAction::same),
+    Route2("transform", (StringBuilder o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, DoubleMap m)->{return 1.0/Math.pow(A, Math.abs(v));}),
+    Route3("transform", (StringBuilder o, EventContext c)->ThreadLocalFormatter.format(o, Locale.US, "translate(%.3f,0)", c.getValue()), (double v, DoubleMap m)->{return Math.signum(v)*(30-1.0/Math.pow(A, Math.abs(v))*30);}),
+    Graph("function", (StringBuilder o, EventContext c)->{
         TimeoutStats s = c.getStats();
         if (s.count() > 2)
         {
-            SVGPath path = new SVGPath();
-            double now = System.currentTimeMillis();
+            o.append("{\"name\":\"graph\",\"data\":[");
             if (c.isFirstFire())
             {
                 OfLong ti = s.timeStream().iterator();
                 OfDouble vi = s.stream().iterator();
+                boolean frst = true;
                 while (ti.hasNext() && vi.hasNext())
                 {
                     double time = ti.nextLong();
                     double value = vi.nextDouble();
-                    if (path.isEmpty())
+                    if (!frst)
                     {
-                        path.moveTo(-(now-time)/1000, -value);
+                        frst = false;
+                        o.append(',');
                     }
-                    else
-                    {
-                        path.lineTo(-(now-time)/1000, -value);
-                    }
+                    FormatUtil.format(o, time/1000);
+                    o.append(',');
+                    FormatUtil.format(o, -value);
                 }
             }
             else
             {
-                path.moveTo(-(now-s.previousTime())/1000, -s.previous());
-                path.lineTo(0, -s.last());
+                FormatUtil.format(o, (double)s.lastTime()/1000);
+                o.append(',');
+                FormatUtil.format(o, -s.last());
             }
-            try
-            {
-                Attribute attr = path.getAttr("d");
-                o.append("{\"name\":\"path\",\"data\":\""+attr.getValue()+"\"}");
-            }
-            catch (IOException ex)
-            {
-                throw new RuntimeException(ex);
-            }
+            o.append("]}");
         }
     }, EventAction::same, EventAction::same, true),
     Visible("refresh", "", EventAction::same)
@@ -102,7 +97,7 @@ public enum EventAction
     {
         this(
             action, 
-            (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, I18n.getLocale(), format, c.getValue(), c.getUnit().getUnit()),
+            (StringBuilder o, EventContext c)->ThreadLocalFormatter.format(o, I18n.getLocale(), format, c.getValue(), c.getUnit().getUnit()),
             func);
     }
 
@@ -115,7 +110,7 @@ public enum EventAction
     {
         this(
             action, 
-            (Appendable o, EventContext c)->ThreadLocalFormatter.format(o, I18n.getLocale(), format, c.getValue(), c.getUnit().getUnit()),
+            (StringBuilder o, EventContext c)->ThreadLocalFormatter.format(o, I18n.getLocale(), format, c.getValue(), c.getUnit().getUnit()),
             func, 
             conv,
             isObject);
