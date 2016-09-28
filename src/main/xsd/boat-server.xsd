@@ -72,6 +72,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     </xsd:documentation>
                 </xsd:annotation>
             </xsd:attribute>
+            <xsd:attribute name="theme" type="xsd:string" default="a">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        JQueryMobile theme a-z
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
         </xsd:complexType>
     </xsd:element>
 </xsd:schema>

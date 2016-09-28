@@ -24,6 +24,7 @@ $(document).ready(function () {
     sse.addHandler("graph", function(target, array){
         var x2;
         var y2;
+        var sec = target.attr("data-seconds");
         var lastLine = target.children("line").last();
         if (lastLine.length > 0)
         {
@@ -52,7 +53,8 @@ $(document).ready(function () {
             line.attr("y1", y2);
             line.attr("x2", x);
             line.attr("y2", y);
-            sse.register(line);
+            line.attr("data-ttl", sec);
+            //sse.register(line);
             target.append(line);
             x2 = x;
             y2 = y;

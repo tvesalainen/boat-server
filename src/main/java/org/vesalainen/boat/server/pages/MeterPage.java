@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.vesalainen.boat.server.Config;
 import org.vesalainen.boat.server.DataSource;
 import org.vesalainen.boat.server.Layout;
 import org.vesalainen.boat.server.Model;
@@ -67,6 +68,7 @@ public abstract class MeterPage extends ThreadLocalBeanRenderer<Model,JQueryMobi
     protected JQueryMobilePage createPage(String pageId, ThreadLocal<Context<Model>> threadLocalModel)
     {
         JQueryMobilePage page = new JQueryMobilePage(null, pageId, threadLocalModel);
+        page.setTheme(Config.getTheme());
         page.getScriptContainer().addScript(new PageScript());
         Element popup = page.getMain().addElement("div").setDataAttr("role", "popup").setAttr("id", "${pageId}-popup");
         popup.add(createMeterChooser());

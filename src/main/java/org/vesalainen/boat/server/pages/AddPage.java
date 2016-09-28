@@ -16,6 +16,7 @@
  */
 package org.vesalainen.boat.server.pages;
 
+import org.vesalainen.boat.server.Config;
 import org.vesalainen.boat.server.Model;
 import org.vesalainen.html.Element;
 import org.vesalainen.html.Renderer;
@@ -39,6 +40,7 @@ public class AddPage extends MeterPage
     protected JQueryMobilePage create()
     {
         JQueryMobilePage page = createPage("addPage", threadLocalModel);
+        page.setTheme(Config.getTheme());
         Element header = page.getHeader();
         header.addElement("h1")
                 .addText(I18n.getLabel("Add new meter page"));

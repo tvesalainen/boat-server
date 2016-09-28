@@ -16,19 +16,13 @@
  */
 package org.vesalainen.boat.server;
 
-import java.io.IOException;
 import java.util.Locale;
-import java.util.PrimitiveIterator;
 import java.util.PrimitiveIterator.OfDouble;
 import java.util.PrimitiveIterator.OfLong;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import static org.vesalainen.boat.server.Constants.*;
-import org.vesalainen.html.Attribute;
 import org.vesalainen.math.UnitType;
 import org.vesalainen.math.sliding.TimeoutStats;
 import org.vesalainen.navi.CoordinateFormat;
-import org.vesalainen.svg.SVGPath;
 import org.vesalainen.text.FormatUtil;
 import org.vesalainen.util.DoubleMap;
 import org.vesalainen.util.ThreadLocalFormatter;

@@ -32,6 +32,18 @@ public class Config
     private static File devConfigFile;
     private static long devMeterPeriod;
     private static long sseAsyncTimeout;
+    private static char theme;
+
+    public static char getTheme()
+    {
+        return theme;
+    }
+
+    @Setting("theme")
+    public static void setTheme(char theme)
+    {
+        Config.theme = theme;
+    }
 
     public static long getSseAsyncTimeout()
     {
