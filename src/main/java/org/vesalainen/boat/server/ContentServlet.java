@@ -58,6 +58,7 @@ public class ContentServlet extends JQueryMobileServlet<JQueryMobileDocument,Mod
         doc.setAjax(false);
         Element head = doc.getHead();
         head.addElement("script").setAttr("src", "/sse.js");
+        head.addElement("link").setAttr("rel", "stylesheet").setAttr("href", "/rwd-height.css");
         head.addElement("link").setAttr("rel", "stylesheet").setAttr("href", "/boat-server.css");
         head.addElement("script").setAttr("src", "/page-control.js");
         head.addElement("script").setAttr("src", "/stats.js");

@@ -16,10 +16,8 @@
  */
 package org.vesalainen.boat.server.defs;
 
-import org.vesalainen.svg.Grid;
 import org.vesalainen.svg.CircleScale;
 import org.vesalainen.svg.Arc;
-import org.vesalainen.svg.Scale;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
